@@ -182,8 +182,8 @@ const DEFAULT_WISHES = [
     date: "20/10/2026",
     message: "Chúc Sếp sinh nhật vui vẻ! Chúc các dòng code của công ty dưới sự dẫn dắt của Sếp luôn sạch đẹp không một bug, build mượt như lụa, UI/UX đỉnh nóc kịch trần!",
     image: "assets/04_Interactive_Nodes/item_sprout_dev.png",
-    posX: 0.32,
-    posY: 0.35
+    posX: 0.21,
+    posY: 0.52
   },
   {
     id: "wish-dev-2",
@@ -193,8 +193,8 @@ const DEFAULT_WISHES = [
     date: "20/10/2026",
     message: "Chúc anh thêm tuổi mới thêm nhiều đột phá mới! Cảm ơn anh đã luôn định hướng kiến trúc Microservices sáng suốt, dìu dắt anh em vượt qua bao mùa Go-Live căng thẳng!",
     image: "assets/05_Grand_Finale/birthday_tea_cake.png",
-    posX: 0.70,
-    posY: 0.36
+    posX: 0.77,
+    posY: 0.48
   },
   {
     id: "wish-dev-3",
@@ -204,8 +204,8 @@ const DEFAULT_WISHES = [
     date: "20/10/2026",
     message: "Sinh nhật vui vẻ nha Sếp ơi! Team em xin tặng Sếp tính năng deploy không cần rollback suốt cả năm tới!",
     image: "assets/01_Characters/portrait_cto_pixel.png",
-    posX: 0.52,
-    posY: 0.25
+    posX: 0.50,
+    posY: 0.36
   },
 
   // Cảnh 3: Trường Lưu Ban Trà (Vận hành hệ thống)
@@ -217,8 +217,8 @@ const DEFAULT_WISHES = [
     date: "20/10/2026",
     message: "Bánh xe nước quay đều không ngừng nghỉ, cũng như lòng nhiệt huyết của anh em Ops luôn sát cánh bên Anh. Chúc CTO sinh nhật luôn an tâm ngủ ngon mỗi đêm!",
     image: "assets/04_Interactive_Nodes/item_lotus_ops.png",
-    posX: 0.26,
-    posY: 0.62
+    posX: 0.16,
+    posY: 0.58
   },
   {
     id: "wish-ops-2",
@@ -228,8 +228,19 @@ const DEFAULT_WISHES = [
     date: "20/10/2026",
     message: "Chúc anh tuổi mới vạn sự bình an, alert luôn im ắng trong giờ nghỉ, mọi giao dịch trơn tru 100%!",
     image: "assets/05_Grand_Finale/birthday_tea_cake.png",
-    posX: 0.74,
+    posX: 0.75,
     posY: 0.64
+  },
+  {
+    id: "wish-ops-3",
+    realmId: 3,
+    author: "Đoá Sen Bên Suối (Team Vận Hành)",
+    department: "Vận hành hệ thống",
+    date: "20/10/2026",
+    message: "Dòng suối nguồn dữ liệu luân chuyển bất tận, chúc Sếp luôn giữ tâm thế an nhiên, vững vàng chèo lái con thuyền công nghệ!",
+    image: "assets/04_Interactive_Nodes/item_lotus_ops.png",
+    posX: 0.15,
+    posY: 0.60
   },
 
   // Cảnh 4: Huyền Giáp Quan Âm (An toàn thông tin)
@@ -241,8 +252,8 @@ const DEFAULT_WISHES = [
     date: "20/10/2026",
     message: "Chúc Mừng Sinh Nhật CTO! Huyền Giáp Quan Âm xin gửi tấm khiên kiên cố nhất: Không Zero-day nào xuyên thủng, bảo vệ toàn vẹn tài sản dữ liệu của doanh nghiệp dưới bàn tay lãnh đạo của Anh!",
     image: "assets/04_Interactive_Nodes/item_shield_sec.png",
-    posX: 0.35,
-    posY: 0.45
+    posX: 0.25,
+    posY: 0.58
   },
   {
     id: "wish-sec-2",
@@ -252,8 +263,8 @@ const DEFAULT_WISHES = [
     date: "20/10/2026",
     message: "Chúc Sếp tuổi mới an khang thịnh vượng, bảo mật vững vàng, luôn là điểm tựa tinh thần thép cho cả khối IT!",
     image: "assets/01_Characters/portrait_cto_pixel.png",
-    posX: 0.65,
-    posY: 0.45
+    posX: 0.78,
+    posY: 0.58
   },
 
   // Cảnh 5: Vân Hành Tiên Trà (Triển khai sản phẩm dữ liệu)
@@ -265,8 +276,8 @@ const DEFAULT_WISHES = [
     date: "20/10/2026",
     message: "Ngàn cánh hạc mang theo lòng biết ơn sâu sắc tới Anh! Nhờ tầm nhìn của Sếp mà các sản phẩm dữ liệu đã cập bến thành công tới từng Khối Đầu tư, Vận hành, Tài chính. Chúc Sếp sinh nhật rực rỡ!",
     image: "assets/04_Interactive_Nodes/item_crane_deliv.png",
-    posX: 0.30,
-    posY: 0.40
+    posX: 0.22,
+    posY: 0.58
   },
   {
     id: "wish-deliv-2",
@@ -277,7 +288,7 @@ const DEFAULT_WISHES = [
     message: "Happy Birthday Sếp! Chúc các sản phẩm Data của công ty ngày càng lan tỏa giá trị, bay cao bay xa như cánh hạc Tiên Trà!",
     image: "assets/05_Grand_Finale/birthday_tea_cake.png",
     posX: 0.70,
-    posY: 0.40
+    posY: 0.42
   },
 
   // Cảnh 6: Tuyết Tâm Mạt Trà (Quản trị & Phân tích dữ liệu)
@@ -289,8 +300,8 @@ const DEFAULT_WISHES = [
     date: "20/10/2026",
     message: "Từ Data -> Information -> Insight -> Action! Chúc Anh luôn có những Insight sắc bén như lưỡi gươm và tâm hồn thanh tịnh như chén Matcha ban mai!",
     image: "assets/04_Interactive_Nodes/item_maple_data.png",
-    posX: 0.38,
-    posY: 0.42
+    posX: 0.81,
+    posY: 0.44
   },
   {
     id: "wish-data-2",
@@ -300,14 +311,14 @@ const DEFAULT_WISHES = [
     date: "20/10/2026",
     message: "Chúc Thuyền Trưởng sinh nhật ấm áp! Chiếc lá phong đỏ này mang theo tình cảm của toàn thể anh em Data gửi trọn về Sếp!",
     image: "assets/01_Characters/portrait_cto_pixel.png",
-    posX: 0.62,
-    posY: 0.42
+    posX: 0.27,
+    posY: 0.60
   }
 ];
 
 class WishStorageManager {
   constructor() {
-    this.STORAGE_KEY = "LUC_TRA_CTO_BIRTHDAY_WISHES_2026_V2";
+    this.STORAGE_KEY = "LUC_TRA_CTO_BIRTHDAY_WISHES_2026_V4";
     this.wishes = this.loadWishes();
   }
 
@@ -350,7 +361,8 @@ class WishStorageManager {
       id: "wish-" + Date.now() + "-" + Math.floor(Math.random() * 1000),
       realmId: Number(wishData.realmId),
       author: wishData.author.trim(),
-      department: wishData.department,
+      department: wishData.department || realmData.department,
+      badge: wishData.badge || '🎂',
       date: new Date().toLocaleDateString('vi-VN'),
       message: wishData.message.trim(),
       image: wishData.image || realmData.assetIcon || PRESET_AVATARS[0].data,

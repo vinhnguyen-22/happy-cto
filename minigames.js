@@ -36,6 +36,36 @@ const MINIGAME_CONFIG = {
     essenceName: "Tinh Hoa Trường Lưu",
     essenceIcon: "🌸",
     color: "#f39c12"
+  },
+  4: {
+    id: 4,
+    title: "Khiên Chắn Không Gian Số",
+    dept: "An Toàn Thông Tin",
+    targetMetric: "Zero-Day Blocked • 100% Secure",
+    desc: "Click vào 4 tầng lá chắn (Firewall, WAF, IPS, IAM) để kích hoạt khiên bảo mật toàn diện cho doanh nghiệp!",
+    essenceName: "Tinh Hoa Huyền Giáp",
+    essenceIcon: "🛡️",
+    color: "#2980b9"
+  },
+  5: {
+    id: 5,
+    title: "Cầu Nối Tri Thức",
+    dept: "Triển Khai Dữ Liệu",
+    targetMetric: "4 Khối Kết Nối • 100% Pipeline On-Time",
+    desc: "Click vào các trạm đích (Đầu Tư, Vận Hành, Tài Chính, Rủi Ro) để điều phối cánh hạc dữ liệu cập bến an toàn!",
+    essenceName: "Tinh Hoa Vân Hành",
+    essenceIcon: "🕊️",
+    color: "#9b59b6"
+  },
+  6: {
+    id: 6,
+    title: "Khai Mở Insight & Trí Tuệ",
+    dept: "Quản Trị & Phân Tích",
+    targetMetric: "4 Tầng Hợp Nhất • Insight 100%",
+    desc: "Click kết nối chuỗi tri thức: Dữ Liệu ➔ Thông Tin ➔ Xu Hướng ➔ INSIGHT để hoàn thành sứ mệnh Lục Trà!",
+    essenceName: "Tinh Hoa Tuyết Tâm",
+    essenceIcon: "🍁",
+    color: "#e74c3c"
   }
 };
 
@@ -207,6 +237,16 @@ class MiniGameManager {
       }
     }
 
+    // Đồng bộ huy hiệu tinh hoa trên thanh 6 hộp trà phía dưới
+    const teaBoxBtns = document.querySelectorAll('.tea-boxes-list .tea-card-btn');
+    teaBoxBtns.forEach(btn => {
+      const r = Number(btn.dataset.realm);
+      const slot = btn.querySelector('.tea-essence-slot');
+      if (slot) {
+        slot.classList.toggle('unlocked', !!this.essences[r]);
+      }
+    });
+
     const btnChallengeHUD = document.getElementById('btn-realm-challenge');
     const challengeText = document.getElementById('btn-challenge-text');
     if (btnChallengeHUD && window.gameEngine) {
@@ -267,16 +307,18 @@ class MiniGameManager {
     if (iconBadge) iconBadge.textContent = config.essenceIcon;
     if (instEl) instEl.textContent = config.desc;
 
-    // Thiết lập trạng thái khóa cổng (Chưa qua màn -> Chưa được đóng!)
+    // Luôn cho phép đóng hoặc bỏ qua thử thách để người chơi không bị kẹt
     const btnClose = document.getElementById('btn-close-minigame');
+    const btnSkip = document.getElementById('btn-skip-minigame');
     const btnContinue = document.getElementById('btn-continue-realm');
     const gateHint = document.getElementById('minigame-gate-hint');
     const gateMsg = document.getElementById('minigame-gate-msg');
 
-    if (btnClose) btnClose.style.display = 'none';
+    if (btnClose) btnClose.style.display = 'inline-flex';
+    if (btnSkip) btnSkip.style.display = 'inline-flex';
     if (btnContinue) btnContinue.style.display = 'none';
     if (gateHint) gateHint.classList.remove('unlocked');
-    if (gateMsg) gateMsg.textContent = "Vượt qua thử thách để mở cổng bước vào cõi trà!";
+    if (gateMsg) gateMsg.textContent = "Vượt qua thử thách hoặc nhấn Khép Lại để tự do khám phá cõi trà!";
 
     this.modal.classList.add('active');
     this.isRunning = true;
@@ -302,13 +344,8 @@ class MiniGameManager {
   }
 
   closeGame(force = false) {
-    // CHẶN ĐÓNG KHI CHƯA QUA MÀN!
-    if (!force && !this.gameWon) {
-      this.shakeGateHint();
-      return;
-    }
-
     this.isRunning = false;
+    this.gameWon = false;
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId);
       this.animationFrameId = null;
@@ -322,7 +359,7 @@ class MiniGameManager {
     this.updateHUD();
 
     // Khi người chơi đã qua màn và bước vào cõi trà -> Bắt đầu lời thoại dẫn chuyện của Trà Tiên
-    if (this.gameWon && window.uiManager) {
+    if (window.uiManager) {
       setTimeout(() => {
         window.uiManager.showRealmDialogue(this.currentRealmId);
       }, 300);
@@ -339,7 +376,7 @@ class MiniGameManager {
 
   // Hoàn thành mini-game & trao thưởng
   completeGame(realmId, isSkip = false) {
-    if (this.gameWon) return;
+    this.currentRealmId = realmId;
     this.gameWon = true;
     this.sessionPassed[realmId] = true;
     this.essences[realmId] = true;
@@ -389,6 +426,9 @@ class MiniGameManager {
       case 1: this.initGame1_FiberLinker(); break;
       case 2: this.initGame2_BugSlayer(); break;
       case 3: this.initGame3_LoadBalancer(); break;
+      case 4: this.initGame4_CyberShield(); break;
+      case 5: this.initGame5_DataPipeline(); break;
+      case 6: this.initGame6_InsightFusion(); break;
     }
   }
 
@@ -397,6 +437,9 @@ class MiniGameManager {
       case 1: this.updateGame1(dt); break;
       case 2: this.updateGame2(dt); break;
       case 3: this.updateGame3(dt); break;
+      case 4: this.updateGame4(dt); break;
+      case 5: this.updateGame5(dt); break;
+      case 6: this.updateGame6(dt); break;
     }
   }
 
@@ -408,6 +451,9 @@ class MiniGameManager {
       case 1: this.renderGame1(); break;
       case 2: this.renderGame2(); break;
       case 3: this.renderGame3(); break;
+      case 4: this.renderGame4(); break;
+      case 5: this.renderGame5(); break;
+      case 6: this.renderGame6(); break;
     }
 
     // Nếu đã chiến thắng, vẽ lớp hào quang ăn mừng
@@ -422,6 +468,9 @@ class MiniGameManager {
       case 1: this.handleClickGame1(x, y); break;
       case 2: this.handleClickGame2(x, y); break;
       case 3: this.handleClickGame3(x, y); break;
+      case 4: this.handleClickGame4(x, y); break;
+      case 5: this.handleClickGame5(x, y); break;
+      case 6: this.handleClickGame6(x, y); break;
     }
   }
 
@@ -1448,7 +1497,362 @@ class MiniGameManager {
   }
 
   // =========================================================================
-  // HIỆU ỨNG CHIẾN THẮNG CHUNG CHO CẢ 3 MINI-GAMES
+  // MINI-GAME 4: KHIÊN CHẮN KHÔNG GIAN SỐ (AN TOÀN THÔNG TIN)
+  // =========================================================================
+  initGame4_CyberShield() {
+    this.gameState = {
+      shields: [
+        { id: 1, name: "NextGen Firewall", icon: "🛡️", active: false, color: "#3498db" },
+        { id: 2, name: "WAF Cloud Guard", icon: "🌐", active: false, color: "#1abc9c" },
+        { id: 3, name: "IPS/IDS Deep Inspect", icon: "👁️", active: false, color: "#9b59b6" },
+        { id: 4, name: "Zero Trust IAM", icon: "🔐", active: false, color: "#e67e22" }
+      ],
+      rotAngle: 0
+    };
+    this.updateGame4Status();
+  }
+
+  updateGame4Status() {
+    const statusEl = document.getElementById('minigame-status-bar');
+    if (!statusEl || !this.gameState) return;
+    const activeCount = this.gameState.shields.filter(s => s.active).length;
+    statusEl.innerHTML = `
+      <div class="status-metric-group">
+        <div class="metric-item">
+          <span class="m-label">Lớp Khiên Kích Hoạt:</span>
+          <span class="m-val highlight">${activeCount}/4</span>
+        </div>
+        <div class="metric-item">
+          <span class="m-label">Trạng Thái An Ninh:</span>
+          <span class="m-val" style="color: ${activeCount === 4 ? '#2ecc71' : '#f39c12'}">${activeCount === 4 ? '100% An Toàn' : 'Đang Kích Hoạt'}</span>
+        </div>
+      </div>
+    `;
+  }
+
+  updateGame4(dt) {
+    if (this.gameWon || !this.gameState) return;
+    this.gameState.rotAngle += dt * 0.8;
+  }
+
+  handleClickGame4(x, y) {
+    if (this.gameWon || !this.gameState) return;
+    const cx = this.canvas.width / 2;
+    const cy = this.canvas.height / 2;
+
+    const positions = [
+      { x: cx - 140, y: cy - 70 },
+      { x: cx + 140, y: cy - 70 },
+      { x: cx - 140, y: cy + 70 },
+      { x: cx + 140, y: cy + 70 }
+    ];
+
+    positions.forEach((pos, idx) => {
+      const dist = Math.hypot(x - pos.x, y - pos.y);
+      if (dist < 55) {
+        if (!this.gameState.shields[idx].active) {
+          this.gameState.shields[idx].active = true;
+          if (window.gameAudio) {
+            window.gameAudio.playCoin();
+          }
+          this.updateGame4Status();
+
+          if (this.gameState.shields.every(s => s.active)) {
+            setTimeout(() => this.completeGame(4), 300);
+          }
+        }
+      }
+    });
+  }
+
+  renderGame4() {
+    const cx = this.canvas.width / 2;
+    const cy = this.canvas.height / 2;
+    const { shields } = this.gameState;
+
+    this.ctx.save();
+    const coreGrad = this.ctx.createRadialGradient(cx, cy, 10, cx, cy, 60);
+    coreGrad.addColorStop(0, "rgba(41, 128, 185, 0.9)");
+    coreGrad.addColorStop(1, "rgba(10, 20, 40, 0.8)");
+    this.ctx.fillStyle = coreGrad;
+    this.ctx.beginPath();
+    this.ctx.arc(cx, cy, 50, 0, Math.PI * 2);
+    this.ctx.fill();
+
+    this.ctx.strokeStyle = "#48cae4";
+    this.ctx.lineWidth = 3;
+    this.ctx.stroke();
+
+    this.ctx.font = "bold 28px sans-serif";
+    this.ctx.textAlign = "center";
+    this.ctx.fillText("🏛️", cx, cy + 10);
+    this.ctx.font = "bold 12px 'Cinzel', serif";
+    this.ctx.fillStyle = "#ffd700";
+    this.ctx.fillText("DATA CORE", cx, cy + 32);
+
+    const positions = [
+      { x: cx - 140, y: cy - 70 },
+      { x: cx + 140, y: cy - 70 },
+      { x: cx - 140, y: cy + 70 },
+      { x: cx + 140, y: cy + 70 }
+    ];
+
+    positions.forEach((pos, idx) => {
+      const shield = shields[idx];
+      this.ctx.save();
+      this.ctx.strokeStyle = shield.active ? shield.color : "rgba(255,255,255,0.15)";
+      this.ctx.lineWidth = shield.active ? 3 : 1;
+      this.ctx.beginPath();
+      this.ctx.moveTo(cx, cy);
+      this.ctx.lineTo(pos.x, pos.y);
+      this.ctx.stroke();
+
+      const r = 44;
+      this.ctx.fillStyle = shield.active ? "rgba(46, 204, 113, 0.25)" : "rgba(30, 20, 10, 0.85)";
+      this.ctx.strokeStyle = shield.active ? "#2ecc71" : shield.color;
+      this.ctx.lineWidth = shield.active ? 3 : 2;
+      this.ctx.beginPath();
+      this.ctx.arc(pos.x, pos.y, r, 0, Math.PI * 2);
+      this.ctx.fill();
+      this.ctx.stroke();
+
+      this.ctx.font = "26px sans-serif";
+      this.ctx.textAlign = "center";
+      this.ctx.fillText(shield.icon, pos.x, pos.y + 2);
+
+      this.ctx.font = "bold 11px 'Noto Serif TC', serif";
+      this.ctx.fillStyle = shield.active ? "#2ecc71" : "#ffd700";
+      this.ctx.fillText(shield.active ? "ĐÃ BẢO VỆ ✓" : shield.name, pos.x, pos.y + r + 14);
+
+      this.ctx.restore();
+    });
+
+    this.ctx.restore();
+  }
+
+  // =========================================================================
+  // MINI-GAME 5: CẦU NỐI TRI THỨC (TRIỂN KHAI SẢN PHẨM DỮ LIỆU)
+  // =========================================================================
+  initGame5_DataPipeline() {
+    this.gameState = {
+      destinations: [
+        { id: 1, name: "Khối Đầu Tư", connected: false, color: "#f39c12" },
+        { id: 2, name: "Khối Vận Hành", connected: false, color: "#2ecc71" },
+        { id: 3, name: "Khối Tài Chính", connected: false, color: "#3498db" },
+        { id: 4, name: "Khối QL Rủi Ro", connected: false, color: "#e74c3c" }
+      ]
+    };
+    this.updateGame5Status();
+  }
+
+  updateGame5Status() {
+    const statusEl = document.getElementById('minigame-status-bar');
+    if (!statusEl || !this.gameState) return;
+    const connectedCount = this.gameState.destinations.filter(d => d.connected).length;
+    statusEl.innerHTML = `
+      <div class="status-metric-group">
+        <div class="metric-item">
+          <span class="m-label">Đơn Vị Nhận Dữ Liệu:</span>
+          <span class="m-val highlight">${connectedCount}/4</span>
+        </div>
+        <div class="metric-item">
+          <span class="m-label">Hạc Tri Thức:</span>
+          <span class="m-val" style="color: #9b59b6">Lan Tỏa Đột Phá</span>
+        </div>
+      </div>
+    `;
+  }
+
+  updateGame5(dt) {}
+
+  handleClickGame5(x, y) {
+    if (this.gameWon || !this.gameState) return;
+    const spacing = 140;
+    const startX = (this.canvas.width - 3 * spacing) / 2;
+    const destY = 220;
+
+    this.gameState.destinations.forEach((dest, idx) => {
+      const dx = startX + idx * spacing;
+      if (Math.hypot(x - dx, y - destY) < 55) {
+        if (!dest.connected) {
+          dest.connected = true;
+          if (window.gameAudio) {
+            window.gameAudio.playPowerup();
+          }
+          this.updateGame5Status();
+
+          if (this.gameState.destinations.every(d => d.connected)) {
+            setTimeout(() => this.completeGame(5), 300);
+          }
+        }
+      }
+    });
+  }
+
+  renderGame5() {
+    const cx = this.canvas.width / 2;
+    const topY = 60;
+    const spacing = 140;
+    const startX = (this.canvas.width - 3 * spacing) / 2;
+    const destY = 220;
+
+    this.ctx.save();
+
+    this.ctx.fillStyle = "rgba(155, 89, 182, 0.25)";
+    this.ctx.strokeStyle = "#9b59b6";
+    this.ctx.lineWidth = 2;
+    this.ctx.beginPath();
+    this.ctx.arc(cx, topY, 38, 0, Math.PI * 2);
+    this.ctx.fill();
+    this.ctx.stroke();
+
+    this.ctx.font = "24px sans-serif";
+    this.ctx.textAlign = "center";
+    this.ctx.fillText("🕊️", cx, topY + 8);
+    this.ctx.font = "bold 12px 'Cinzel', serif";
+    this.ctx.fillStyle = "#ffd700";
+    this.ctx.fillText("DATA HUB", cx, topY + 54);
+
+    this.gameState.destinations.forEach((dest, idx) => {
+      const dx = startX + idx * spacing;
+
+      this.ctx.strokeStyle = dest.connected ? dest.color : "rgba(255,255,255,0.15)";
+      this.ctx.lineWidth = dest.connected ? 3 : 1;
+      this.ctx.beginPath();
+      this.ctx.moveTo(cx, topY);
+      this.ctx.lineTo(dx, destY);
+      this.ctx.stroke();
+
+      this.ctx.fillStyle = dest.connected ? "rgba(46, 204, 113, 0.25)" : "rgba(30, 20, 10, 0.85)";
+      this.ctx.strokeStyle = dest.connected ? "#2ecc71" : dest.color;
+      this.ctx.lineWidth = dest.connected ? 3 : 2;
+      this.ctx.beginPath();
+      this.ctx.arc(dx, destY, 40, 0, Math.PI * 2);
+      this.ctx.fill();
+      this.ctx.stroke();
+
+      this.ctx.font = "22px sans-serif";
+      this.ctx.fillText(dest.connected ? "✅" : "📦", dx, destY + 6);
+
+      this.ctx.font = "bold 11px 'Noto Serif TC', serif";
+      this.ctx.fillStyle = dest.connected ? "#2ecc71" : "#ffd700";
+      this.ctx.fillText(dest.name, dx, destY + 55);
+    });
+
+    this.ctx.restore();
+  }
+
+  // =========================================================================
+  // MINI-GAME 6: KHAI MỞ INSIGHT & TRÍ TUỆ (QUẢN TRỊ & PHÂN TÍCH DỮ LIỆU)
+  // =========================================================================
+  initGame6_InsightFusion() {
+    this.gameState = {
+      steps: [
+        { id: 1, title: "1. DỮ LIỆU (Data)", icon: "📊", done: false },
+        { id: 2, title: "2. THÔNG TIN (Info)", icon: "📑", done: false },
+        { id: 3, title: "3. XU HƯỚNG (Trend)", icon: "📈", done: false },
+        { id: 4, title: "4. INSIGHT & WISDOM", icon: "🧠", done: false }
+      ],
+      currentStep: 0
+    };
+    this.updateGame6Status();
+  }
+
+  updateGame6Status() {
+    const statusEl = document.getElementById('minigame-status-bar');
+    if (!statusEl || !this.gameState) return;
+    statusEl.innerHTML = `
+      <div class="status-metric-group">
+        <div class="metric-item">
+          <span class="m-label">Chuỗi Tri Thức:</span>
+          <span class="m-val highlight">${this.gameState.currentStep}/4 Bước</span>
+        </div>
+        <div class="metric-item">
+          <span class="m-label">Mục Tiêu:</span>
+          <span class="m-val" style="color: #e74c3c">Chuyển Hóa Thành Insight</span>
+        </div>
+      </div>
+    `;
+  }
+
+  updateGame6(dt) {}
+
+  handleClickGame6(x, y) {
+    if (this.gameWon || !this.gameState) return;
+    const { steps, currentStep } = this.gameState;
+    const spacing = 135;
+    const startX = (this.canvas.width - 3 * spacing) / 2;
+    const nodeY = 160;
+
+    steps.forEach((step, idx) => {
+      const nx = startX + idx * spacing;
+      if (Math.hypot(x - nx, y - nodeY) < 50) {
+        if (idx === currentStep) {
+          step.done = true;
+          this.gameState.currentStep++;
+          if (window.gameAudio) {
+            window.gameAudio.playCoin();
+          }
+          this.updateGame6Status();
+
+          if (this.gameState.currentStep >= 4) {
+            setTimeout(() => this.completeGame(6), 350);
+          }
+        }
+      }
+    });
+  }
+
+  renderGame6() {
+    const { steps, currentStep } = this.gameState;
+    const spacing = 135;
+    const startX = (this.canvas.width - 3 * spacing) / 2;
+    const nodeY = 160;
+
+    this.ctx.save();
+
+    this.ctx.strokeStyle = "rgba(231, 76, 60, 0.4)";
+    this.ctx.lineWidth = 4;
+    this.ctx.beginPath();
+    this.ctx.moveTo(startX, nodeY);
+    this.ctx.lineTo(startX + 3 * spacing, nodeY);
+    this.ctx.stroke();
+
+    steps.forEach((step, idx) => {
+      const nx = startX + idx * spacing;
+      const isNext = (idx === currentStep);
+
+      this.ctx.fillStyle = step.done
+        ? "rgba(46, 204, 113, 0.25)"
+        : (isNext ? "rgba(255, 215, 0, 0.25)" : "rgba(30, 20, 10, 0.85)");
+      this.ctx.strokeStyle = step.done ? "#2ecc71" : (isNext ? "#ffd700" : "#7f8c8d");
+      this.ctx.lineWidth = isNext ? 3 : 2;
+
+      this.ctx.beginPath();
+      this.ctx.arc(nx, nodeY, 42, 0, Math.PI * 2);
+      this.ctx.fill();
+      this.ctx.stroke();
+
+      this.ctx.font = "26px sans-serif";
+      this.ctx.textAlign = "center";
+      this.ctx.fillText(step.icon, nx, nodeY + 8);
+
+      this.ctx.font = "bold 11px 'Noto Serif TC', serif";
+      this.ctx.fillStyle = step.done ? "#2ecc71" : (isNext ? "#ffd700" : "#dcd0c0");
+      this.ctx.fillText(step.title, nx, nodeY + 60);
+
+      if (isNext) {
+        this.ctx.font = "bold 11px sans-serif";
+        this.ctx.fillStyle = "#ffd700";
+        this.ctx.fillText("NHẤN VÀO ĐÂY 👆", nx, nodeY - 50);
+      }
+    });
+
+    this.ctx.restore();
+  }
+
+  // =========================================================================
+  // HIỆU ỨNG CHIẾN THẮNG CHUNG CHO CÁC MINI-GAMES
   // =========================================================================
   renderVictoryOverlay() {
     this.ctx.save();

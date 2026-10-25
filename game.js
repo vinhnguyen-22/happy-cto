@@ -141,6 +141,11 @@ class GameEngine {
   // --- QUẢN LÝ PHÍM & CHUỘT / TOUCH ---
   setupInputHandlers() {
     window.addEventListener('keydown', e => {
+      // Bỏ qua phím khi đang nhập liệu trong form (input, textarea, select)
+      if (e.target && (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName) || e.target.isContentEditable)) {
+        return;
+      }
+
       const key = (e.key || '').toLowerCase();
       const code = (e.code || '').toLowerCase();
       const keyCode = e.keyCode || e.which || 0;
@@ -149,21 +154,25 @@ class GameEngine {
       if (code) this.keys[code] = true;
 
       // Hỗ trợ phím di chuyển (WASD + Mũi tên) kể cả khi gõ tiếng Việt UniKey / EVKey
-      if (['arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'w', 'a', 's', 'd'].includes(key) ||
+      if (['arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'w', 'a', 's', 'd', 'ư', 'ơ', 'â', 'ă', 'đ'].includes(key) ||
           ['arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'keyw', 'keya', 'keys', 'keyd'].includes(code)) {
         e.preventDefault();
       }
 
-      // Phím tương tác: E, Space, Enter hoặc F khi đứng gần vật thể (tương thích UniKey, EVKey, CapsLock)
+      // Phím tương tác: E, Space, Enter hoặc F khi đứng gần vật thể (hỗ trợ cả bộ gõ tiếng Việt UniKey, EVKey, CapsLock)
       const isInteractKey = (
-        key === 'e' || code === 'keye' || keyCode === 69 ||
+        key === 'e' || key === 'ê' || key === 'é' || key === 'è' || key === 'ẻ' || key === 'ẽ' || key === 'ẹ' ||
+        code === 'keye' || keyCode === 69 ||
         key === ' ' || code === 'space' || keyCode === 32 ||
         key === 'enter' || code === 'enter' || code === 'numpadenter' || keyCode === 13 ||
         key === 'f' || code === 'keyf' || keyCode === 70
       );
 
       if (isInteractKey) {
-        if (this.nearbyInteractable) {
+        const dialogueBox = document.getElementById('dialogue-box');
+        const hasDialogue = dialogueBox && !dialogueBox.classList.contains('hidden');
+
+        if (this.nearbyInteractable || hasDialogue) {
           e.preventDefault();
         }
         this.handleInteractKey();
@@ -171,6 +180,9 @@ class GameEngine {
     });
 
     window.addEventListener('keyup', e => {
+      if (e.target && (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName) || e.target.isContentEditable)) {
+        return;
+      }
       const key = (e.key || '').toLowerCase();
       const code = (e.code || '').toLowerCase();
       this.keys[key] = false;
@@ -313,29 +325,33 @@ class GameEngine {
     }
 
     if (this.currentRealmId === 0) {
-      // 1. Kiểm tra click vào 1 trong 6 Hộp Trà
+      // 1. Kiểm tra click vào Bàn Trà Cổ & Bộ Ấm Chén trung tâm
+      const cx = this.frameRect.x + this.frameRect.w / 2;
+      const cy = this.frameRect.y + this.frameRect.h / 2 - 15;
+      const distToCenter = Math.hypot(cx - x, cy - y);
+      if (distToCenter <= 85) {
+        this.player.targetX = cx;
+        this.player.targetY = cy + 45;
+        this.player.x = cx;
+        this.player.y = cy + 45;
+        this.pendingAction = null;
+        this.executeAction({ type: 'central_table' });
+        return;
+      }
+
+      // 2. Kiểm tra click vào 1 trong 6 Hộp Trà
       const clickedBox = this.teaBoxes.find(b => {
         const dist = Math.hypot(b.x - x, b.y - y);
-        const inLabel = Math.abs(x - b.x) <= 80 && y >= b.y - 75 && y <= b.y + 45;
-        return dist < 65 || inLabel;
+        const inLabel = Math.abs(x - b.x) <= 85 && y >= b.y - 75 && y <= b.y + 45;
+        return dist < 68 || inLabel;
       });
       if (clickedBox) {
-        const distToBox = Math.hypot(this.player.x - clickedBox.x, this.player.y - clickedBox.y);
-
-        // Nếu nhân vật ĐÃ ĐỨNG GẦN hộp trà (<= 85px) -> Vào cõi ngay
-        if (distToBox <= 85) {
-          this.executeAction({ type: 'realm', box: clickedBox });
-          return;
-        }
-
-        // Nếu ở xa -> Nhân vật BẮT ĐẦU BƯỚC TỚI hộp trà, đến nơi mới chuyển cảnh!
-        const angle = Math.atan2(this.player.y - clickedBox.y, this.player.x - clickedBox.x);
-        const standDist = 48;
-        this.player.targetX = Math.max(35, Math.min(this.width - 35, clickedBox.x + Math.cos(angle) * standDist));
-        this.player.targetY = Math.max(85, Math.min(this.height - 85, clickedBox.y + Math.sin(angle) * standDist));
-        this.pendingAction = { type: 'realm', box: clickedBox };
-
-        window.gameAudio.playStep();
+        this.player.targetX = clickedBox.x;
+        this.player.targetY = clickedBox.y + 35;
+        this.player.x = clickedBox.x;
+        this.player.y = clickedBox.y + 35;
+        this.pendingAction = null;
+        this.executeAction({ type: 'realm', box: clickedBox });
         return;
       }
     } else {
@@ -346,26 +362,12 @@ class GameEngine {
         return dist < (item.radius ? item.radius + 15 : 60) || inItemBox;
       });
       if (clickedItem) {
-        const distToItem = Math.hypot(this.player.x - clickedItem.screenX, this.player.y - clickedItem.screenY);
-
-        // Nếu đã đứng ngay cạnh vật thể (<= 85px) -> Mở lời chúc / modal ngay
-        if (distToItem <= 85) {
-          this.executeAction({ type: 'interactable', item: clickedItem });
-          return;
-        }
-
-        // Nếu ở xa -> Nhân vật BƯỚC TỚI vật thể, đến nơi mới mở modal!
-        const angle = Math.atan2(this.player.y - clickedItem.screenY, this.player.x - clickedItem.screenX);
-        const standDist = 48;
-        const minX = this.frameRect.x + 35;
-        const maxX = this.frameRect.x + this.frameRect.w - 35;
-        const minY = this.frameRect.y + 80;
-        const maxY = this.frameRect.y + this.frameRect.h - 80;
-        this.player.targetX = Math.max(minX, Math.min(maxX, clickedItem.screenX + Math.cos(angle) * standDist));
-        this.player.targetY = Math.max(minY, Math.min(maxY, clickedItem.screenY + Math.sin(angle) * standDist));
-        this.pendingAction = { type: 'interactable', item: clickedItem };
-
-        window.gameAudio.playStep();
+        this.player.targetX = clickedItem.screenX;
+        this.player.targetY = clickedItem.screenY + 35;
+        this.player.x = clickedItem.screenX;
+        this.player.y = clickedItem.screenY + 35;
+        this.pendingAction = null;
+        this.executeAction({ type: 'interactable', item: clickedItem });
         return;
       }
     }
@@ -388,25 +390,98 @@ class GameEngine {
       window.gameAudio.playClick();
       window.gameAudio.playBell();
       this.switchRealm(action.box.id);
+    } else if (action.type === 'central_table') {
+      window.gameAudio.playClick();
+      window.gameAudio.playBell();
+      if (window.uiManager) {
+        window.uiManager.openGrandFinaleModal();
+      }
     } else if (action.type === 'interactable') {
       window.gameAudio.playClick();
       if (action.item.isChallengeAltar) {
         if (window.miniGameManager) {
           window.miniGameManager.openGame(action.item.realmId);
         }
+      } else if (action.item.isNextRealmDoor) {
+        if (action.item.isLocked) {
+          window.gameAudio.playClick();
+          alert(`🔒 Cửa qua cõi tiếp theo đang bị khóa phong ấn!\nHãy hoàn thành thử thách "${action.item.challengeTitle}" (nhấn vào [Đài Thử Thách] ở giữa cõi) để mở cửa qua màn nhé!`);
+        } else {
+          window.gameAudio.playDoorOpen();
+          window.gameAudio.playFanfare();
+          if (action.item.nextRealmId === 0) {
+            // Đã vượt qua cả 6 cõi trà -> Cửa dẫn về Trà Điện Nhất Tâm và khai mở Đại Cảnh Sinh Nhật
+            this.switchRealm(0);
+            setTimeout(() => {
+              if (window.uiManager) window.uiManager.openGrandFinaleModal();
+            }, 700);
+          } else {
+            this.switchRealm(action.item.nextRealmId, 'left');
+          }
+        }
       } else if (action.item.isAddButton) {
-        window.uiManager.openAddWishModal(this.currentRealmId);
+        if (window.uiManager && window.uiManager.openWishStudio) {
+          window.uiManager.openWishStudio(this.currentRealmId);
+        } else if (window.uiManager) {
+          window.uiManager.openAddWishModal(this.currentRealmId);
+        }
       } else if (action.item.wish) {
         window.uiManager.openViewWishModal(action.item.wish);
       }
     }
   }
 
-  // Tương tác bằng phím bấm (E / Enter / Space) khi đứng gần vật thể
+  // Kiểm tra nhân vật có đang đứng cạnh / chạm vào mục tiêu không (tính theo toàn bộ hình thể nhân vật 72x108 px)
+  isPlayerNearTarget(targetX, targetY, targetRadius = 46) {
+    const pcx = this.player.x;
+    const pcy = this.player.y - 42; // Tâm thân người chơi
+
+    const distCenter = Math.hypot(pcx - targetX, pcy - targetY);
+    const distFeet = Math.hypot(this.player.x - targetX, this.player.y - targetY);
+
+    // Khoảng cách từ mép bounding box sprite nhân vật đến tâm vật thể
+    const dx = Math.max(0, Math.abs(this.player.x - targetX) - 36);
+    const dy = (targetY < this.player.y - 96)
+      ? (this.player.y - 96 - targetY)
+      : (targetY > this.player.y + 12 ? targetY - (this.player.y + 12) : 0);
+    const distBox = Math.hypot(dx, dy);
+
+    // Tiếp xúc khi tâm thân trong 135px, chân trong 125px, hoặc mép sprite chạm mép vật thể
+    return (distCenter <= 135 || distFeet <= 125 || distBox <= (targetRadius + 45));
+  }
+
+  // Tương tác bằng phím bấm (E / Enter / Space) khi đứng gần vật thể hoặc để đọc tiếp thoại
   handleInteractKey() {
     if (this.isTransitioning) return;
+
+    // 1. Cập nhật lại ngay tức thì trạng thái gần vật thể
+    if (!this.nearbyInteractable) {
+      this.updateNearbyInteractable();
+    }
+
+    // 2. ƯU TIÊN SỐ 1: Nếu người chơi đang đứng gần vật thể / hộp trà -> MỞ VẬT THỂ NGAY!
+    // Đồng thời tự động đóng hộp thoại dẫn chuyện nếu đang mở để hiển thị modal rõ ràng
     if (this.nearbyInteractable) {
+      const dialogueBox = document.getElementById('dialogue-box');
+      if (dialogueBox && !dialogueBox.classList.contains('hidden')) {
+        dialogueBox.classList.add('hidden');
+        if (window.uiManager && window.uiManager.typingTimer) {
+          clearInterval(window.uiManager.typingTimer);
+          window.uiManager.typingTimer = null;
+        }
+      }
       this.executeAction(this.nearbyInteractable);
+      return;
+    }
+
+    // 3. ƯU TIÊN SỐ 2: Nếu KHÔNG đứng gần vật thể nào mà đang có hộp thoại người dẫn chuyện -> Đọc tiếp hoặc đóng thoại
+    const dialogueBox = document.getElementById('dialogue-box');
+    if (dialogueBox && !dialogueBox.classList.contains('hidden')) {
+      if (window.uiManager) {
+        window.gameAudio.playClick();
+        window.uiManager.advanceDialogue();
+      }
+      return;
     }
   }
 
@@ -433,7 +508,7 @@ class GameEngine {
   }
 
   // --- THIẾT LẬP VÀ CHUYỂN CẢNH ---
-  switchRealm(realmId) {
+  switchRealm(realmId, spawnSide = null) {
     if (this.isTransitioning || this.currentRealmId === realmId) return;
     this.isTransitioning = true;
     this.transitionAlpha = 0;
@@ -447,7 +522,7 @@ class GameEngine {
         if (this.transitionAlpha >= 1) {
           this.transitionAlpha = 1;
           fadingOut = false;
-          this.setupRealm(realmId);
+          this.setupRealm(realmId, spawnSide);
         }
       } else {
         this.transitionAlpha -= 0.08;
@@ -460,13 +535,20 @@ class GameEngine {
     }, 25);
   }
 
-  setupRealm(realmId) {
+  setupRealm(realmId, spawnSide = null) {
     this.currentRealmId = realmId;
     this.pendingAction = null;
     this.nearbyInteractable = null;
     this.particles = [];
-    this.player.x = this.frameRect.x + this.frameRect.w / 2;
-    this.player.y = this.frameRect.y + this.frameRect.h / 2 + (realmId === 0 ? 95 : 70);
+
+    // Vị trí xuất hiện của nhân vật (nếu bước qua cửa từ cõi trước thì xuất hiện từ bên trái)
+    if (realmId !== 0 && spawnSide === 'left') {
+      this.player.x = this.frameRect.x + this.frameRect.w * 0.16;
+      this.player.y = this.frameRect.y + this.frameRect.h * 0.58;
+    } else {
+      this.player.x = this.frameRect.x + this.frameRect.w / 2;
+      this.player.y = this.frameRect.y + this.frameRect.h / 2 + (realmId === 0 ? 35 : 55);
+    }
     this.player.targetX = this.player.x;
     this.player.targetY = this.player.y;
 
@@ -485,21 +567,14 @@ class GameEngine {
     this.refreshCurrentInteractables();
     this.initRealmParticles(realmId);
 
-    // TỰ ĐỘNG POPUP THỬ THÁCH:
-    // Nếu là cõi 1, 2, 3 và chưa vượt qua màn trong phiên này -> Tự động popup thử thách lên ngay!
-    const isChallengeRealm = [1, 2, 3].includes(realmId);
-    const isPassed = window.miniGameManager ? window.miniGameManager.isPassed(realmId) : false;
-
-    if (isChallengeRealm && !isPassed && window.miniGameManager) {
-      const dialogueBox = document.getElementById('dialogue-box');
-      if (dialogueBox) dialogueBox.classList.add('hidden');
-
-      setTimeout(() => {
-        window.miniGameManager.openGame(realmId);
-      }, 400);
-    } else {
-      window.uiManager.showRealmDialogue(realmId);
+    // Nút Thử Thách trên HUD: hiển thị cho cả 6 cõi trà
+    const isChallengeRealm = (realmId >= 1 && realmId <= 6);
+    const challengeBtn = document.getElementById('btn-realm-challenge');
+    if (challengeBtn) {
+      challengeBtn.style.display = isChallengeRealm ? 'inline-flex' : 'none';
     }
+
+    window.uiManager.showRealmDialogue(realmId);
   }
 
   refreshCurrentInteractables() {
@@ -512,8 +587,8 @@ class GameEngine {
     const realmData = REALMS_DATA[this.currentRealmId];
     const items = [];
 
-    // Đài Thử Thách Mini-Game đặc biệt cho 3 cõi đầu (1, 2, 3)
-    if ([1, 2, 3].includes(this.currentRealmId)) {
+    // Đài Thử Thách Mini-Game cho tất cả 6 cõi trà (1 -> 6)
+    if (this.currentRealmId >= 1 && this.currentRealmId <= 6) {
       const isDone = window.miniGameManager ? window.miniGameManager.isCompleted(this.currentRealmId) : false;
       const altarColor = isDone ? "#2ecc71" : realmData.color;
       items.push({
@@ -524,7 +599,7 @@ class GameEngine {
         screenX: this.frameRect.x + this.frameRect.w * 0.5,
         screenY: this.frameRect.y + this.frameRect.h * 0.26,
         radius: 46,
-        name: isDone ? "Thử Thách: Đã Hoàn Thành" : "Đài Thử Thách Cõi Trà",
+        name: isDone ? "Nhiệm Vụ: Đã Hoàn Thành ✓" : "Nhiệm Vụ: Thử Thách Cõi Trà",
         color: altarColor,
         icon: isDone ? "🏆" : "🎮"
       });
@@ -552,14 +627,47 @@ class GameEngine {
       id: "btn-add-new-wish",
       isAddButton: true,
       screenX: this.frameRect.x + this.frameRect.w * 0.5,
-      screenY: this.frameRect.y + this.frameRect.h * 0.80,
+      screenY: this.frameRect.y + this.frameRect.h * 0.68,
       radius: 46,
       name: "Treo Lời Chúc Mới",
       color: "#ffd700",
       icon: "✨"
     });
 
+    // CỔNG CHUYỂN CÕI (CỬA QUA MÀN TIẾP THEO)
+    // Sau khi làm xong nhiệm vụ cõi này, cửa mở để bước sang màn khác
+    const nextRealmId = (this.currentRealmId === 6) ? 0 : this.currentRealmId + 1;
+    const nextRealmData = REALMS_DATA[nextRealmId] || { name: "Trà Điện Nhất Tâm", color: "#ffd700" };
+    const isTaskDone = window.miniGameManager ? window.miniGameManager.isCompleted(this.currentRealmId) : false;
+    const challengeCfg = (typeof MINIGAME_CONFIG !== 'undefined' && MINIGAME_CONFIG[this.currentRealmId])
+      ? MINIGAME_CONFIG[this.currentRealmId]
+      : { title: "Thử Thách Cõi Trà" };
+
+    items.push({
+      id: `door-next-realm-${this.currentRealmId}`,
+      isNextRealmDoor: true,
+      isLocked: !isTaskDone,
+      realmId: this.currentRealmId,
+      nextRealmId: nextRealmId,
+      nextRealmName: nextRealmData.name,
+      challengeTitle: challengeCfg.title,
+      screenX: this.frameRect.x + this.frameRect.w * 0.88,
+      screenY: this.frameRect.y + this.frameRect.h * 0.56,
+      radius: 54,
+      name: isTaskDone ? `Cổng Qua Cõi: ${nextRealmData.name}` : `Cổng Khóa 🔒 (Làm Xong Nhiệm Vụ Để Mở)`,
+      color: isTaskDone ? "#ffd700" : "#7f8c8d",
+      icon: isTaskDone ? "🚪" : "🔒"
+    });
+
     this.currentInteractables = items;
+  }
+
+  walkToNextRealmDoor() {
+    const door = this.currentInteractables.find(it => it.isNextRealmDoor);
+    if (door) {
+      this.player.targetX = door.screenX;
+      this.player.targetY = door.screenY + 20;
+    }
   }
 
   initRealmParticles(realmId) {
@@ -602,14 +710,24 @@ class GameEngine {
     let moveX = 0;
     let moveY = 0;
 
-    if (this.keys['w'] || this.keys['keyw'] || this.keys['arrowup']) { moveY -= 1; this.player.dir = 'up'; }
+    if (this.keys['w'] || this.keys['keyw'] || this.keys['arrowup'] || this.keys['ư'] || this.keys['ơ']) { moveY -= 1; this.player.dir = 'up'; }
     if (this.keys['s'] || this.keys['keys'] || this.keys['arrowdown']) { moveY += 1; this.player.dir = 'down'; }
-    if (this.keys['a'] || this.keys['keya'] || this.keys['arrowleft']) { moveX -= 1; this.player.dir = 'left'; }
-    if (this.keys['d'] || this.keys['keyd'] || this.keys['arrowright']) { moveX += 1; this.player.dir = 'right'; }
+    if (this.keys['a'] || this.keys['keya'] || this.keys['arrowleft'] || this.keys['â'] || this.keys['ă']) { moveX -= 1; this.player.dir = 'left'; }
+    if (this.keys['d'] || this.keys['keyd'] || this.keys['arrowright'] || this.keys['đ']) { moveX += 1; this.player.dir = 'right'; }
 
     if (moveX !== 0 || moveY !== 0) {
       // Khi người dùng tự điều khiển bằng bàn phím -> Hủy hành động tự động bước tới
       this.pendingAction = null;
+
+      // Tự động khép hộp thoại dẫn chuyện khi người chơi bắt đầu di chuyển để màn hình thông thoáng
+      const dialogueBox = document.getElementById('dialogue-box');
+      if (dialogueBox && !dialogueBox.classList.contains('hidden')) {
+        dialogueBox.classList.add('hidden');
+        if (window.uiManager && window.uiManager.typingTimer) {
+          clearInterval(window.uiManager.typingTimer);
+          window.uiManager.typingTimer = null;
+        }
+      }
 
       const len = Math.hypot(moveX, moveY);
       this.player.x += (moveX / len) * this.player.speed;
@@ -646,20 +764,26 @@ class GameEngine {
 
     // --- KIỂM TRA HÀNH ĐỘNG ĐANG CHỜ (ĐẾN GẦN ITEMS MỚI CHUYỂN CẢNH / TƯƠNG TÁC) ---
     if (this.pendingAction) {
-      let objX = 0, objY = 0;
+      let objX = 0, objY = 0, objRadius = 46;
       if (this.pendingAction.type === 'realm') {
         objX = this.pendingAction.box.x;
         objY = this.pendingAction.box.y;
+        objRadius = 48;
+      } else if (this.pendingAction.type === 'central_table') {
+        objX = this.frameRect.x + this.frameRect.w / 2;
+        objY = this.frameRect.y + this.frameRect.h / 2 - 15;
+        objRadius = 68;
       } else if (this.pendingAction.type === 'interactable') {
         objX = this.pendingAction.item.screenX;
         objY = this.pendingAction.item.screenY;
+        objRadius = this.pendingAction.item.radius || 46;
       }
 
-      const distToObj = Math.hypot(this.player.x - objX, this.player.y - objY);
+      const isNear = this.isPlayerNearTarget(objX, objY, objRadius);
       const distToTarget = Math.hypot(this.player.targetX - this.player.x, this.player.targetY - this.player.y);
 
-      // Khi nhân vật đã đến đủ gần (<= 78px) HOẶC đã bước tới sát đích (distToTarget <= 6px) -> Dừng bước và kích hoạt tương tác ngay!
-      if (distToObj <= 78 || distToTarget <= 6) {
+      // Khi nhân vật đã đến đủ gần HOẶC đã bước tới sát đích (distToTarget <= 6px) -> Dừng bước và kích hoạt tương tác ngay!
+      if (isNear || distToTarget <= 6) {
         this.player.isMoving = false;
         this.player.targetX = this.player.x;
         this.player.targetY = this.player.y;
@@ -708,7 +832,7 @@ class GameEngine {
     }
   }
 
-  // Cập nhật xem nhân vật có đang đứng gần vật thể nào (bán kính 75px) không
+  // Cập nhật xem nhân vật có đang đứng gần / chạm vào vật thể nào không
   updateNearbyInteractable() {
     this.nearbyInteractable = null;
     if (this.isTransitioning) {
@@ -717,14 +841,48 @@ class GameEngine {
     }
 
     if (this.currentRealmId === 0) {
-      const nearestBox = this.teaBoxes.find(b => Math.hypot(this.player.x - b.x, this.player.y - b.y) <= 75);
-      if (nearestBox) {
-        this.nearbyInteractable = { type: 'realm', box: nearestBox };
+      let bestTarget = null;
+      let minDistance = Infinity;
+
+      for (const box of this.teaBoxes) {
+        if (this.isPlayerNearTarget(box.x, box.y, 48)) {
+          const d = Math.hypot(this.player.x - box.x, (this.player.y - 42) - box.y);
+          if (d < minDistance) {
+            minDistance = d;
+            bestTarget = { type: 'realm', box: box };
+          }
+        }
       }
+
+      // Kiểm tra Bàn Trà Cổ & Bộ Ấm Chén ngay trên background giữa phòng
+      const cx = this.frameRect.x + this.frameRect.w / 2;
+      const cy = this.frameRect.y + this.frameRect.h / 2 - 15;
+      if (this.isPlayerNearTarget(cx, cy, 68)) {
+        const d = Math.hypot(this.player.x - cx, (this.player.y - 42) - cy);
+        if (d < minDistance) {
+          minDistance = d;
+          bestTarget = { type: 'central_table', name: 'Bàn Trà Nhất Tâm', cx, cy };
+        }
+      }
+
+      this.nearbyInteractable = bestTarget;
     } else {
-      const nearestItem = this.currentInteractables.find(item => Math.hypot(this.player.x - item.screenX, this.player.y - item.screenY) <= 75);
-      if (nearestItem) {
-        this.nearbyInteractable = { type: 'interactable', item: nearestItem };
+      let bestItem = null;
+      let minDistance = Infinity;
+
+      for (const item of this.currentInteractables) {
+        const itemR = item.radius || 46;
+        if (this.isPlayerNearTarget(item.screenX, item.screenY, itemR)) {
+          const d = Math.hypot(this.player.x - item.screenX, (this.player.y - 42) - item.screenY);
+          if (d < minDistance) {
+            minDistance = d;
+            bestItem = item;
+          }
+        }
+      }
+
+      if (bestItem) {
+        this.nearbyInteractable = { type: 'interactable', item: bestItem };
       }
     }
 
@@ -740,9 +898,13 @@ class GameEngine {
       if (label) {
         if (this.nearbyInteractable.type === 'realm') {
           label.textContent = "VÀO CÕI";
-        } else if (this.nearbyInteractable.item.isChallengeAltar) {
+        } else if (this.nearbyInteractable.type === 'central_table') {
+          label.textContent = "THƯỞNG TRÀ";
+        } else if (this.nearbyInteractable.item && this.nearbyInteractable.item.isNextRealmDoor) {
+          label.textContent = this.nearbyInteractable.item.isLocked ? "CỬA KHÓA" : "BƯỚC QUA";
+        } else if (this.nearbyInteractable.item && this.nearbyInteractable.item.isChallengeAltar) {
           label.textContent = "THỬ THÁCH";
-        } else if (this.nearbyInteractable.item.isAddButton) {
+        } else if (this.nearbyInteractable.item && this.nearbyInteractable.item.isAddButton) {
           label.textContent = "GHI CHÚC";
         } else {
           label.textContent = "LĨNH HỘI";
@@ -871,6 +1033,10 @@ class GameEngine {
       px = box.x;
       py = box.y - 48;
       label = `[E] Mở ${box.name}`;
+    } else if (this.nearbyInteractable.type === 'central_table') {
+      px = this.nearbyInteractable.cx;
+      py = this.nearbyInteractable.cy - 52;
+      label = `[E] Thưởng Trà & Xem Sổ Lưu Bút 🍵`;
     } else if (this.nearbyInteractable.type === 'interactable') {
       const item = this.nearbyInteractable.item;
       px = item.screenX;
@@ -883,7 +1049,7 @@ class GameEngine {
     }
 
     const floatY = Math.sin(this.ambientTime * 0.006) * 3;
-    const drawY = py + floatY;
+    const drawY = Math.max(this.frameRect.y + 22, py + floatY);
 
     this.ctx.font = "bold 12px 'Noto Serif TC', serif";
     const textW = this.ctx.measureText(label).width;
@@ -1107,6 +1273,8 @@ class GameEngine {
 
       if (item.isChallengeAltar) {
         this.renderChallengeAltar(item, isHovered);
+      } else if (item.isNextRealmDoor) {
+        this.renderNextRealmDoor(item, isHovered);
       } else if (item.isAddButton) {
         // Thẻ Bài Cầu Chúc Dát Vàng (Asian Wooden Wish Plaque / Ema)
         const floatBob = Math.sin(this.ambientTime * 0.005) * 4;
@@ -1278,6 +1446,112 @@ class GameEngine {
 
     this.ctx.fillStyle = isDone ? "#2ecc71" : "#ffd700";
     this.ctx.fillText(tagText, cx, tagY + 16);
+
+    this.ctx.restore();
+  }
+
+  // Vẽ Cánh Cửa Chuyển Cõi (Next Realm Door)
+  renderNextRealmDoor(item, isHovered) {
+    const cx = item.screenX;
+    const cy = item.screenY;
+    const isLocked = item.isLocked;
+    const pulse = Math.sin(this.ambientTime * 0.005) * 4;
+
+    this.ctx.save();
+
+    // 1. Vầng hào quang dưới chân cổng
+    const portalR = isHovered ? 52 : 44;
+    const baseGrad = this.ctx.createRadialGradient(cx, cy + 22, 6, cx, cy + 22, portalR + 15);
+    if (isLocked) {
+      baseGrad.addColorStop(0, "rgba(80, 50, 40, 0.6)");
+      baseGrad.addColorStop(1, "transparent");
+    } else {
+      baseGrad.addColorStop(0, "rgba(255, 215, 0, 0.75)");
+      baseGrad.addColorStop(0.5, "rgba(230, 126, 34, 0.35)");
+      baseGrad.addColorStop(1, "transparent");
+    }
+    this.ctx.fillStyle = baseGrad;
+    this.ctx.beginPath();
+    this.ctx.ellipse(cx, cy + 22, portalR + 8, 16, 0, 0, Math.PI * 2);
+    this.ctx.fill();
+
+    // 2. Hai cột cổng gỗ vòm Torii
+    const gateW = isHovered ? 64 : 56;
+    const gateH = isHovered ? 84 : 76;
+    const postW = 8;
+    const topY = cy - gateH / 2;
+
+    // Hai cột
+    this.ctx.fillStyle = isLocked ? "#4a3525" : "#783f12";
+    this.ctx.strokeStyle = isLocked ? "#2c1a0e" : "#ffd700";
+    this.ctx.lineWidth = 1.5;
+
+    this.ctx.fillRect(cx - gateW / 2, topY + 8, postW, gateH);
+    this.ctx.strokeRect(cx - gateW / 2, topY + 8, postW, gateH);
+    this.ctx.fillRect(cx + gateW / 2 - postW, topY + 8, postW, gateH);
+    this.ctx.strokeRect(cx + gateW / 2 - postW, topY + 8, postW, gateH);
+
+    // Xà ngang nóc cổng cong nhẹ
+    this.ctx.fillStyle = isLocked ? "#3a2315" : "#964b18";
+    this.ctx.beginPath();
+    this.ctx.moveTo(cx - gateW / 2 - 12, topY + 4);
+    this.ctx.lineTo(cx + gateW / 2 + 12, topY + 4);
+    this.ctx.lineTo(cx + gateW / 2 + 8, topY + 14);
+    this.ctx.lineTo(cx - gateW / 2 - 8, topY + 14);
+    this.ctx.closePath();
+    this.ctx.fill();
+    this.ctx.stroke();
+
+    // 3. Bên trong cổng (Vortex nếu mở, Runic seal nếu khóa)
+    const inW = gateW - postW * 2;
+    const inH = gateH - 8;
+    const inX = cx - inW / 2;
+    const inY = topY + 14;
+
+    if (isLocked) {
+      this.ctx.fillStyle = "rgba(30, 15, 10, 0.75)";
+      this.ctx.fillRect(inX, inY, inW, inH);
+      this.ctx.strokeStyle = "rgba(231, 76, 60, 0.5)";
+      this.ctx.strokeRect(inX, inY, inW, inH);
+
+      this.ctx.font = "26px sans-serif";
+      this.ctx.textAlign = "center";
+      this.ctx.fillText("🔒", cx, cy + 2 + pulse);
+    } else {
+      const vortex = this.ctx.createLinearGradient(0, inY, 0, inY + inH);
+      vortex.addColorStop(0, "rgba(255, 215, 0, 0.85)");
+      vortex.addColorStop(0.5, "rgba(255, 235, 150, 0.95)");
+      vortex.addColorStop(1, "rgba(230, 126, 34, 0.85)");
+      this.ctx.fillStyle = vortex;
+      this.ctx.fillRect(inX, inY, inW, inH);
+
+      this.ctx.font = "28px sans-serif";
+      this.ctx.textAlign = "center";
+      this.ctx.fillText("✨", cx, cy + pulse);
+    }
+
+    // 4. Biển chỉ dẫn dưới chân cổng
+    const labelText = isLocked ? "Cửa Khóa 🔒" : `Qua Cõi: ${item.nextRealmName} ➔`;
+    this.ctx.font = "bold 11px 'Noto Serif TC', serif";
+    const tagW = this.ctx.measureText(labelText).width + 20;
+    const tagH = 24;
+    const tagY = cy + gateH / 2 + 10;
+
+    this.ctx.fillStyle = isHovered ? "rgba(40, 20, 10, 0.98)" : "rgba(20, 10, 5, 0.92)";
+    this.ctx.strokeStyle = isLocked ? "#7f8c8d" : (isHovered ? "#ffffff" : "#ffd700");
+    this.ctx.lineWidth = isHovered ? 2 : 1.2;
+    this.ctx.beginPath();
+    if (this.ctx.roundRect) {
+      this.ctx.roundRect(cx - tagW / 2, tagY, tagW, tagH, 5);
+    } else {
+      this.ctx.rect(cx - tagW / 2, tagY, tagW, tagH);
+    }
+    this.ctx.fill();
+    this.ctx.stroke();
+
+    this.ctx.fillStyle = isLocked ? "#bdc3c7" : "#ffd700";
+    this.ctx.textAlign = "center";
+    this.ctx.fillText(labelText, cx, tagY + 16);
 
     this.ctx.restore();
   }

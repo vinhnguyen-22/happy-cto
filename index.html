@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Noto+Serif+TC:wght@400;600;700&family=VT323&display=swap" rel="stylesheet">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link rel="stylesheet" href="style.css?v=1.2">
+  <link rel="stylesheet" href="style.css?v=3.0">
 </head>
 <body>
   <!-- KHO ICON SVG CỔ PHONG (ZEN TEA SVG SPRITES) -->
@@ -148,15 +148,30 @@
         <img src="assets/01_Characters/portrait_tea_master.png" alt="Trà Tiên" class="guide-avatar-img">
         <div class="guide-speech">
           <strong>Trà Tiên dẫn chuyện:</strong><br>
-          "Kính mời Quý khách bước vào Lục Trà Cảnh Giới. Hãy cùng bước qua cánh cửa gỗ, thưởng thức sáu danh trà và để lại những lời chúc ý nghĩa nhất gửi đến người Thuyền Trưởng công nghệ!"
+          "Kính mời Quý khách dạo bước qua cánh cửa gỗ để <strong>Khám Phá Lục Trà Cảnh Giới</strong> hoặc mở ngay <strong>Sổ Lưu Bút</strong> để xem bức tường thiệp chúc mừng và gửi gắm tâm tình tới CTO kính mến!"
         </div>
       </div>
 
-      <button id="btn-enter-realm" class="pixel-btn enter-btn">
-        <svg class="zen-btn-icon"><use href="#zen-pavilion"></use></svg>
-        <span>BƯỚC VÀO TRÀ ĐIỆN NHẤT TÂM</span>
-      </button>
-      <div class="audio-hint">※ Bật âm thanh để trải nghiệm trọn vẹn không gian thiền trà & thư giãn</div>
+      <!-- Hai Cổng Trải Nghiệm Thống Nhất -->
+      <div class="intro-portal-cards">
+        <div id="btn-enter-guestbook" class="portal-card card-maker-portal" role="button" tabindex="0">
+          <div class="portal-card-badge">📜 SỔ LƯU BÚT & THIỆP CHÚC</div>
+          <div class="portal-card-icon">💌</div>
+          <h3 class="portal-card-title">Xem Lưu Bút & Soạn Thiệp</h3>
+          <p class="portal-card-desc">Mở ngay bức tường thiệp chúc mừng, xem toàn bộ lời chúc của đồng đội & tự tay thiết kế thiệp mừng gửi Sếp.</p>
+          <span class="portal-card-cta">MỞ XEM LƯU BÚT ➔</span>
+        </div>
+
+        <div id="btn-enter-realm" class="portal-card card-rpg-portal" role="button" tabindex="0">
+          <div class="portal-card-badge">🎮 KHÁM PHÁ THẾ GIỚI RPG</div>
+          <div class="portal-card-icon">🍵</div>
+          <h3 class="portal-card-title">Bước Vào Lục Trà Cảnh Giới</h3>
+          <p class="portal-card-desc">Dạo bước qua 6 cõi trà công nghệ, gặp gỡ NPC Trà Tiên, giải minigame thử thách và thưởng thức không gian trà đạo.</p>
+          <span class="portal-card-cta">BƯỚC VÀO TRÀ CÕI ➔</span>
+        </div>
+      </div>
+
+      <div class="audio-hint">※ Bật âm thanh để trải nghiệm trọn vẹn nhạc nền Super Mario vui tươi & không gian trà đạo</div>
     </div>
   </div>
 
@@ -202,29 +217,21 @@
       </div>
 
       <div class="header-controls">
-        <button id="btn-realm-challenge" class="hud-btn challenge-btn" title="Khai mở thử thách công nghệ của cõi này" style="display: none;">
-          <span class="challenge-icon">🎮</span>
-          <span id="btn-challenge-text">Thử Thách Cõi Này</span>
-        </button>
-        <button id="btn-aspect-toggle" class="hud-btn" title="Chuyển đổi Khung hình chuẩn 16:9 / Toàn màn hình">
-          <svg class="zen-btn-icon"><use href="#zen-aspect-169"></use></svg>
-          <span>Khung: 16:9</span>
-        </button>
         <button id="btn-fullscreen-toggle" class="hud-btn" title="Bật/Tắt chế độ Toàn Màn Hình trình duyệt">
           <svg class="zen-btn-icon"><use href="#zen-fullscreen-enter"></use></svg>
           <span>Toàn Màn Hình</span>
         </button>
         <button id="btn-help-guide" class="hud-btn" title="Xem Hướng dẫn trải nghiệm & Bối cảnh Lục Trà">
           <svg class="zen-btn-icon"><use href="#zen-scroll"></use></svg>
-          <span>Điển Tịch</span>
+          <span>Hướng Dẫn</span>
         </button>
-        <button id="btn-view-tree" class="hud-btn" title="Xem Cây Trà Tri Thức & Sổ Lưu Bút Sinh Nhật">
+        <button id="btn-view-tree" class="hud-btn" title="Xem Sổ Lưu Bút Sinh Nhật, Thiệp Chúc Mừng & Cây Tri Thức">
           <svg class="zen-btn-icon"><use href="#zen-tree-guestbook"></use></svg>
-          <span>Cây Tri Thức & Lưu Bút</span>
+          <span>Xem Lưu Bút</span>
         </button>
-        <button id="btn-audio-toggle" class="hud-btn" title="Bật/Tắt Nhạc thiền trà">
+        <button id="btn-audio-toggle" class="hud-btn" title="Bật/Tắt Nhạc Super Mario vui nhộn">
           <svg class="zen-btn-icon"><use href="#zen-bell-on"></use></svg>
-          <span>Nhạc Khúc: BẬT</span>
+          <span id="audio-btn-label">Nhạc Mario: BẬT</span>
         </button>
         <button id="btn-backup-data" class="hud-btn" title="Xuất / Nhập Lời Chúc">
           <svg class="zen-btn-icon"><use href="#zen-casket"></use></svg>
@@ -283,43 +290,60 @@
       </div>
     </div>
 
-    <!-- Thanh chọn nhanh 6 Cõi Trà (Quick Realm Selector) -->
+    <!-- Thanh chọn nhanh 6 Cõi Trà (Quick Realm Selector - Cột dọc bên trái) -->
     <div id="tea-boxes-bar" class="tea-boxes-bar">
-      <div class="bar-title">SÁU HỘP TRÀ DANH BẤT HƯ TRUYỀN:</div>
+      <div class="bar-header">
+        <div class="bar-title">SÁU HỘP TRÀ DANH BẤT HƯ TRUYỀN</div>
+        <button type="button" id="btn-toggle-tea-bar" class="tea-bar-toggle-btn" title="Thu gọn / Mở rộng" aria-label="Thu gọn danh sách hộp trà">◀</button>
+      </div>
       <div class="tea-boxes-list">
-        <button class="tea-card-btn" data-realm="1">
-          <span class="tea-color-dot dot-1"></span>
-          <span class="tea-c-name">Cổ Mạch Phổ Nhĩ</span>
-          <span class="tea-c-dept">Network & Hạ tầng</span>
+        <button class="tea-card-btn" data-realm="1" title="Cõi 1: Cổ Mạch Phổ Nhĩ (Network & Hạ tầng)">
+          <span class="tea-essence-slot slot-1">🍂</span>
+          <div class="tea-c-info">
+            <span class="tea-c-name">Cổ Mạch Phổ Nhĩ</span>
+            <span class="tea-c-dept">Network & Hạ tầng</span>
+          </div>
         </button>
-        <button class="tea-card-btn" data-realm="2">
-          <span class="tea-color-dot dot-2"></span>
-          <span class="tea-c-name">Thiên Công Ngọc Lộ</span>
-          <span class="tea-c-dept">Phát triển phần mềm</span>
+        <button class="tea-card-btn" data-realm="2" title="Cõi 2: Thiên Công Ngọc Lộ (Phát triển phần mềm)">
+          <span class="tea-essence-slot slot-2">🍃</span>
+          <div class="tea-c-info">
+            <span class="tea-c-name">Thiên Công Ngọc Lộ</span>
+            <span class="tea-c-dept">Phát triển phần mềm</span>
+          </div>
         </button>
-        <button class="tea-card-btn" data-realm="3">
-          <span class="tea-color-dot dot-3"></span>
-          <span class="tea-c-name">Trường Lưu Ban Trà</span>
-          <span class="tea-c-dept">Vận hành hệ thống</span>
+        <button class="tea-card-btn" data-realm="3" title="Cõi 3: Trường Lưu Ban Trà (Vận hành hệ thống)">
+          <span class="tea-essence-slot slot-3">🌸</span>
+          <div class="tea-c-info">
+            <span class="tea-c-name">Trường Lưu Ban Trà</span>
+            <span class="tea-c-dept">Vận hành hệ thống</span>
+          </div>
         </button>
-        <button class="tea-card-btn" data-realm="4">
-          <span class="tea-color-dot dot-4"></span>
-          <span class="tea-c-name">Huyền Giáp Quan Âm</span>
-          <span class="tea-c-dept">An toàn thông tin</span>
+        <button class="tea-card-btn" data-realm="4" title="Cõi 4: Huyền Giáp Quan Âm (An toàn thông tin)">
+          <span class="tea-essence-slot slot-4">🛡️</span>
+          <div class="tea-c-info">
+            <span class="tea-c-name">Huyền Giáp Quan Âm</span>
+            <span class="tea-c-dept">An toàn thông tin</span>
+          </div>
         </button>
-        <button class="tea-card-btn" data-realm="5">
-          <span class="tea-color-dot dot-5"></span>
-          <span class="tea-c-name">Vân Hành Tiên Trà</span>
-          <span class="tea-c-dept">Triển khai SP Dữ liệu</span>
+        <button class="tea-card-btn" data-realm="5" title="Cõi 5: Vân Hành Tiên Trà (Triển khai SP Dữ liệu)">
+          <span class="tea-essence-slot slot-5">🕊️</span>
+          <div class="tea-c-info">
+            <span class="tea-c-name">Vân Hành Tiên Trà</span>
+            <span class="tea-c-dept">Triển khai SP Dữ liệu</span>
+          </div>
         </button>
-        <button class="tea-card-btn" data-realm="6">
-          <span class="tea-color-dot dot-6"></span>
-          <span class="tea-c-name">Tuyết Tâm Mạt Trà</span>
-          <span class="tea-c-dept">Quản trị & Phân tích DL</span>
+        <button class="tea-card-btn" data-realm="6" title="Cõi 6: Tuyết Tâm Mạt Trà (Quản trị & Phân tích DL)">
+          <span class="tea-essence-slot slot-6">🍁</span>
+          <div class="tea-c-info">
+            <span class="tea-c-name">Tuyết Tâm Mạt Trà</span>
+            <span class="tea-c-dept">Quản trị & Phân tích DL</span>
+          </div>
         </button>
       </div>
     </div>
   </div>
+
+
 
   <!-- MODAL: ĐỂ LẠI LỜI CHÚC & ĐÍNH KÈM HÌNH ẢNH -->
   <div id="modal-wish" class="custom-modal">
@@ -430,10 +454,6 @@
             <svg class="zen-btn-icon"><use href="#zen-copy"></use></svg>
             <span>Sao Chép</span>
           </button>
-          <button type="button" class="pixel-btn danger-sm" id="btn-delete-this-wish" title="Xóa lời chúc này nếu cần">
-            <svg class="zen-btn-icon"><use href="#zen-trash"></use></svg>
-            <span>Gỡ Lời Chúc</span>
-          </button>
         </div>
         <button type="button" class="pixel-btn primary" id="btn-view-ok">
           <svg class="zen-btn-icon"><use href="#zen-close"></use></svg>
@@ -443,42 +463,232 @@
     </div>
   </div>
 
-  <!-- MODAL: ĐẠI CẢNH CÂY TRÀ TRI THỨC & SỔ LƯU BÚT SINH NHẬT -->
+  <!-- MODAL: ĐẠI CẢNH SỔ LƯU BÚT SINH NHẬT & CÂY TRÀ TRI THỨC -->
   <div id="modal-grand-finale" class="custom-modal">
     <div class="modal-backdrop"></div>
     <div class="modal-card grand-card">
       <div class="modal-header grand-header">
-        <img src="assets/05_Grand_Finale/banner_happy_birthday.png" alt="Chúc Mừng Sinh Nhật CTO" class="grand-banner-img">
-        <div class="grand-badge">
-          <svg class="zen-btn-icon"><use href="#zen-crown"></use></svg>
-          <span>ĐẠI HỘI CHÚC MỪNG SINH NHẬT CTO</span>
-          <svg class="zen-btn-icon"><use href="#zen-crown"></use></svg>
+        <div class="grand-header-left">
+          <img src="assets/05_Grand_Finale/banner_happy_birthday.png" alt="Chúc Mừng Sinh Nhật CTO" class="grand-banner-img">
         </div>
-        <h2>KHU VƯỜN LỤC TRÀ TRI THỨC</h2>
-        <p class="grand-subtitle">"Từ dữ liệu đến trí tuệ. Từ công nghệ đến giá trị. Chúng ta cùng tạo nên một khu vườn nơi mọi chiếc lá đều có ý nghĩa."</p>
+        <div class="grand-header-center">
+          <div class="grand-badge">
+            <svg class="zen-btn-icon"><use href="#zen-crown"></use></svg>
+            <span>✦ ĐẠI LỄ MỪNG SINH NHẬT CTO 2026 ✦</span>
+            <svg class="zen-btn-icon"><use href="#zen-crown"></use></svg>
+          </div>
+          <h2>SỔ LƯU BÚT & CÂY TRÀ TRI THỨC</h2>
+          <p class="grand-subtitle">"Từ dữ liệu đến trí tuệ. Từ công nghệ đến giá trị. Tri ân CTO kính mến!"</p>
+        </div>
         <button class="modal-close" id="btn-close-grand-modal" title="Khép lại">
           <svg class="zen-close-icon"><use href="#zen-close"></use></svg>
         </button>
       </div>
 
       <div class="grand-tabs">
-        <button class="grand-tab-btn active" data-tab="tree">
+        <button class="grand-tab-btn active" data-tab="cards">
           <svg class="zen-btn-icon"><use href="#zen-tree-guestbook"></use></svg>
-          <span>Cây Trà Tri Thức</span>
+          <span>📜 Thiệp Chúc Mừng (<span id="total-wishes-count">0</span>)</span>
         </button>
-        <button class="grand-tab-btn" data-tab="book">
-          <svg class="zen-btn-icon"><use href="#zen-scroll"></use></svg>
-          <span>Sổ Lưu Bút Sinh Nhật (<span id="total-wishes-count">0</span>)</span>
+        <button class="grand-tab-btn" data-tab="create">
+          <svg class="zen-btn-icon"><use href="#zen-brush-pen"></use></svg>
+          <span>✍️ Soạn & Tạo Thiệp Mới</span>
+        </button>
+        <button class="grand-tab-btn" data-tab="tree">
+          <svg class="zen-btn-icon"><use href="#zen-pavilion"></use></svg>
+          <span>🌳 Cây Trà Tri Thức</span>
         </button>
         <button class="grand-tab-btn" data-tab="message">
-          <svg class="zen-btn-icon"><use href="#zen-brush-pen"></use></svg>
-          <span>Thư Chúc Mừng</span>
+          <svg class="zen-btn-icon"><use href="#zen-scroll"></use></svg>
+          <span>💌 Thư Chúc Mừng CTO</span>
         </button>
       </div>
 
       <div class="modal-body grand-body">
-        <!-- Tab 1: Cây Trà Tri Thức Hợp Nhất -->
-        <div class="grand-tab-panel active" id="tab-panel-tree">
+        <!-- TAB 1 (MẶC ĐỊNH): BỨC TƯỜNG THIỆP CHÚC MỪNG & LƯU BÚT -->
+        <div class="grand-tab-panel active" id="tab-panel-cards">
+          <div class="cards-wall-topbar">
+            <div class="cards-filter-group">
+              <label for="book-filter-dept">Lọc theo cõi / bộ phận:</label>
+              <select id="book-filter-dept" class="pixel-input filter-select">
+                <option value="all">✦ Tất Cả Cõi Trà & Bộ Phận ✦</option>
+                <option value="Hạ tầng">🍂 Cổ Mạch Phổ Nhĩ (Network & Hạ tầng)</option>
+                <option value="Phần mềm">🍃 Thiên Công Ngọc Lộ (Software Dev)</option>
+                <option value="Vận hành">🌸 Trường Lưu Ban Trà (System Ops)</option>
+                <option value="An toàn">🛡️ Huyền Giáp Quan Âm (Cyber Security)</option>
+                <option value="Triển khai">🕊️ Vân Hành Tiên Trà (Data Delivery)</option>
+                <option value="Phân tích">🍁 Tuyết Tâm Mạt Trà (Data Analytics)</option>
+              </select>
+            </div>
+            <div class="cards-actions-quick">
+              <button type="button" class="pixel-btn primary-sm" id="btn-quick-goto-create">
+                <span>✍️ Soạn Thiệp Mới</span>
+              </button>
+              <button type="button" class="pixel-btn secondary-sm" id="btn-fireworks-wall">
+                <span>🎆 Pháo Hoa Mừng Sếp</span>
+              </button>
+            </div>
+          </div>
+          <div class="scrapbook-grid" id="scrapbook-container">
+            <!-- Render danh sách thẻ bài / thiệp sinh nhật -->
+          </div>
+        </div>
+
+        <!-- TAB 2: SOẠN & TẠO THIỆP MỚI (XƯỞNG TẠO THIỆP TÍCH HỢP) -->
+        <div class="grand-tab-panel" id="tab-panel-create">
+          <div class="integrated-card-studio">
+            <!-- Cột Trái: Bảng Điều Khiển Soạn & Thiết Kế Thiệp -->
+            <form id="integrated-card-form" class="studio-form">
+              <!-- 1. Chọn Phong Cách Thiệp -->
+              <div class="form-group">
+                <label>1. Chọn Phong Cách Thiệp:</label>
+                <div class="theme-options">
+                  <button type="button" class="theme-opt-btn active" data-theme="zen">
+                    <span class="t-icon">🍵</span>
+                    <span class="t-title">Trà Đạo Zen</span>
+                    <span class="t-sub">Gỗ Hoàng Kim</span>
+                  </button>
+                  <button type="button" class="theme-opt-btn" data-theme="mario">
+                    <span class="t-icon">🍄</span>
+                    <span class="t-title">Super Mario</span>
+                    <span class="t-sub">8-Bit Retro</span>
+                  </button>
+                  <button type="button" class="theme-opt-btn" data-theme="cyber">
+                    <span class="t-icon">🚀</span>
+                    <span class="t-title">High-Tech</span>
+                    <span class="t-sub">Cyber Neon</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- 2. Thông Tin Người Gửi & Cõi Trà -->
+              <div class="form-row">
+                <div class="form-group flex-1">
+                  <label for="card-author">Tên người gửi / Đội ngũ <span class="req">*</span></label>
+                  <input type="text" id="card-author" class="pixel-input" placeholder="Ví dụ: Team Backend / Nguyễn Văn A" required>
+                </div>
+                <div class="form-group flex-1">
+                  <label for="card-realm">Cõi Trà / Phòng Ban <span class="req">*</span></label>
+                  <select id="card-realm" class="pixel-input">
+                    <option value="1">🍂 Cõi 1: Cổ Mạch Phổ Nhĩ (Hạ tầng & Network)</option>
+                    <option value="2">🍃 Cõi 2: Thiên Công Ngọc Lộ (Phát triển phần mềm)</option>
+                    <option value="3">🌸 Cõi 3: Trường Lưu Ban Trà (Vận hành hệ thống)</option>
+                    <option value="4">🛡️ Cõi 4: Huyền Giáp Quan Âm (An toàn thông tin)</option>
+                    <option value="5">🕊️ Cõi 5: Vân Hành Tiên Trà (Triển khai dữ liệu)</option>
+                    <option value="6">🍁 Cõi 6: Tuyết Tâm Mạt Trà (Quản trị & Phân tích)</option>
+                    <option value="0">🍵 Trà Điện Nhất Tâm (Ban Lãnh Đạo & Khối Bạn)</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- 3. Huy Hiệu Sinh Nhật -->
+              <div class="form-group">
+                <label>Chọn Huy Hiệu Sinh Nhật:</label>
+                <div class="ws-badge-picker" id="studio-badge-picker">
+                  <button type="button" class="ws-badge-opt active" data-icon="🎂">🎂 Bánh Kem</button>
+                  <button type="button" class="ws-badge-opt" data-icon="🍄">🍄 Nấm Mario</button>
+                  <button type="button" class="ws-badge-opt" data-icon="🏆">🏆 Vô Địch</button>
+                  <button type="button" class="ws-badge-opt" data-icon="⭐">⭐ Tinh Tú</button>
+                  <button type="button" class="ws-badge-opt" data-icon="🚀">🚀 Bứt Phá</button>
+                  <button type="button" class="ws-badge-opt" data-icon="❤️">❤️ Yêu Thương</button>
+                  <button type="button" class="ws-badge-opt" data-icon="☕">☕ Trà Đạo</button>
+                </div>
+              </div>
+
+              <!-- 4. Gợi Ý Câu Chúc Nhanh (1-click chips) -->
+              <div class="form-group">
+                <label>Gợi ý câu chúc nhanh (nhấn để tự điền):</label>
+                <div class="ws-template-chips">
+                  <button type="button" class="ws-chip" data-text="Chúc Sếp sinh nhật bùng nổ năng lượng! Uptime 99.999%, băng thông thênh thang, cáp ngầm vững chãi nâng bước mọi dự án công nghệ vươn xa!">⚡ Uptime 99.999%</button>
+                  <button type="button" class="ws-chip" data-text="Chúc Anh tuổi mới code sạch không một bug, build mượt như lụa, hệ thống kiến trúc Microservices vững như bàn thạch!">💎 0 Bug - Build Mượt</button>
+                  <button type="button" class="ws-chip" data-text="Chúc CTO sinh nhật vui vẻ! Auto-scaling mượt mà, alert luôn im ắng trong giờ nghỉ, mọi giao dịch trơn tru 100%!">🚀 Auto-scaling Mượt</button>
+                  <button type="button" class="ws-chip" data-text="Từ Data -> Information -> Insight -> Action! Chúc Anh luôn có những Insight sắc bén và tâm hồn thanh tịnh như chén trà ban mai!">🧠 Insight Sắc Bén</button>
+                  <button type="button" class="ws-chip" data-text="Happy Birthday Sếp! Kính chúc Sếp vạn sự an khang, gia đình hạnh phúc, luôn là điểm tựa tinh thần thép của cả khối công nghệ!">❤️ Điểm Tựa Khối IT</button>
+                </div>
+              </div>
+
+              <!-- 5. Lời Chúc Mừng Sinh Nhật -->
+              <div class="form-group">
+                <label for="card-message">Nội dung lời chúc mừng sinh nhật gửi tới CTO <span class="req">*</span></label>
+                <textarea id="card-message" class="pixel-input textarea" rows="4" placeholder="Viết những lời chúc chân thành, ấm áp hoặc kỷ niệm đáng nhớ cùng CTO..." required></textarea>
+              </div>
+
+              <!-- 6. Đính Kèm Ảnh Kỷ Niệm / Avatar Nhanh -->
+              <div class="form-group">
+                <label>Đính kèm hình ảnh kỷ niệm:</label>
+                <div class="image-upload-zone" id="card-upload-zone">
+                  <input type="file" id="card-image-file" accept="image/*" style="display:none;">
+                  <div class="upload-prompt" id="card-upload-prompt">
+                    <span class="upload-icon"><svg class="zen-badge-icon"><use href="#zen-camera"></use></svg></span>
+                    <span>Nhấn để chọn ảnh từ thiết bị</span>
+                    <span class="upload-sub">(Tự động tối ưu dung lượng)</span>
+                  </div>
+                  <div class="preview-container" id="card-preview-container" style="display:none;">
+                    <img id="card-image-preview" src="" alt="Ảnh kỷ niệm">
+                    <button type="button" id="card-btn-remove-image" class="btn-remove-img">
+                      <svg class="zen-btn-icon"><use href="#zen-trash"></use></svg> <span>Gỡ ảnh</span>
+                    </button>
+                  </div>
+                </div>
+                <div class="preset-images-group" style="margin-top: 6px;">
+                  <span class="preset-label" style="font-size: 11.5px; color: #dcd0c0;">Hoặc chọn avatar nhanh:</span>
+                  <div class="preset-avatars" id="card-preset-avatars"></div>
+                </div>
+              </div>
+
+              <!-- 7. Nút Hành Động -->
+              <div class="editor-actions">
+                <button type="submit" class="action-btn-main">
+                  <span>⭐ KHẮC GHI & GỬI THIỆP (LƯU VÀO SỔ LƯU BÚT)</span>
+                </button>
+                <div style="display: flex; gap: 10px;">
+                  <button type="button" id="btn-download-card-png" class="action-btn-sub flex-1">
+                    <span>📥 Tải Thiệp Về Máy (PNG Sắc Nét)</span>
+                  </button>
+                  <button type="button" id="btn-reset-card-form" class="action-btn-sub" style="width: auto;">
+                    <span>🔄 Làm Mới</span>
+                  </button>
+                </div>
+              </div>
+            </form>
+
+            <!-- Cột Phải: Xem Trước Thiệp Trực Tiếp (Live Card Display) -->
+            <div class="preview-card-col">
+              <div class="preview-col-title">✦ XEM TRƯỚC THIỆP CHÚC MỪNG THỜI GIAN THỰC ✦</div>
+              <div class="live-card-frame theme-zen" id="live-card-frame">
+                <div class="card-rope"></div>
+                <div class="card-knot"></div>
+
+                <div>
+                  <div class="card-header-banner">
+                    <span class="card-badge-large" id="live-badge">🎂</span>
+                    <div class="card-sender-meta">
+                      <strong id="live-author">Tên Người Gửi / Đội Ngũ</strong>
+                      <small id="live-dept">Cổ Mạch Phổ Nhĩ (Hạ tầng & Network)</small>
+                    </div>
+                    <span class="card-date-badge" id="live-date">20/10/2026</span>
+                  </div>
+
+                  <div class="card-message-text" id="live-msg">
+                    "Chúc Sếp tuổi mới luôn tràn đầy năng lượng, dẫn dắt khối công nghệ vươn tới những đỉnh cao mới!"
+                  </div>
+
+                  <div class="card-image-attachment" id="live-img-wrap" style="display:none;">
+                    <img id="live-img" src="" alt="Ảnh kỷ niệm">
+                  </div>
+                </div>
+
+                <div class="card-footer-seal">
+                  <span class="card-realm-tag" id="live-realm-tag">Cổ Mạch Phổ Nhĩ</span>
+                  <div class="seal-stamp" id="live-seal">祝</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 3: CÂY TRÀ TRI THỨC -->
+        <div class="grand-tab-panel" id="tab-panel-tree">
           <div class="grand-tree-showcase">
             <img src="assets/05_Grand_Finale/tree_grand_unified.png" alt="Cây Trà Tri Thức Hợp Nhất" class="grand-tree-img">
           </div>
@@ -551,26 +761,7 @@
           </div>
         </div>
 
-        <!-- Tab 2: Sổ Lưu Bút Sinh Nhật Toàn Thể -->
-        <div class="grand-tab-panel" id="tab-panel-book">
-          <div class="book-filter-bar">
-            <span>Lọc theo bộ phận:</span>
-            <select id="book-filter-dept" class="pixel-input filter-select">
-              <option value="all">Tất cả bộ phận</option>
-              <option value="Hạ tầng & Network">Cổ Mạch Phổ Nhĩ (Hạ tầng)</option>
-              <option value="Phát triển phần mềm">Thiên Công Ngọc Lộ (Dev)</option>
-              <option value="Vận hành hệ thống">Trường Lưu Ban Trà (Ops)</option>
-              <option value="An toàn thông tin">Huyền Giáp Quan Âm (Bảo mật)</option>
-              <option value="Triển khai dữ liệu">Vân Hành Tiên Trà (Delivery)</option>
-              <option value="Quản trị & Phân tích">Tuyết Tâm Mạt Trà (Analytics)</option>
-            </select>
-          </div>
-          <div class="scrapbook-grid" id="scrapbook-container">
-            <!-- Sẽ render tự động qua JS -->
-          </div>
-        </div>
-
-        <!-- Tab 3: Thư Chúc Mừng CTO -->
+        <!-- TAB 4: THƯ CHÚC MỪNG CTO -->
         <div class="grand-tab-panel" id="tab-panel-message">
           <div class="birthday-letter">
             <div class="letter-heroes">
@@ -681,7 +872,7 @@
           <svg class="zen-badge-icon"><use href="#zen-scroll"></use></svg>
         </div>
         <div class="modal-title-group">
-          <h2>Điển Tịch Hướng Dẫn & Bối Cảnh Lục Trà</h2>
+          <h2>Hướng Dẫn Trải Nghiệm & Bối Cảnh Lục Trà</h2>
           <p>Món quà sinh nhật đặc biệt tri ân CTO kính mến</p>
         </div>
         <button class="modal-close" id="btn-close-help-modal" title="Khép lại">
@@ -694,9 +885,9 @@
           <ul class="help-list">
             <li><strong>Di chuyển:</strong> Dùng phím <kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> hoặc phím mũi tên <kbd>↑</kbd> <kbd>←</kbd> <kbd>↓</kbd> <kbd>→</kbd> (hoặc chạm / D-pad trên mobile).</li>
             <li><strong>Vào cõi trà:</strong> Tại Trà Điện Nhất Tâm, điều khiển nhân vật bước tới các hộp trà trên bàn, hoặc nhấp chọn hộp trà ở thanh phía dưới.</li>
-            <li><strong>Để lại lời chúc:</strong> Di chuyển nhân vật lại gần biểu tượng lá cây / bông hoa / lá chắn / hạc giấy / lá phong hoặc Thẻ Bài Chúc Thọ để mở form gửi thông điệp và đính kèm ảnh kỷ niệm.</li>
+            <li><strong>Để lại lời chúc & tạo thiệp:</strong> Di chuyển nhân vật lại gần biểu tượng lá cây / bông hoa / lá chắn / hạc giấy / lá phong hoặc Thẻ Bài Chúc Thọ để mở xưởng tạo thiệp và gửi thông điệp đính kèm ảnh kỷ niệm.</li>
             <li><strong>Xem lời chúc:</strong> Di chuyển lại gần biểu tượng có tên đồng đội để mở xem chi tiết lời chúc và hình ảnh.</li>
-            <li><strong>Đại cảnh sinh nhật:</strong> Nhấn <code>Cây Tri Thức & Lưu Bút</code> trên thanh HUD để đọc toàn bộ lời chúc và khai hoa chúc thọ sinh nhật CTO!</li>
+            <li><strong>Lưu Bút Sinh Nhật:</strong> Nhấn nút <code>Xem Lưu Bút</code> trên thanh HUD để chiêm ngưỡng toàn bộ thiệp chúc mừng, tạo thiệp riêng và ngắm Cây Trà Tri Thức!</li>
           </ul>
         </div>
 
@@ -734,7 +925,7 @@
           <h3>❖ Tiện Ích & Phím Tắt</h3>
           <ul class="help-list">
             <li><kbd>ESC</kbd>: Đóng ngay tức khắc mọi cửa sổ popup đang mở, hoặc đóng hộp thoại người dẫn chuyện.</li>
-            <li><strong>Khung Hình:</strong> Chuyển đổi khung hình 16:9 điện ảnh sắc nét hoặc chế độ toàn màn.</li>
+            <li><strong>Khung Hình Điện Ảnh:</strong> Trò chơi mặc định vận hành ở tỉ lệ chuẩn 16:9 điện ảnh sắc nét cao cấp.</li>
             <li><strong>Toàn Màn Hình:</strong> Phóng to toàn màn hình trình duyệt để ngắm trọn vẹn cảnh trà.</li>
             <li><strong>Sao Lưu:</strong> Xuất file JSON để gửi ban tổ chức gộp lại hoặc nhập file lời chúc từ đồng đội.</li>
             <li><strong>Tua Nhanh:</strong> Bỏ qua nhanh lời thoại của người dẫn chuyện khi muốn đi tiếp.</li>
@@ -788,6 +979,10 @@
           <span id="minigame-gate-msg">Vượt qua thử thách để mở cổng bước vào cõi trà!</span>
         </div>
         <div class="minigame-footer-actions">
+          <button type="button" class="pixel-btn secondary" id="btn-skip-minigame">
+            <svg class="zen-btn-icon"><use href="#zen-close"></use></svg>
+            <span>Khép Lại / Bỏ Qua</span>
+          </button>
           <button type="button" class="pixel-btn secondary" id="btn-restart-minigame">
             <span>Chơi Lại</span>
           </button>
@@ -800,11 +995,11 @@
   </div>
 
   <!-- Audio elements & Scripts -->
-  <script src="audio.js?v=1.2"></script>
-  <script src="data.js?v=1.2"></script>
-  <script src="sprites.js?v=1.2"></script>
-  <script src="minigames.js?v=1.2"></script>
-  <script src="game.js?v=1.2"></script>
-  <script src="ui.js?v=1.3"></script>
+  <script src="audio.js?v=4.0"></script>
+  <script src="data.js?v=4.0"></script>
+  <script src="sprites.js?v=4.0"></script>
+  <script src="minigames.js?v=4.0"></script>
+  <script src="game.js?v=4.0"></script>
+  <script src="ui.js?v=4.0"></script>
 </body>
 </html>

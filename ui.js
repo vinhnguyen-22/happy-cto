@@ -7,8 +7,14 @@
 class UIManager {
   constructor() {
     this.currentDialogueQueue = [];
+    this.currentSentence = null;
     this.typingTimer = null;
     this.selectedImageData = null;
+    this.studioSelectedImageData = null;
+    this.studioSelectedBadge = '🎂';
+    this.selectedCardTheme = 'zen';
+    this.selectedCardBadge = '🎂';
+    this.selectedCardImageData = null;
     this.activeRealmForWish = 1;
     this.init();
   }
@@ -26,14 +32,16 @@ class UIManager {
     this.bindBackdropEvents();
     this.bindGlobalShortcuts();
     this.initPresetAvatars();
+    this.initCardPresetAvatars();
   }
 
   // --- 1. MÀN HÌNH CHÀO (MỞ CỔNG GỖ) ---
   bindIntroEvents() {
     const btnEnter = document.getElementById('btn-enter-realm');
+    const btnGuestbook = document.getElementById('btn-enter-guestbook');
     const introOverlay = document.getElementById('intro-overlay');
 
-    btnEnter.addEventListener('click', () => {
+    const handleEnterGame = (openGuestbook = false) => {
       // Khởi động Audio Engine & Unlock Media Videos
       window.gameAudio.init();
       window.gameAudio.playDoorOpen();
@@ -51,19 +59,62 @@ class UIManager {
         if (!window.gameEngine) {
           window.gameEngine = new GameEngine();
         }
+        if (openGuestbook) {
+          this.openGrandFinaleModal('cards');
+        }
       }, 700);
-    });
+    };
+
+    if (btnEnter) {
+      btnEnter.addEventListener('click', () => handleEnterGame(false));
+      btnEnter.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handleEnterGame(false);
+        }
+      });
+    }
+
+    if (btnGuestbook) {
+      btnGuestbook.addEventListener('click', () => handleEnterGame(true));
+      btnGuestbook.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handleEnterGame(true);
+        }
+      });
+    }
+
+    // Hỗ trợ tự động mở cổng nếu có query param (?mode=game hoặc ?tab=cards)
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('mode') === 'game' || window.location.hash === '#game') {
+      setTimeout(() => {
+        handleEnterGame(false);
+      }, 400);
+    } else if (urlParams.get('tab') === 'cards' || urlParams.get('mode') === 'cards') {
+      setTimeout(() => {
+        handleEnterGame(true);
+      }, 400);
+    }
   }
 
   // --- 2. THANH TIÊU ĐỀ TRÊN CÙNG (HUD) ---
   bindHeaderEvents() {
     const btnReturn = document.getElementById('btn-return-hub');
     const btnAudio = document.getElementById('btn-audio-toggle');
+    const btnWishStudio = document.getElementById('btn-open-wish-studio');
     const btnViewTree = document.getElementById('btn-view-tree');
     const btnBackup = document.getElementById('btn-backup-data');
     const btnAspect = document.getElementById('btn-aspect-toggle');
     const btnFullscreen = document.getElementById('btn-fullscreen-toggle');
     const btnHelp = document.getElementById('btn-help-guide');
+
+    if (btnWishStudio) {
+      btnWishStudio.addEventListener('click', () => {
+        window.gameAudio.playClick();
+        this.openWishStudio();
+      });
+    }
 
     if (btnAspect) {
       btnAspect.addEventListener('click', () => {
@@ -117,14 +168,16 @@ class UIManager {
     btnAudio.addEventListener('click', () => {
       const isPlaying = window.gameAudio.toggleMute();
       btnAudio.innerHTML = isPlaying 
-        ? '<svg class="zen-btn-icon"><use href="#zen-bell-on"></use></svg> <span>Nhạc Khúc: BẬT</span>' 
-        : '<svg class="zen-btn-icon"><use href="#zen-bell-off"></use></svg> <span>Nhạc Khúc: TẮT</span>';
+        ? '<svg class="zen-btn-icon"><use href="#zen-bell-on"></use></svg> <span>Nhạc Mario: BẬT</span>' 
+        : '<svg class="zen-btn-icon"><use href="#zen-bell-off"></use></svg> <span>Nhạc Mario: TẮT</span>';
     });
 
-    btnViewTree.addEventListener('click', () => {
-      window.gameAudio.playClick();
-      this.openGrandFinaleModal();
-    });
+    if (btnViewTree) {
+      btnViewTree.addEventListener('click', () => {
+        window.gameAudio.playClick();
+        this.openGrandFinaleModal('cards');
+      });
+    }
 
     btnBackup.addEventListener('click', () => {
       window.gameAudio.playClick();
@@ -153,8 +206,23 @@ class UIManager {
     });
   }
 
-  // --- 3. THANH 6 HỘP TRÀ DƯỚI ĐÁY ---
+  // --- 3. THANH 6 HỘP TRÀ DỌC (SIDEBAR ĐIỀU HƯỚNG) ---
   bindTeaBarEvents() {
+    const toggleBtn = document.getElementById('btn-toggle-tea-bar');
+    const teaBar = document.getElementById('tea-boxes-bar');
+    if (toggleBtn && teaBar) {
+      toggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        teaBar.classList.toggle('collapsed');
+        const isCollapsed = teaBar.classList.contains('collapsed');
+        toggleBtn.textContent = isCollapsed ? '▶' : '◀';
+        toggleBtn.title = isCollapsed ? 'Mở rộng thanh hộp trà' : 'Thu gọn thanh hộp trà';
+        if (window.gameAudio && window.gameAudio.playClick) {
+          window.gameAudio.playClick();
+        }
+      });
+    }
+
     document.querySelectorAll('.tea-card-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         window.gameAudio.playClick();
@@ -217,20 +285,25 @@ class UIManager {
     const btnNext = document.getElementById('dialogue-next-btn');
     const box = document.getElementById('dialogue-box');
 
-    if (this.typingTimer) {
+    // Nếu câu thoại đang chạy hiệu ứng gõ chữ -> Nhấn E / Click sẽ hiển thị ngay trọn vẹn câu
+    if (this.typingTimer && this.currentSentence) {
       clearInterval(this.typingTimer);
       this.typingTimer = null;
+      textEl.textContent = this.currentSentence;
+      return;
     }
 
     if (this.currentDialogueQueue.length === 0) {
       box.classList.add('hidden');
+      this.currentSentence = null;
       return;
     }
 
     const currentSentence = this.currentDialogueQueue.shift();
+    this.currentSentence = currentSentence;
     btnNext.innerHTML = (this.currentDialogueQueue.length > 0) 
-      ? '<span>Tiếp tục</span> <svg class="zen-btn-icon"><use href="#zen-next"></use></svg>' 
-      : '<span>Lĩnh Hội</span> <svg class="zen-btn-icon"><use href="#zen-check"></use></svg>';
+      ? '<span>Tiếp tục [E]</span> <svg class="zen-btn-icon"><use href="#zen-next"></use></svg>' 
+      : '<span>Lĩnh Hội [E]</span> <svg class="zen-btn-icon"><use href="#zen-check"></use></svg>';
 
     // Hiệu ứng gõ chữ từng ký tự (Typewriter effect)
     textEl.textContent = "";
@@ -368,32 +441,8 @@ class UIManager {
   }
 
   openAddWishModal(realmId) {
-    this.activeRealmForWish = realmId;
-    const realmData = REALMS_DATA[realmId];
-    const modal = document.getElementById('modal-wish');
-
-    const wishIconEl = document.getElementById('wish-target-icon');
-    if (realmData.assetIcon) {
-      wishIconEl.innerHTML = `<img src="${realmData.assetIcon}" class="modal-badge-img" alt="${realmData.name}">`;
-    } else {
-      wishIconEl.innerHTML = '<svg class="zen-badge-icon"><use href="#zen-tea-leaf"></use></svg>';
-    }
-
-    document.getElementById('modal-wish-title').textContent = `Gửi Lời Chúc Mừng Sinh Nhật CTO`;
-    document.getElementById('modal-wish-subtitle').textContent = `Lưu giữ thông điệp lên ${realmData.interactableName} (${realmData.name})`;
-
-    // Tự động chọn phòng ban tương ứng
-    const deptSelect = document.getElementById('wish-department');
-    if (deptSelect && realmData.department) {
-      for (let i = 0; i < deptSelect.options.length; i++) {
-        if (deptSelect.options[i].text.includes(realmData.name)) {
-          deptSelect.selectedIndex = i;
-          break;
-        }
-      }
-    }
-
-    modal.classList.add('active');
+    // Mở màn Ghi Lời Chúc Riêng phong cách Trà Quán & Super Mario
+    this.openWishStudio(realmId);
   }
 
   // --- 6. MODAL XEM CHI TIẾT LỜI CHÚC ---
@@ -427,15 +476,17 @@ class UIManager {
       });
     }
 
-    btnDelete.addEventListener('click', () => {
-      if (currentWishId && confirm("Bạn có chắc muốn xóa lời chúc này không?")) {
-        window.wishStorage.deleteWish(currentWishId);
-        modal.classList.remove('active');
-        if (window.gameEngine) {
-          window.gameEngine.refreshCurrentInteractables();
+    if (btnDelete) {
+      btnDelete.addEventListener('click', () => {
+        if (currentWishId && confirm("Bạn có chắc muốn xóa lời chúc này không?")) {
+          window.wishStorage.deleteWish(currentWishId);
+          modal.classList.remove('active');
+          if (window.gameEngine) {
+            window.gameEngine.refreshCurrentInteractables();
+          }
         }
-      }
-    });
+      });
+    }
 
     this.openViewWishModal = (wish) => {
       if (!wish) return;
@@ -484,84 +535,153 @@ class UIManager {
     };
   }
 
-  // --- 7. ĐẠI CẢNH CÂY TRÀ TRI THỨC & SỔ LƯU BÚT SINH NHẬT ---
+  // --- 7. ĐẠI CẢNH SỔ LƯU BÚT SINH NHẬT & CÂY TRÀ TRI THỨC ---
   bindGrandFinaleEvents() {
     const modal = document.getElementById('modal-grand-finale');
+    if (!modal) return;
     const btnClose = document.getElementById('btn-close-grand-modal');
     const btnFireworks = document.getElementById('btn-fireworks');
+    const btnFireworksWall = document.getElementById('btn-fireworks-wall');
     const filterDept = document.getElementById('book-filter-dept');
-
     const btnCloseFooter = document.getElementById('btn-close-grand-footer');
+    const btnQuickCreate = document.getElementById('btn-quick-goto-create');
 
-    btnClose.addEventListener('click', () => modal.classList.remove('active'));
+    if (btnClose) btnClose.addEventListener('click', () => modal.classList.remove('active'));
     if (btnCloseFooter) btnCloseFooter.addEventListener('click', () => modal.classList.remove('active'));
 
-    btnFireworks.addEventListener('click', () => {
+    const triggerFireworks = () => {
+      window.gameAudio.playFanfare();
       if (window.gameEngine) {
         window.gameEngine.spawnFireworks();
       }
-      modal.classList.remove('active');
-    });
+      this.spawnConfetti();
+    };
 
-    // Chuyển Tabs
+    if (btnFireworks) {
+      btnFireworks.addEventListener('click', () => {
+        triggerFireworks();
+        modal.classList.remove('active');
+      });
+    }
+
+    if (btnFireworksWall) {
+      btnFireworksWall.addEventListener('click', () => {
+        triggerFireworks();
+      });
+    }
+
+    // Nút chuyển nhanh sang Tab Soạn Thiệp từ Tab Show Thiệp
+    if (btnQuickCreate) {
+      btnQuickCreate.addEventListener('click', () => {
+        window.gameAudio.playClick();
+        this.switchGrandFinaleTab('create');
+      });
+    }
+
+    // Chuyển Tabs (cards / create / tree / message)
     document.querySelectorAll('.grand-tab-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         window.gameAudio.playClick();
         const tab = btn.dataset.tab;
-        document.querySelectorAll('.grand-tab-btn').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.grand-tab-panel').forEach(p => p.classList.remove('active'));
-
-        btn.classList.add('active');
-        const activePanel = document.getElementById(`tab-panel-${tab}`);
-        if (activePanel) activePanel.classList.add('active');
-
-        if (tab === 'book') {
-          this.renderScrapbook(filterDept.value);
-        }
+        this.switchGrandFinaleTab(tab);
       });
     });
 
-    filterDept.addEventListener('change', (e) => {
-      this.renderScrapbook(e.target.value);
-    });
+    if (filterDept) {
+      filterDept.addEventListener('change', (e) => {
+        this.renderScrapbook(e.target.value);
+      });
+    }
+
+    // Khởi tạo các sự kiện trong Xưởng Tạo Thiệp Tích Hợp (Tab 2)
+    this.bindIntegratedCardStudio();
   }
 
-  openGrandFinaleModal() {
+  switchGrandFinaleTab(tab = 'cards') {
+    document.querySelectorAll('.grand-tab-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.tab === tab);
+    });
+    document.querySelectorAll('.grand-tab-panel').forEach(p => {
+      p.classList.toggle('active', p.id === `tab-panel-${tab}`);
+    });
+
+    if (tab === 'cards') {
+      const filter = document.getElementById('book-filter-dept');
+      this.renderScrapbook(filter ? filter.value : 'all');
+    } else if (tab === 'create') {
+      this.updateIntegratedCardPreview();
+    }
+  }
+
+  openGrandFinaleModal(defaultTab = 'cards', realmId = null) {
     const modal = document.getElementById('modal-grand-finale');
-    const allWishes = window.wishStorage.getAllWishes();
-    document.getElementById('total-wishes-count').textContent = allWishes.length;
+    if (!modal) return;
+
+    modal.dataset.openedAt = String(Date.now());
+    const allWishes = window.wishStorage ? window.wishStorage.getAllWishes() : [];
+    const countEl = document.getElementById('total-wishes-count');
+    if (countEl) countEl.textContent = allWishes.length;
+
+    if (realmId !== null && realmId !== undefined) {
+      const realmSelect = document.getElementById('card-realm');
+      if (realmSelect) {
+        realmSelect.value = String(realmId);
+      }
+    }
+
+    this.switchGrandFinaleTab(defaultTab);
     modal.classList.add('active');
   }
 
   renderScrapbook(filterDept = "all") {
     const container = document.getElementById('scrapbook-container');
+    if (!container || !window.wishStorage) return;
     container.innerHTML = "";
 
     let wishes = window.wishStorage.getAllWishes();
     if (filterDept !== "all") {
-      wishes = wishes.filter(w => w.department.includes(filterDept) || (REALMS_DATA[w.realmId] && REALMS_DATA[w.realmId].department.includes(filterDept)));
+      wishes = wishes.filter(w => {
+        const realmData = REALMS_DATA[w.realmId];
+        return (w.department && w.department.toLowerCase().includes(filterDept.toLowerCase())) ||
+               (realmData && realmData.department && realmData.department.toLowerCase().includes(filterDept.toLowerCase())) ||
+               (realmData && realmData.name && realmData.name.toLowerCase().includes(filterDept.toLowerCase()));
+      });
     }
 
     if (wishes.length === 0) {
-      container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 30px; color: #888;">Chưa có lời chúc nào trong bộ phận này. Hãy là người đầu tiên gửi nhé!</div>`;
+      container.innerHTML = `
+        <div style="grid-column: 1/-1; text-align: center; padding: 40px 20px; color: #8d5b2d;">
+          <p style="font-size: 16px; font-weight: 700; margin-bottom: 8px;">Chưa có thiệp chúc nào trong cõi này.</p>
+          <p style="font-size: 13px; color: #5c3b1d;">Hãy bấm tab "✍️ Soạn & Tạo Thiệp Mới" để là người đầu tiên gửi lời chúc nhé! ✨</p>
+        </div>`;
       return;
     }
 
-    wishes.forEach(wish => {
+    const sorted = [...wishes].reverse();
+
+    sorted.forEach(wish => {
       const card = document.createElement('div');
       card.className = 'scrapbook-card';
       const realmData = REALMS_DATA[wish.realmId] || REALMS_DATA[1];
+      const badgeIcon = wish.badge || '🎂';
+      const author = wish.author || 'Đồng Đội';
+      const dept = wish.department || realmData.department;
+      const message = wish.message || '';
 
       card.innerHTML = `
         <div class="sb-top">
           <span class="sb-author">
-            ${realmData.assetIcon ? `<img src="${realmData.assetIcon}" class="sb-realm-thumb" alt="${realmData.name}">` : ''}
-            ${wish.author}
+            <span style="font-size: 18px; margin-right: 4px;">${badgeIcon}</span>
+            ${author}
           </span>
-          <span class="sb-dept">${wish.department}</span>
+          <span class="sb-dept">${dept}</span>
         </div>
-        <div class="sb-text">"${wish.message}"</div>
+        <div class="sb-text">"${message}"</div>
         ${wish.image ? `<img class="sb-thumb" src="${wish.image}" alt="Ảnh kỷ niệm">` : ''}
+        <div class="sb-footer">
+          <span class="sb-pill" style="color: ${realmData.color || '#784212'}">◈ ${realmData.name}</span>
+          <span class="sb-view-btn">Chi tiết 🔍</span>
+        </div>
       `;
 
       card.addEventListener('click', () => {
@@ -649,6 +769,443 @@ class UIManager {
     if (modal) modal.classList.add('active');
   }
 
+  // --- XƯỞNG SOẠN & TẠO THIỆP SINH NHẬT TÍCH HỢP (TAB 2 TRONG SỔ LƯU BÚT) ---
+  bindIntegratedCardStudio() {
+    // 1. Theme selection (Zen / Mario / Cyber)
+    document.querySelectorAll('.theme-options .theme-opt-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (window.gameAudio) window.gameAudio.playJump();
+        document.querySelectorAll('.theme-options .theme-opt-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        this.selectedCardTheme = btn.dataset.theme || 'zen';
+        this.updateIntegratedCardPreview();
+      });
+    });
+
+    // 2. Badge selection
+    document.querySelectorAll('#studio-badge-picker .ws-badge-opt').forEach(opt => {
+      opt.addEventListener('click', () => {
+        if (window.gameAudio) window.gameAudio.playCoin();
+        document.querySelectorAll('#studio-badge-picker .ws-badge-opt').forEach(o => o.classList.remove('active'));
+        opt.classList.add('active');
+        this.selectedCardBadge = opt.dataset.icon || '🎂';
+        this.updateIntegratedCardPreview();
+      });
+    });
+
+    // 3. Quick template chips
+    document.querySelectorAll('#tab-panel-create .ws-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        if (window.gameAudio) window.gameAudio.playPowerup();
+        const msgTextarea = document.getElementById('card-message');
+        if (msgTextarea) {
+          msgTextarea.value = chip.dataset.text || '';
+          this.updateIntegratedCardPreview();
+          msgTextarea.focus();
+        }
+      });
+    });
+
+    // 4. Live sync inputs
+    const authorInput = document.getElementById('card-author');
+    const realmSelect = document.getElementById('card-realm');
+    const msgTextarea = document.getElementById('card-message');
+
+    if (authorInput) authorInput.addEventListener('input', () => this.updateIntegratedCardPreview());
+    if (realmSelect) realmSelect.addEventListener('change', () => this.updateIntegratedCardPreview());
+    if (msgTextarea) msgTextarea.addEventListener('input', () => this.updateIntegratedCardPreview());
+
+    // 5. Image upload zone
+    const uploadZone = document.getElementById('card-upload-zone');
+    const fileInput = document.getElementById('card-image-file');
+    const btnRemoveImg = document.getElementById('card-btn-remove-image');
+
+    if (uploadZone && fileInput) {
+      uploadZone.addEventListener('click', (e) => {
+        if (e.target !== btnRemoveImg && !e.target.closest('#card-btn-remove-image')) {
+          fileInput.click();
+        }
+      });
+
+      fileInput.addEventListener('change', (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (file) {
+          this.handleCardImageFile(file);
+        }
+      });
+    }
+
+    if (btnRemoveImg) {
+      btnRemoveImg.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.clearCardSelectedImage();
+      });
+    }
+
+    // 6. Submit form (Gửi thiệp vào Sổ Lưu Bút)
+    const form = document.getElementById('integrated-card-form');
+    if (form) {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const author = authorInput ? authorInput.value.trim() : '';
+        const realmId = realmSelect ? Number(realmSelect.value) : 1;
+        const msg = msgTextarea ? msgTextarea.value.trim() : '';
+        if (!author || !msg) {
+          alert("Vui lòng nhập tên người gửi và nội dung lời chúc!");
+          return;
+        }
+
+        const realmData = REALMS_DATA[realmId] || REALMS_DATA[1];
+
+        window.wishStorage.addWish({
+          realmId: realmId,
+          author: author,
+          department: realmData.department,
+          badge: this.selectedCardBadge || '🎂',
+          message: msg,
+          image: this.selectedCardImageData || realmData.assetIcon || (typeof PRESET_AVATARS !== 'undefined' ? PRESET_AVATARS[0].data : '')
+        });
+
+        if (window.gameAudio) {
+          window.gameAudio.playCoin();
+          setTimeout(() => window.gameAudio.playFanfare(), 250);
+        }
+
+        if (window.gameEngine) {
+          window.gameEngine.spawnFireworks();
+          window.gameEngine.refreshCurrentInteractables();
+        }
+        this.spawnConfetti();
+
+        // Reset form
+        form.reset();
+        this.clearCardSelectedImage();
+
+        const countEl = document.getElementById('total-wishes-count');
+        if (countEl && window.wishStorage) {
+          countEl.textContent = window.wishStorage.getAllWishes().length;
+        }
+
+        // Tự động chuyển ngay sang Tab Show Thiệp để chiêm ngưỡng
+        this.switchGrandFinaleTab('cards');
+      });
+    }
+
+    // 7. Download PNG
+    const btnDownload = document.getElementById('btn-download-card-png');
+    if (btnDownload) {
+      btnDownload.addEventListener('click', () => {
+        this.exportCardImage();
+      });
+    }
+
+    // 8. Reset form
+    const btnReset = document.getElementById('btn-reset-card-form');
+    if (btnReset && form) {
+      btnReset.addEventListener('click', () => {
+        if (confirm("Làm mới lại toàn bộ khung thiệp?")) {
+          form.reset();
+          this.clearCardSelectedImage();
+          this.updateIntegratedCardPreview();
+        }
+      });
+    }
+  }
+
+  updateIntegratedCardPreview() {
+    const authorVal = (document.getElementById('card-author')?.value || '').trim();
+    const realmVal = Number(document.getElementById('card-realm')?.value || 1);
+    const msgVal = (document.getElementById('card-message')?.value || '').trim();
+
+    const realmData = REALMS_DATA[realmVal] || REALMS_DATA[1];
+
+    const liveFrame = document.getElementById('live-card-frame');
+    if (liveFrame) {
+      liveFrame.className = `live-card-frame theme-${this.selectedCardTheme || 'zen'}`;
+    }
+
+    const previewAuthor = document.getElementById('live-author');
+    const previewDept = document.getElementById('live-dept');
+    const previewText = document.getElementById('live-msg');
+    const previewBadge = document.getElementById('live-badge');
+    const previewDate = document.getElementById('live-date');
+    const previewRealmTag = document.getElementById('live-realm-tag');
+    const previewImgWrap = document.getElementById('live-img-wrap');
+    const previewImg = document.getElementById('live-img');
+
+    if (previewAuthor) previewAuthor.textContent = authorVal || "Tên Người Gửi / Đội Ngũ";
+    if (previewDept) previewDept.textContent = `${realmData.name} • ${realmData.department}`;
+    if (previewText) previewText.textContent = msgVal ? `"${msgVal}"` : `"Lời chúc của bạn sẽ xuất hiện sống động tại đây..."`;
+    if (previewBadge) previewBadge.textContent = this.selectedCardBadge || '🎂';
+    if (previewDate) previewDate.textContent = new Date().toLocaleDateString('vi-VN');
+    if (previewRealmTag) previewRealmTag.textContent = realmData.name;
+
+    if (previewImgWrap && previewImg) {
+      if (this.selectedCardImageData) {
+        previewImg.src = this.selectedCardImageData;
+        previewImgWrap.style.display = 'block';
+      } else {
+        previewImgWrap.style.display = 'none';
+      }
+    }
+  }
+
+  handleCardImageFile(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const maxDim = 500;
+        let w = img.width;
+        let h = img.height;
+        if (w > maxDim || h > maxDim) {
+          if (w > h) { h = (h / w) * maxDim; w = maxDim; }
+          else { w = (w / h) * maxDim; h = maxDim; }
+        }
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        const optimized = canvas.toDataURL('image/jpeg', 0.8);
+        this.setCardSelectedImage(optimized);
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  setCardSelectedImage(dataUrl) {
+    this.selectedCardImageData = dataUrl;
+    const prompt = document.getElementById('card-upload-prompt');
+    const container = document.getElementById('card-preview-container');
+    const img = document.getElementById('card-image-preview');
+    if (prompt) prompt.style.display = 'none';
+    if (container && img) {
+      img.src = dataUrl;
+      container.style.display = 'flex';
+    }
+    this.updateIntegratedCardPreview();
+  }
+
+  clearCardSelectedImage() {
+    this.selectedCardImageData = null;
+    const prompt = document.getElementById('card-upload-prompt');
+    const container = document.getElementById('card-preview-container');
+    const fileInput = document.getElementById('card-image-file');
+    if (prompt) prompt.style.display = 'flex';
+    if (container) container.style.display = 'none';
+    if (fileInput) fileInput.value = '';
+    document.querySelectorAll('#card-preset-avatars .preset-avatar-btn').forEach(c => c.classList.remove('selected'));
+    this.updateIntegratedCardPreview();
+  }
+
+  initCardPresetAvatars() {
+    const container = document.getElementById('card-preset-avatars');
+    if (!container || typeof PRESET_AVATARS === 'undefined') return;
+    container.innerHTML = "";
+    PRESET_AVATARS.forEach((p) => {
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'preset-avatar-btn';
+      chip.innerHTML = `<img src="${p.data}" alt="${p.name}"><span>${p.name}</span>`;
+      chip.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (window.gameAudio) window.gameAudio.playClick();
+        container.querySelectorAll('.preset-avatar-btn').forEach(c => c.classList.remove('selected'));
+        chip.classList.add('selected');
+        this.setCardSelectedImage(p.data);
+      });
+      container.appendChild(chip);
+    });
+  }
+
+  exportCardImage() {
+    if (window.gameAudio) window.gameAudio.playWishSaved();
+
+    const author = (document.getElementById('card-author')?.value || 'Đồng Đội Khối Công Nghệ').trim();
+    const realmId = Number(document.getElementById('card-realm')?.value || 1);
+    const msg = (document.getElementById('card-message')?.value || 'Chúc mừng sinh nhật CTO!').trim();
+    const realmData = REALMS_DATA[realmId] || REALMS_DATA[1];
+
+    const canvas = document.createElement('canvas');
+    canvas.width = 1200;
+    canvas.height = 800;
+    const ctx = canvas.getContext('2d');
+
+    // 1. Vẽ nền theo theme
+    if (this.selectedCardTheme === 'mario') {
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, 800);
+      skyGrad.addColorStop(0, '#5c94fc');
+      skyGrad.addColorStop(0.65, '#8ab4f8');
+      skyGrad.addColorStop(0.65, '#e74c3c');
+      skyGrad.addColorStop(1, '#c0392b');
+      ctx.fillStyle = skyGrad;
+      ctx.fillRect(0, 0, 1200, 800);
+
+      ctx.lineWidth = 16;
+      ctx.strokeStyle = '#000';
+      ctx.strokeRect(8, 8, 1184, 784);
+      ctx.lineWidth = 8;
+      ctx.strokeStyle = '#ffd700';
+      ctx.strokeRect(20, 20, 1160, 760);
+    } else if (this.selectedCardTheme === 'cyber') {
+      const cybGrad = ctx.createLinearGradient(0, 0, 1200, 800);
+      cybGrad.addColorStop(0, '#0b132b');
+      cybGrad.addColorStop(0.5, '#1c2541');
+      cybGrad.addColorStop(1, '#0b132b');
+      ctx.fillStyle = cybGrad;
+      ctx.fillRect(0, 0, 1200, 800);
+
+      ctx.lineWidth = 8;
+      ctx.strokeStyle = '#48cae4';
+      ctx.strokeRect(16, 16, 1168, 768);
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = '#ffd700';
+      ctx.strokeRect(26, 26, 1148, 748);
+    } else {
+      // Zen Golden Wood
+      const zenGrad = ctx.createLinearGradient(0, 0, 1200, 800);
+      zenGrad.addColorStop(0, '#fce4b8');
+      zenGrad.addColorStop(0.5, '#f4d39c');
+      zenGrad.addColorStop(1, '#e6ba68');
+      ctx.fillStyle = zenGrad;
+      ctx.fillRect(0, 0, 1200, 800);
+
+      ctx.lineWidth = 14;
+      ctx.strokeStyle = '#784212';
+      ctx.strokeRect(10, 10, 1180, 780);
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = '#ffd700';
+      ctx.strokeRect(24, 24, 1152, 752);
+
+      // Red hanging cord
+      ctx.fillStyle = '#c0392b';
+      ctx.fillRect(594, 24, 12, 40);
+      ctx.beginPath();
+      ctx.arc(600, 68, 14, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // 2. Tiêu đề thiệp
+    ctx.fillStyle = (this.selectedCardTheme === 'zen') ? '#512e16' : '#ffd700';
+    ctx.font = 'bold 34px "Cinzel", serif, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('✦ ĐẠI LỄ MỪNG SINH NHẬT CTO 2026 ✦', 600, 120);
+
+    // Huy hiệu & Tên người gửi
+    ctx.font = '54px sans-serif';
+    ctx.fillText(this.selectedCardBadge || '🎂', 600, 190);
+
+    ctx.font = 'bold 36px "Noto Serif TC", serif, sans-serif';
+    ctx.fillStyle = (this.selectedCardTheme === 'zen') ? '#3d1a04' : '#ffffff';
+    ctx.fillText(author, 600, 245);
+
+    ctx.font = '22px "Noto Serif TC", serif, sans-serif';
+    ctx.fillStyle = (this.selectedCardTheme === 'zen') ? '#784212' : '#ffd700';
+    ctx.fillText(`${realmData.name} • ${realmData.department}`, 600, 280);
+
+    // Đường gạch ngang
+    ctx.strokeStyle = (this.selectedCardTheme === 'zen') ? 'rgba(120, 66, 18, 0.4)' : 'rgba(255, 215, 0, 0.4)';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([8, 8]);
+    ctx.beginPath();
+    ctx.moveTo(200, 310);
+    ctx.lineTo(1000, 310);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // 3. Lời chúc nhiều dòng (Word Wrap)
+    ctx.font = 'italic 28px "Noto Serif TC", serif, sans-serif';
+    ctx.fillStyle = (this.selectedCardTheme === 'zen') ? '#2b170c' : '#ffffff';
+    ctx.textAlign = 'center';
+
+    const maxLineW = 900;
+    const words = `"${msg}"`.split(' ');
+    let line = '';
+    let startY = 370;
+    for (let n = 0; n < words.length; n++) {
+      const testLine = line + words[n] + ' ';
+      const metrics = ctx.measureText(testLine);
+      if (metrics.width > maxLineW && n > 0) {
+        ctx.fillText(line, 600, startY);
+        line = words[n] + ' ';
+        startY += 44;
+      } else {
+        line = testLine;
+      }
+    }
+    ctx.fillText(line, 600, startY);
+
+    // 4. Dấu mộc đỏ & Ngày tháng
+    ctx.textAlign = 'left';
+    ctx.font = '20px "Noto Serif TC", sans-serif';
+    ctx.fillStyle = (this.selectedCardTheme === 'zen') ? '#784212' : '#ffd700';
+    ctx.fillText(`Ngày gửi: ${new Date().toLocaleDateString('vi-VN')}`, 100, 740);
+
+    // Con dấu đỏ 'Chúc'
+    ctx.strokeStyle = '#c0392b';
+    ctx.fillStyle = '#c0392b';
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.arc(1100, 720, 36, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.textAlign = 'center';
+    ctx.font = 'bold 34px "Noto Serif TC", serif';
+    ctx.fillText('祝', 1100, 732);
+
+    const triggerDownload = () => {
+      const link = document.createElement('a');
+      link.download = `Thiep_Mung_Sinh_Nhat_CTO_${author.replace(/[^a-zA-Z0-9]/g, '_')}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    };
+
+    if (this.selectedCardImageData) {
+      const img = new Image();
+      img.onload = () => {
+        const imgW = 200;
+        const imgH = 130;
+        const imgX = (1200 - imgW) / 2;
+        const imgY = Math.min(startY + 20, 580);
+        ctx.save();
+        ctx.strokeStyle = (this.selectedCardTheme === 'zen') ? '#784212' : '#ffd700';
+        ctx.lineWidth = 4;
+        ctx.strokeRect(imgX, imgY, imgW, imgH);
+        ctx.drawImage(img, imgX, imgY, imgW, imgH);
+        ctx.restore();
+        triggerDownload();
+      };
+      img.onerror = () => triggerDownload();
+      img.src = this.selectedCardImageData;
+    } else {
+      triggerDownload();
+    }
+  }
+
+  spawnConfetti() {
+    const colors = ['#ffd700', '#e74c3c', '#0984e3', '#2ecc71', '#f1c40f', '#9b59b6'];
+    for (let i = 0; i < 60; i++) {
+      const conf = document.createElement('div');
+      conf.className = 'confetti';
+      conf.style.left = Math.random() * window.innerWidth + 'px';
+      conf.style.top = '-20px';
+      conf.style.width = 8 + Math.random() * 10 + 'px';
+      conf.style.height = 8 + Math.random() * 10 + 'px';
+      conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+      conf.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      document.body.appendChild(conf);
+
+      setTimeout(() => {
+        conf.remove();
+      }, 2500);
+    }
+  }
+
+  openWishStudio(realmId = null) {
+    this.openGrandFinaleModal('create', realmId);
+  }
+
   // --- 10. ĐÓNG MODAL KHI CLICK RA NGOÀI (BACKDROP) ---
   bindBackdropEvents() {
     document.querySelectorAll('.custom-modal').forEach(modal => {
@@ -660,12 +1217,11 @@ class UIManager {
         }
 
         if (e.target === modal || e.target.classList.contains('modal-backdrop')) {
-          // Nếu là modal thử thách và chưa chiến thắng -> Không cho phép đóng!
-          if (modal.id === 'modal-minigame' && window.miniGameManager && !window.miniGameManager.gameWon) {
-            window.miniGameManager.shakeGateHint();
-            return;
+          if (modal.id === 'modal-minigame' && window.miniGameManager) {
+            window.miniGameManager.closeGame();
+          } else {
+            modal.classList.remove('active');
           }
-          modal.classList.remove('active');
         }
       });
     });
@@ -678,12 +1234,11 @@ class UIManager {
         const activeModals = document.querySelectorAll('.custom-modal.active');
         if (activeModals.length > 0) {
           activeModals.forEach(m => {
-            // Nếu là modal thử thách và chưa qua màn -> Chặn phím ESC
-            if (m.id === 'modal-minigame' && window.miniGameManager && !window.miniGameManager.gameWon) {
-              window.miniGameManager.shakeGateHint();
-              return;
+            if (m.id === 'modal-minigame' && window.miniGameManager) {
+              window.miniGameManager.closeGame();
+            } else {
+              m.classList.remove('active');
             }
-            m.classList.remove('active');
           });
           window.gameAudio.playClick();
           e.preventDefault();
