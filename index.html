@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Lục Trà Cảnh Giới – Chúc Mừng Sinh Nhật CTO</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Noto+Serif+TC:wght@400;600;700&family=VT323&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="stylesheet" href="style.css?v=1.2">
+</head>
+<body>
+  <!-- KHO ICON SVG CỔ PHONG (ZEN TEA SVG SPRITES) -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="display:none;" id="zen-svg-definitions">
+    <symbol id="zen-pavilion" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M2 10C5 8 8 6 12 6s7 2 10 4"/>
+      <path d="M4 10v9M20 10v9"/>
+      <path d="M8 10v9M16 10v9"/>
+      <path d="M1 19h22"/>
+      <path d="M12 2v4"/>
+      <path d="M9 13h6"/>
+    </symbol>
+    <symbol id="zen-aspect-169" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2" y="5" width="20" height="14" rx="2"/>
+      <path d="M7 15V9h2"/>
+      <path d="M14 9v6h3"/>
+      <circle cx="11.5" cy="12" r="0.8" fill="currentColor"/>
+    </symbol>
+    <symbol id="zen-fullscreen-enter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>
+    </symbol>
+    <symbol id="zen-fullscreen-exit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/>
+    </symbol>
+    <symbol id="zen-scroll" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M19 17V5a2 2 0 0 0-2-2H4"/>
+      <path d="M8 21h11a2 2 0 0 0 2-2v-2H6a2 2 0 0 0-2 2c0 1.1.9 2 2 2h2z"/>
+      <path d="M4 5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5z"/>
+      <path d="M8 8h7M8 12h5"/>
+    </symbol>
+    <symbol id="zen-tree-guestbook" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 22v-6"/>
+      <path d="M8 22h8"/>
+      <path d="M12 16c-3 0-5-2-5-5 0-3 2-4 5-8 3 4 5 5 5 8 0 3-2 5-5 5z"/>
+      <path d="M9 13c-2-1-3-3-3-4M15 13c2-1 3-3 3-4"/>
+    </symbol>
+    <symbol id="zen-bell-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+      <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+      <path d="M2 8c.5-1.5 1.5-2.5 3-3M22 8c-.5-1.5-1.5-2.5-3-3"/>
+    </symbol>
+    <symbol id="zen-bell-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+      <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+      <line x1="2" y1="2" x2="22" y2="22" stroke-width="2"/>
+    </symbol>
+    <symbol id="zen-casket" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="6" width="18" height="14" rx="2"/>
+      <path d="M3 11h18"/>
+      <path d="M12 11v3"/>
+      <circle cx="12" cy="14" r="1.5" fill="currentColor"/>
+      <path d="M7 6V4a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v2"/>
+    </symbol>
+    <symbol id="zen-return" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9 14L4 9l5-5"/>
+      <path d="M4 9h11a5 5 0 0 1 5 5v5"/>
+    </symbol>
+    <symbol id="zen-skip" viewBox="0 0 24 24" fill="currentColor">
+      <polygon points="4 5 13 12 4 19 4 5"/>
+      <polygon points="12 5 21 12 12 19 12 5"/>
+    </symbol>
+    <symbol id="zen-next" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="9 18 15 12 9 6"/>
+    </symbol>
+    <symbol id="zen-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="18" y1="6" x2="6" y2="18"/>
+      <line x1="6" y1="6" x2="18" y2="18"/>
+    </symbol>
+    <symbol id="zen-firework" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 2v5M12 17v5M2 12h5M17 12h5"/>
+      <path d="M4.93 4.93l3.54 3.54M15.54 15.54l3.53 3.53M4.93 19.07l3.54-3.54M15.54 8.46l3.53-3.53"/>
+      <circle cx="12" cy="12" r="2" fill="currentColor"/>
+    </symbol>
+    <symbol id="zen-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="9" y="9" width="12" height="12" rx="2"/>
+      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+    </symbol>
+    <symbol id="zen-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="3 6 5 6 21 6"/>
+      <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+      <path d="M10 11v6M14 11v6"/>
+      <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+    </symbol>
+    <symbol id="zen-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="20 6 9 17 4 12"/>
+    </symbol>
+    <symbol id="zen-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+      <circle cx="12" cy="13" r="4"/>
+    </symbol>
+    <symbol id="zen-tea-leaf" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 21c6-1 14-6 16-16-10 2-15 10-16 16z" fill="rgba(46, 204, 113, 0.2)"/>
+      <path d="M3 21c4-5 9-9 16-16"/>
+      <path d="M9 15c2-1 4-1 6-2"/>
+    </symbol>
+    <symbol id="zen-crown" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 18h18l-2-10-5 5-2-8-2 8-5-5-2 10z"/>
+      <circle cx="12" cy="5" r="1.2" fill="currentColor"/>
+      <circle cx="4" cy="9" r="1.2" fill="currentColor"/>
+      <circle cx="20" cy="9" r="1.2" fill="currentColor"/>
+    </symbol>
+    <symbol id="zen-export" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+      <polyline points="17 8 12 3 7 8"/>
+      <line x1="12" y1="3" x2="12" y2="15"/>
+    </symbol>
+    <symbol id="zen-import" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+      <polyline points="7 10 12 15 17 10"/>
+      <line x1="12" y1="15" x2="12" y2="3"/>
+    </symbol>
+    <symbol id="zen-brush-pen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 2l4 4-14 14H4v-4L18 2z"/>
+      <path d="M14 6l4 4"/>
+    </symbol>
+  </svg>
+
+  <!-- Màn hình chào / Nhập môn Trà Điện -->
+  <div id="intro-overlay" class="intro-overlay">
+    <div class="intro-doors">
+      <div class="door door-left"></div>
+      <div class="door door-right"></div>
+    </div>
+    <div class="intro-content">
+      <div class="tea-badge">✦ ĐẠI LỄ MỪNG SINH NHẬT CTO ✦</div>
+      <h1 class="intro-title">LỤC TRÀ CẢNH GIỚI</h1>
+      <p class="intro-subtitle">Hành Trình Từ Dữ Liệu Đến Trí Tuệ</p>
+      
+      <div class="quote-box">
+        <p class="quote-text">
+          "Công nghệ cũng giống như trà. Muốn có một chén trà ngon phải đi qua gieo trồng, chăm sóc, bảo vệ, chế tác và thưởng thức.<br>
+          Muốn tạo nên tri thức doanh nghiệp cũng phải đi qua một hành trình tương tự."
+        </p>
+      </div>
+
+      <div class="intro-guide-bubble">
+        <img src="assets/01_Characters/portrait_tea_master.png" alt="Trà Tiên" class="guide-avatar-img">
+        <div class="guide-speech">
+          <strong>Trà Tiên dẫn chuyện:</strong><br>
+          "Kính mời Quý khách bước vào Lục Trà Cảnh Giới. Hãy cùng bước qua cánh cửa gỗ, thưởng thức sáu danh trà và để lại những lời chúc ý nghĩa nhất gửi đến người Thuyền Trưởng công nghệ!"
+        </div>
+      </div>
+
+      <button id="btn-enter-realm" class="pixel-btn enter-btn">
+        <svg class="zen-btn-icon"><use href="#zen-pavilion"></use></svg>
+        <span>BƯỚC VÀO TRÀ ĐIỆN NHẤT TÂM</span>
+      </button>
+      <div class="audio-hint">※ Bật âm thanh để trải nghiệm trọn vẹn không gian thiền trà & thư giãn</div>
+    </div>
+  </div>
+
+  <!-- Game Container -->
+  <div id="game-container" class="game-container">
+    <!-- Video nền động hoạt họa cho Trà Điện Nhất Tâm và 6 Cõi Trà -->
+    <div id="realm-videos-container" style="position: absolute; width: 1px; height: 1px; overflow: hidden; opacity: 0; pointer-events: none; z-index: -1;">
+      <video id="vid_realm0" src="assets/02_Tea_Temple_Hub/bg_hub_tea_temple.mp4" loop muted playsinline webkit-playsinline preload="auto"></video>
+      <video id="vid_realm1" src="assets/03_Six_Tea_Realms/bg_realm1_pho_nhi.mp4" loop muted playsinline webkit-playsinline preload="auto"></video>
+      <video id="vid_realm2" src="assets/03_Six_Tea_Realms/bg_realm2_ngoc_lo.mp4" loop muted playsinline webkit-playsinline preload="auto"></video>
+      <video id="vid_realm3" src="assets/03_Six_Tea_Realms/bg_realm3_ban_tra.mp4" loop muted playsinline webkit-playsinline preload="auto"></video>
+      <video id="vid_realm4" src="assets/03_Six_Tea_Realms/bg_realm4_quan_am.mp4" loop muted playsinline webkit-playsinline preload="auto"></video>
+      <video id="vid_realm5" src="assets/03_Six_Tea_Realms/bg_realm5_tien_tra.mp4" loop muted playsinline webkit-playsinline preload="auto"></video>
+      <video id="vid_realm6" src="assets/03_Six_Tea_Realms/bg_realm6_mat_tra.mp4" loop muted playsinline webkit-playsinline preload="auto"></video>
+    </div>
+
+    <!-- Canvas chính vẽ thế giới Pixel Art & Hiệu ứng -->
+    <canvas id="gameCanvas"></canvas>
+
+    <!-- Thanh trạng thái trên đỉnh (HUD) -->
+    <header class="game-header">
+      <div class="realm-badge" id="current-realm-badge">
+        <span class="realm-icon">
+          <svg class="zen-badge-icon"><use href="#zen-pavilion"></use></svg>
+        </span>
+        <div class="realm-info">
+          <span class="realm-name" id="realm-title-text">TRÀ ĐIỆN NHẤT TÂM</span>
+          <span class="realm-sub" id="realm-sub-text">Cội Nguồn Hệ Sinh Thái Số</span>
+        </div>
+      </div>
+
+      <!-- Dãy Lục Trà Tinh Hoa (Essences Tracker) -->
+      <div class="essences-tracker" id="hud-essences-tracker" title="Lục Trà Tinh Hoa: Thu thập từ các thử thách cõi trà">
+        <span class="essences-title">✦ TINH HOA:</span>
+        <div class="essences-list" id="hud-essences-list">
+          <span class="essence-slot" data-realm="1" title="Cõi 1: Cổ Mạch Phổ Nhĩ (Hạ tầng - Ping < 1ms)">🍂</span>
+          <span class="essence-slot" data-realm="2" title="Cõi 2: Thiên Công Ngọc Lộ (Phát triển - 0 Bug)">🍃</span>
+          <span class="essence-slot" data-realm="3" title="Cõi 3: Trường Lưu Ban Trà (Vận hành - 99.999%)">🌸</span>
+          <span class="essence-slot" data-realm="4" title="Cõi 4: Huyền Giáp Quan Âm (An ninh)">🛡️</span>
+          <span class="essence-slot" data-realm="5" title="Cõi 5: Vân Hành Tiên Trà (Triển khai)">🕊️</span>
+          <span class="essence-slot" data-realm="6" title="Cõi 6: Tuyết Tâm Mạt Trà (Insight)">🍁</span>
+        </div>
+      </div>
+
+      <div class="header-controls">
+        <button id="btn-realm-challenge" class="hud-btn challenge-btn" title="Khai mở thử thách công nghệ của cõi này" style="display: none;">
+          <span class="challenge-icon">🎮</span>
+          <span id="btn-challenge-text">Thử Thách Cõi Này</span>
+        </button>
+        <button id="btn-aspect-toggle" class="hud-btn" title="Chuyển đổi Khung hình chuẩn 16:9 / Toàn màn hình">
+          <svg class="zen-btn-icon"><use href="#zen-aspect-169"></use></svg>
+          <span>Khung: 16:9</span>
+        </button>
+        <button id="btn-fullscreen-toggle" class="hud-btn" title="Bật/Tắt chế độ Toàn Màn Hình trình duyệt">
+          <svg class="zen-btn-icon"><use href="#zen-fullscreen-enter"></use></svg>
+          <span>Toàn Màn Hình</span>
+        </button>
+        <button id="btn-help-guide" class="hud-btn" title="Xem Hướng dẫn trải nghiệm & Bối cảnh Lục Trà">
+          <svg class="zen-btn-icon"><use href="#zen-scroll"></use></svg>
+          <span>Điển Tịch</span>
+        </button>
+        <button id="btn-view-tree" class="hud-btn" title="Xem Cây Trà Tri Thức & Sổ Lưu Bút Sinh Nhật">
+          <svg class="zen-btn-icon"><use href="#zen-tree-guestbook"></use></svg>
+          <span>Cây Tri Thức & Lưu Bút</span>
+        </button>
+        <button id="btn-audio-toggle" class="hud-btn" title="Bật/Tắt Nhạc thiền trà">
+          <svg class="zen-btn-icon"><use href="#zen-bell-on"></use></svg>
+          <span>Nhạc Khúc: BẬT</span>
+        </button>
+        <button id="btn-backup-data" class="hud-btn" title="Xuất / Nhập Lời Chúc">
+          <svg class="zen-btn-icon"><use href="#zen-casket"></use></svg>
+          <span>Sao Lưu</span>
+        </button>
+        <button id="btn-return-hub" class="hud-btn return-btn" title="Quay lại Trà Điện Nhất Tâm" style="display: none;">
+          <svg class="zen-btn-icon"><use href="#zen-return"></use></svg>
+          <span>Về Trà Điện</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Mini map / Hướng dẫn điều khiển -->
+    <div class="controls-guide">
+      <span class="guide-key">W A S D</span> / <span class="guide-key">Click</span> để bước tới • Đến gần Hộp Trà hoặc Vật Thể nhấn <span class="guide-key">E</span> hoặc chạm để mở cõi & gửi lời chúc
+    </div>
+
+    <!-- Nút điều khiển ảo cho Mobile -->
+    <div id="virtual-dpad" class="virtual-dpad">
+      <button class="dpad-btn up" data-dir="up">▲</button>
+      <button class="dpad-btn left" data-dir="left">◀</button>
+      <button class="dpad-btn right" data-dir="right">▶</button>
+      <button class="dpad-btn down" data-dir="down">▼</button>
+    </div>
+
+    <!-- Nút tương tác nhanh cho Mobile / Màn hình cảm ứng -->
+    <button type="button" id="virtual-action-btn" class="virtual-action-btn" title="Tương tác [E] / Lĩnh hội">
+      <span class="v-btn-badge">E</span>
+      <span class="v-btn-label">TƯƠNG TÁC</span>
+    </button>
+
+    <!-- Hộp thoại Người Dẫn Chuyện (Stardew Valley Dialogue Box) -->
+    <div id="dialogue-box" class="dialogue-box hidden">
+      <div class="narrator-portrait">
+        <div class="portrait-frame">
+          <canvas id="portraitCanvas" width="96" height="96"></canvas>
+        </div>
+        <div class="narrator-name">Trà Tiên Dẫn Chuyện</div>
+      </div>
+      <div class="dialogue-body">
+        <div id="dialogue-text" class="dialogue-text">...</div>
+        <div class="dialogue-actions">
+          <button id="dialogue-next-btn" class="dialogue-btn">
+            <span>Tiếp tục</span>
+            <svg class="zen-btn-icon"><use href="#zen-next"></use></svg>
+          </button>
+          <button id="dialogue-skip-btn" class="dialogue-btn secondary" title="Bỏ qua toàn bộ đoạn hội thoại này">
+            <svg class="zen-btn-icon"><use href="#zen-skip"></use></svg>
+            <span>Tua Nhanh</span>
+          </button>
+          <button id="dialogue-close-btn" class="dialogue-btn secondary">
+            <svg class="zen-btn-icon"><use href="#zen-close"></use></svg>
+            <span>Khép Lại</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Thanh chọn nhanh 6 Cõi Trà (Quick Realm Selector) -->
+    <div id="tea-boxes-bar" class="tea-boxes-bar">
+      <div class="bar-title">SÁU HỘP TRÀ DANH BẤT HƯ TRUYỀN:</div>
+      <div class="tea-boxes-list">
+        <button class="tea-card-btn" data-realm="1">
+          <span class="tea-color-dot dot-1"></span>
+          <span class="tea-c-name">Cổ Mạch Phổ Nhĩ</span>
+          <span class="tea-c-dept">Network & Hạ tầng</span>
+        </button>
+        <button class="tea-card-btn" data-realm="2">
+          <span class="tea-color-dot dot-2"></span>
+          <span class="tea-c-name">Thiên Công Ngọc Lộ</span>
+          <span class="tea-c-dept">Phát triển phần mềm</span>
+        </button>
+        <button class="tea-card-btn" data-realm="3">
+          <span class="tea-color-dot dot-3"></span>
+          <span class="tea-c-name">Trường Lưu Ban Trà</span>
+          <span class="tea-c-dept">Vận hành hệ thống</span>
+        </button>
+        <button class="tea-card-btn" data-realm="4">
+          <span class="tea-color-dot dot-4"></span>
+          <span class="tea-c-name">Huyền Giáp Quan Âm</span>
+          <span class="tea-c-dept">An toàn thông tin</span>
+        </button>
+        <button class="tea-card-btn" data-realm="5">
+          <span class="tea-color-dot dot-5"></span>
+          <span class="tea-c-name">Vân Hành Tiên Trà</span>
+          <span class="tea-c-dept">Triển khai SP Dữ liệu</span>
+        </button>
+        <button class="tea-card-btn" data-realm="6">
+          <span class="tea-color-dot dot-6"></span>
+          <span class="tea-c-name">Tuyết Tâm Mạt Trà</span>
+          <span class="tea-c-dept">Quản trị & Phân tích DL</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ĐỂ LẠI LỜI CHÚC & ĐÍNH KÈM HÌNH ẢNH -->
+  <div id="modal-wish" class="custom-modal">
+    <div class="modal-backdrop"></div>
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-icon-badge" id="wish-target-icon">
+          <svg class="zen-badge-icon"><use href="#zen-tea-leaf"></use></svg>
+        </div>
+        <div class="modal-title-group">
+          <h2 id="modal-wish-title">Gửi Lời Chúc Mừng Sinh Nhật CTO</h2>
+          <p id="modal-wish-subtitle">Gửi gắm thông điệp lên từng phiến lá tri thức</p>
+        </div>
+        <button class="modal-close" id="btn-close-wish-modal" title="Khép lại">
+          <svg class="zen-close-icon"><use href="#zen-close"></use></svg>
+        </button>
+      </div>
+      <form id="form-wish" class="modal-body">
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label for="wish-author">Tên của bạn / Người gửi <span class="req">*</span></label>
+            <input type="text" id="wish-author" class="pixel-input" placeholder="Ví dụ: Nguyễn Văn A (Team Dev)" required>
+          </div>
+          <div class="form-group flex-1">
+            <label for="wish-department">Bộ phận / Đội ngũ</label>
+            <select id="wish-department" class="pixel-input">
+              <option value="Hạ tầng & Network">Cổ Mạch Phổ Nhĩ (Network & Hạ tầng)</option>
+              <option value="Phát triển phần mềm">Thiên Công Ngọc Lộ (Software Dev)</option>
+              <option value="Vận hành hệ thống">Trường Lưu Ban Trà (System Ops)</option>
+              <option value="An toàn thông tin">Huyền Giáp Quan Âm (Cyber Security)</option>
+              <option value="Triển khai dữ liệu">Vân Hành Tiên Trà (Data Delivery)</option>
+              <option value="Quản trị & Phân tích">Tuyết Tâm Mạt Trà (Data Analytics & BI)</option>
+              <option value="Ban Giám Đốc & Khối Bạn">Khối Nghiệp Vụ & Đối Tác</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="wish-message">Lời chúc mừng sinh nhật gửi tới CTO <span class="req">*</span></label>
+          <textarea id="wish-message" class="pixel-input textarea" rows="4" placeholder="Viết những lời chúc chân thành, ấm áp hoặc kỷ niệm đáng nhớ cùng CTO..." required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Đính kèm hình ảnh kỷ niệm (Ảnh chụp tập thể, ảnh meme, ảnh dìm yêu thương...)</label>
+          <div class="image-upload-zone" id="image-upload-zone">
+            <input type="file" id="wish-image-file" accept="image/*" style="display:none;">
+            <div class="upload-prompt" id="upload-prompt">
+              <span class="upload-icon">
+                <svg class="zen-badge-icon"><use href="#zen-camera"></use></svg>
+              </span>
+              <span>Nhấn để chọn ảnh từ máy tính / điện thoại</span>
+              <span class="upload-sub">(Tự động tối ưu dung lượng)</span>
+            </div>
+            <div class="preview-container" id="preview-container" style="display:none;">
+              <img id="image-preview" src="" alt="Ảnh kỷ niệm">
+              <button type="button" id="btn-remove-image" class="btn-remove-img">
+                <svg class="zen-btn-icon"><use href="#zen-trash"></use></svg>
+                <span>Gỡ ảnh</span>
+              </button>
+            </div>
+          </div>
+          <!-- Hoặc chọn nhanh ảnh mẫu có sẵn -->
+          <div class="preset-images-group">
+            <span class="preset-label">Hoặc chọn avatar kỷ niệm nhanh:</span>
+            <div class="preset-avatars" id="preset-avatars"></div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="pixel-btn secondary" id="btn-cancel-wish">Hủy Bỏ</button>
+          <button type="submit" class="pixel-btn primary">
+            <svg class="zen-btn-icon"><use href="#zen-brush-pen"></use></svg>
+            <span>Khắc Ghi Lời Chúc Lên Cõi Trà</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: XEM CHI TIẾT LỜI CHÚC ĐÃ LƯU -->
+  <div id="modal-view-wish" class="custom-modal">
+    <div class="modal-backdrop"></div>
+    <div class="modal-card view-card">
+      <div class="modal-header">
+        <div class="modal-icon-badge" id="view-leaf-icon">
+          <svg class="zen-badge-icon"><use href="#zen-tea-leaf"></use></svg>
+        </div>
+        <div class="modal-title-group">
+          <h2 id="view-author-name">Lời Chúc Từ Đồng Đội</h2>
+          <p id="view-author-dept">Phòng Ban</p>
+        </div>
+        <button class="modal-close" id="btn-close-view-modal" title="Khép lại">
+          <svg class="zen-close-icon"><use href="#zen-close"></use></svg>
+        </button>
+      </div>
+      <div class="modal-body view-body">
+        <div class="view-date-tag" id="view-wish-date">20/10/2026</div>
+        <div class="view-quote-box">
+          <p id="view-wish-content">Nội dung lời chúc...</p>
+        </div>
+        <div id="view-image-wrapper" class="view-image-wrapper" style="display:none;">
+          <img id="view-wish-image" src="" alt="Ảnh đính kèm">
+        </div>
+      </div>
+      <div class="modal-footer between">
+        <div class="footer-left-actions">
+          <button type="button" class="pixel-btn secondary-sm" id="btn-copy-wish" title="Sao chép nội dung lời chúc vào clipboard">
+            <svg class="zen-btn-icon"><use href="#zen-copy"></use></svg>
+            <span>Sao Chép</span>
+          </button>
+          <button type="button" class="pixel-btn danger-sm" id="btn-delete-this-wish" title="Xóa lời chúc này nếu cần">
+            <svg class="zen-btn-icon"><use href="#zen-trash"></use></svg>
+            <span>Gỡ Lời Chúc</span>
+          </button>
+        </div>
+        <button type="button" class="pixel-btn primary" id="btn-view-ok">
+          <svg class="zen-btn-icon"><use href="#zen-close"></use></svg>
+          <span>Khép Lại</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ĐẠI CẢNH CÂY TRÀ TRI THỨC & SỔ LƯU BÚT SINH NHẬT -->
+  <div id="modal-grand-finale" class="custom-modal">
+    <div class="modal-backdrop"></div>
+    <div class="modal-card grand-card">
+      <div class="modal-header grand-header">
+        <img src="assets/05_Grand_Finale/banner_happy_birthday.png" alt="Chúc Mừng Sinh Nhật CTO" class="grand-banner-img">
+        <div class="grand-badge">
+          <svg class="zen-btn-icon"><use href="#zen-crown"></use></svg>
+          <span>ĐẠI HỘI CHÚC MỪNG SINH NHẬT CTO</span>
+          <svg class="zen-btn-icon"><use href="#zen-crown"></use></svg>
+        </div>
+        <h2>KHU VƯỜN LỤC TRÀ TRI THỨC</h2>
+        <p class="grand-subtitle">"Từ dữ liệu đến trí tuệ. Từ công nghệ đến giá trị. Chúng ta cùng tạo nên một khu vườn nơi mọi chiếc lá đều có ý nghĩa."</p>
+        <button class="modal-close" id="btn-close-grand-modal" title="Khép lại">
+          <svg class="zen-close-icon"><use href="#zen-close"></use></svg>
+        </button>
+      </div>
+
+      <div class="grand-tabs">
+        <button class="grand-tab-btn active" data-tab="tree">
+          <svg class="zen-btn-icon"><use href="#zen-tree-guestbook"></use></svg>
+          <span>Cây Trà Tri Thức</span>
+        </button>
+        <button class="grand-tab-btn" data-tab="book">
+          <svg class="zen-btn-icon"><use href="#zen-scroll"></use></svg>
+          <span>Sổ Lưu Bút Sinh Nhật (<span id="total-wishes-count">0</span>)</span>
+        </button>
+        <button class="grand-tab-btn" data-tab="message">
+          <svg class="zen-btn-icon"><use href="#zen-brush-pen"></use></svg>
+          <span>Thư Chúc Mừng</span>
+        </button>
+      </div>
+
+      <div class="modal-body grand-body">
+        <!-- Tab 1: Cây Trà Tri Thức Hợp Nhất -->
+        <div class="grand-tab-panel active" id="tab-panel-tree">
+          <div class="grand-tree-showcase">
+            <img src="assets/05_Grand_Finale/tree_grand_unified.png" alt="Cây Trà Tri Thức Hợp Nhất" class="grand-tree-img">
+          </div>
+          <div class="tree-breakdown-grid">
+            <div class="tree-node-card node-leaf">
+              <div class="tn-icon">
+                <img src="assets/04_Interactive_Nodes/item_maple_data.png" class="tn-pixel-icon" alt="Tuyết Tâm Mạt Trà">
+              </div>
+              <div class="tn-content">
+                <strong>BÚP TRÀ TRÊN CÙNG: INSIGHT</strong>
+                <p>Tuyết Tâm Mạt Trà — Quản trị & Phân tích Dữ liệu</p>
+                <small class="tn-quote">"Nơi dữ liệu trở thành trí tuệ, định hướng tương lai doanh nghiệp."</small>
+              </div>
+            </div>
+
+            <div class="tree-node-card node-branch">
+              <div class="tn-icon">
+                <img src="assets/04_Interactive_Nodes/item_crane_deliv.png" class="tn-pixel-icon" alt="Vân Hành Tiên Trà">
+              </div>
+              <div class="tn-content">
+                <strong>CÀNH LÁ XANH TƯƠI: TRIỂN KHAI</strong>
+                <p>Vân Hành Tiên Trà — Triển khai Sản phẩm Dữ liệu</p>
+                <small class="tn-quote">"Đưa tri thức đến đúng người vào đúng thời điểm, lan tỏa giá trị."</small>
+              </div>
+            </div>
+
+            <div class="tree-node-card node-bark">
+              <div class="tn-icon">
+                <img src="assets/04_Interactive_Nodes/item_shield_sec.png" class="tn-pixel-icon" alt="Huyền Giáp Quan Âm">
+              </div>
+              <div class="tn-content">
+                <strong>VỎ CÂY KIÊN CỐ: BẢO MẬT</strong>
+                <p>Huyền Giáp Quan Âm — An toàn Thông tin</p>
+                <small class="tn-quote">"Nhiều tầng phòng thủ vững chắc, âm thầm canh giữ phía sau."</small>
+              </div>
+            </div>
+
+            <div class="tree-node-card node-sap">
+              <div class="tn-icon">
+                <img src="assets/04_Interactive_Nodes/item_lotus_ops.png" class="tn-pixel-icon" alt="Trường Lưu Ban Trà">
+              </div>
+              <div class="tn-content">
+                <strong>MẠCH NHỰA LUÂN CHUYỂN: VẬN HÀNH</strong>
+                <p>Trường Lưu Ban Trà — Vận hành Hệ thống</p>
+                <small class="tn-quote">"Guồng nước không ngừng nghỉ, giữ cho mọi thứ luôn bình thường trơn tru."</small>
+              </div>
+            </div>
+
+            <div class="tree-node-card node-trunk">
+              <div class="tn-icon">
+                <img src="assets/04_Interactive_Nodes/item_sprout_dev.png" class="tn-pixel-icon" alt="Thiên Công Ngọc Lộ">
+              </div>
+              <div class="tn-content">
+                <strong>THÂN CÂY VƯƠN CAO: PHẦN MỀM</strong>
+                <p>Thiên Công Ngọc Lộ — Phát triển Phần mềm</p>
+                <small class="tn-quote">"Từng viên gạch kiến trúc số, biến mọi ý tưởng thành hiện thực sinh động."</small>
+              </div>
+            </div>
+
+            <div class="tree-node-card node-roots">
+              <div class="tn-icon">
+                <img src="assets/04_Interactive_Nodes/item_leaf_infra.png" class="tn-pixel-icon" alt="Cổ Mạch Phổ Nhĩ">
+              </div>
+              <div class="tn-content">
+                <strong>GỐC RỄ VỮNG CHẮC: HẠ TẦNG & MẠNG</strong>
+                <p>Cổ Mạch Phổ Nhĩ — Network & Hạ tầng</p>
+                <small class="tn-quote">"Nền móng nâng đỡ toàn bộ hệ sinh thái số, kết nối xuyên suốt."</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Sổ Lưu Bút Sinh Nhật Toàn Thể -->
+        <div class="grand-tab-panel" id="tab-panel-book">
+          <div class="book-filter-bar">
+            <span>Lọc theo bộ phận:</span>
+            <select id="book-filter-dept" class="pixel-input filter-select">
+              <option value="all">Tất cả bộ phận</option>
+              <option value="Hạ tầng & Network">Cổ Mạch Phổ Nhĩ (Hạ tầng)</option>
+              <option value="Phát triển phần mềm">Thiên Công Ngọc Lộ (Dev)</option>
+              <option value="Vận hành hệ thống">Trường Lưu Ban Trà (Ops)</option>
+              <option value="An toàn thông tin">Huyền Giáp Quan Âm (Bảo mật)</option>
+              <option value="Triển khai dữ liệu">Vân Hành Tiên Trà (Delivery)</option>
+              <option value="Quản trị & Phân tích">Tuyết Tâm Mạt Trà (Analytics)</option>
+            </select>
+          </div>
+          <div class="scrapbook-grid" id="scrapbook-container">
+            <!-- Sẽ render tự động qua JS -->
+          </div>
+        </div>
+
+        <!-- Tab 3: Thư Chúc Mừng CTO -->
+        <div class="grand-tab-panel" id="tab-panel-message">
+          <div class="birthday-letter">
+            <div class="letter-heroes">
+              <img src="assets/01_Characters/portrait_cto_pixel.png" alt="Chân Dung CTO" class="cto-portrait-img">
+              <img src="assets/05_Grand_Finale/birthday_tea_cake.png" alt="Bánh Sinh Nhật" class="cake-img">
+            </div>
+            <h3>GỬI ANH — VỊ CHỈ HUY TRƯỞNG CỦA KHU VƯỜN CÔNG NGHỆ!</h3>
+            <p>
+              Nhân dịp sinh nhật đặc biệt của Anh, toàn thể đại gia đình Kỹ thuật & Dữ liệu xin gửi tới Anh những lời chúc tốt đẹp nhất, ấm áp nhất và ngập tràn niềm tự hào!
+            </p>
+            <p>
+              Qua <strong>Lục Trà Cảnh Giới</strong>, chúng em muốn tái hiện lại bức tranh mà Anh đã cùng chúng em vun đắp mỗi ngày: từ những dòng code nhỏ bé, từng tuyến cáp quang ngầm, những đêm trực canh giữ hệ thống, đến những mô hình dữ liệu kết tinh thành trí tuệ sắc bén.
+            </p>
+            <p>
+              Cảm ơn Anh đã luôn là "Gốc Rễ" vững chãi, là "Thân Cây" che chở, và là "Búp Trà Insight" soi đường cho toàn thể anh em. Kính chúc Anh thêm một tuổi mới:
+            </p>
+            <div class="wishes-bullet-list">
+              <div class="w-bullet">◈ <strong>Sức khỏe dẻo dai</strong> như cổ thụ Phổ Nhĩ nghìn năm</div>
+              <div class="w-bullet">◈ <strong>Tâm thế an nhiên</strong> như chén Mạt Trà tĩnh lặng</div>
+              <div class="w-bullet">◈ <strong>Tầm nhìn vượt bậc</strong> như cánh hạc Tiên Trà bay giữa ngàn mây</div>
+              <div class="w-bullet">◈ <strong>Và luôn giữ vững ngọn lửa đam mê</strong> cùng đại gia đình công nghệ!</div>
+            </div>
+            <div class="letter-sign">
+              <em>— Kính tặng CTO kính mến từ Toàn Thể Anh Em Công Nghệ & Dữ Liệu —</em>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="pixel-btn primary" id="btn-fireworks">
+          <svg class="zen-btn-icon"><use href="#zen-firework"></use></svg>
+          <span>Khai Hoa Chúc Thọ!</span>
+        </button>
+        <button type="button" class="pixel-btn secondary" id="btn-close-grand-footer">
+          <svg class="zen-btn-icon"><use href="#zen-close"></use></svg>
+          <span>Khép Lại</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: QUẢN LÝ DỮ LIỆU EXPORT / IMPORT -->
+  <div id="modal-backup" class="custom-modal">
+    <div class="modal-backdrop"></div>
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-icon-badge">
+          <svg class="zen-badge-icon"><use href="#zen-casket"></use></svg>
+        </div>
+        <div class="modal-title-group">
+          <h2>Quản Lý Lời Chúc (Export / Import)</h2>
+          <p>Sao lưu và gộp lời chúc của toàn công ty trước ngày sinh nhật</p>
+        </div>
+        <button class="modal-close" id="btn-close-backup-modal" title="Khép lại">
+          <svg class="zen-close-icon"><use href="#zen-close"></use></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="backup-note">
+          ※ Bạn có thể <strong>Xuất (Export)</strong> tất cả lời chúc đang có ra file <code>.json</code> để lưu giữ, hoặc gửi cho ban tổ chức gộp lại.<br>
+          Hoặc <strong>Nhập (Import)</strong> file lời chúc của cả công ty vào để CTO đọc trọn vẹn!
+        </p>
+        <div class="backup-actions-grid">
+          <div class="backup-box">
+            <h3>
+              <svg class="zen-btn-icon"><use href="#zen-export"></use></svg>
+              <span>Xuất Bản Lưu</span>
+            </h3>
+            <p>Tải toàn bộ lời chúc và hình ảnh kỷ niệm về máy tính.</p>
+            <button id="btn-export-json" class="pixel-btn">
+              <svg class="zen-btn-icon"><use href="#zen-export"></use></svg>
+              <span>Tải Bản Lưu JSON</span>
+            </button>
+          </div>
+          <div class="backup-box">
+            <h3>
+              <svg class="zen-btn-icon"><use href="#zen-import"></use></svg>
+              <span>Nạp Bản Lưu</span>
+            </h3>
+            <p>Tải lên file JSON để cập nhật thêm lời chúc mới.</p>
+            <input type="file" id="import-json-file" accept=".json" style="display:none;">
+            <button id="btn-trigger-import" class="pixel-btn secondary">
+              <svg class="zen-btn-icon"><use href="#zen-import"></use></svg>
+              <span>Chọn File JSON...</span>
+            </button>
+          </div>
+        </div>
+        <div class="reset-zone">
+          <button id="btn-reset-default" class="btn-text-danger">Khôi phục danh sách lời chúc mẫu ban đầu</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="pixel-btn secondary" id="btn-close-backup-footer">
+          <svg class="zen-btn-icon"><use href="#zen-close"></use></svg>
+          <span>Khép Lại</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: HƯỚNG DẪN TRẢI NGHIỆM & BỐI CẢNH LỤC TRÀ -->
+  <div id="modal-help" class="custom-modal">
+    <div class="modal-backdrop"></div>
+    <div class="modal-card modal-help-card">
+      <div class="modal-header">
+        <div class="modal-icon-badge">
+          <svg class="zen-badge-icon"><use href="#zen-scroll"></use></svg>
+        </div>
+        <div class="modal-title-group">
+          <h2>Điển Tịch Hướng Dẫn & Bối Cảnh Lục Trà</h2>
+          <p>Món quà sinh nhật đặc biệt tri ân CTO kính mến</p>
+        </div>
+        <button class="modal-close" id="btn-close-help-modal" title="Khép lại">
+          <svg class="zen-close-icon"><use href="#zen-close"></use></svg>
+        </button>
+      </div>
+      <div class="modal-body help-body">
+        <div class="help-section">
+          <h3>❖ Điều Khiển & Tương Tác</h3>
+          <ul class="help-list">
+            <li><strong>Di chuyển:</strong> Dùng phím <kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> hoặc phím mũi tên <kbd>↑</kbd> <kbd>←</kbd> <kbd>↓</kbd> <kbd>→</kbd> (hoặc chạm / D-pad trên mobile).</li>
+            <li><strong>Vào cõi trà:</strong> Tại Trà Điện Nhất Tâm, điều khiển nhân vật bước tới các hộp trà trên bàn, hoặc nhấp chọn hộp trà ở thanh phía dưới.</li>
+            <li><strong>Để lại lời chúc:</strong> Di chuyển nhân vật lại gần biểu tượng lá cây / bông hoa / lá chắn / hạc giấy / lá phong hoặc Thẻ Bài Chúc Thọ để mở form gửi thông điệp và đính kèm ảnh kỷ niệm.</li>
+            <li><strong>Xem lời chúc:</strong> Di chuyển lại gần biểu tượng có tên đồng đội để mở xem chi tiết lời chúc và hình ảnh.</li>
+            <li><strong>Đại cảnh sinh nhật:</strong> Nhấn <code>Cây Tri Thức & Lưu Bút</code> trên thanh HUD để đọc toàn bộ lời chúc và khai hoa chúc thọ sinh nhật CTO!</li>
+          </ul>
+        </div>
+
+        <div class="help-section">
+          <h3>❖ Ý Nghĩa Lục Trà Cảnh Giới</h3>
+          <div class="help-tea-grid">
+            <div class="help-tea-item">
+              <span class="tea-badge-dot dot-1"></span>
+              <strong>Cổ Mạch Phổ Nhĩ:</strong> Network & Hạ tầng — Gốc rễ vững chắc nâng đỡ toàn hệ sinh thái.
+            </div>
+            <div class="help-tea-item">
+              <span class="tea-badge-dot dot-2"></span>
+              <strong>Thiên Công Ngọc Lộ:</strong> Phát triển phần mềm — Mầm cây sáng tạo, biến ý tưởng thành hiện thực.
+            </div>
+            <div class="help-tea-item">
+              <span class="tea-badge-dot dot-3"></span>
+              <strong>Trường Lưu Ban Trà:</strong> Vận hành hệ thống — Dòng chảy bền bỉ ngày đêm trơn tru.
+            </div>
+            <div class="help-tea-item">
+              <span class="tea-badge-dot dot-4"></span>
+              <strong>Huyền Giáp Quan Âm:</strong> An toàn thông tin — Các lớp khiên kiên cố canh giữ phía sau.
+            </div>
+            <div class="help-tea-item">
+              <span class="tea-badge-dot dot-5"></span>
+              <strong>Vân Hành Tiên Trà:</strong> Triển khai dữ liệu — Cánh hạc đưa tri thức đến đúng người, đúng thời điểm.
+            </div>
+            <div class="help-tea-item">
+              <span class="tea-badge-dot dot-6"></span>
+              <strong>Tuyết Tâm Mạt Trà:</strong> Quản trị & Phân tích — Nơi dữ liệu chuyển hóa thành Insight & Trí tuệ.
+            </div>
+          </div>
+        </div>
+
+        <div class="help-section">
+          <h3>❖ Tiện Ích & Phím Tắt</h3>
+          <ul class="help-list">
+            <li><kbd>ESC</kbd>: Đóng ngay tức khắc mọi cửa sổ popup đang mở, hoặc đóng hộp thoại người dẫn chuyện.</li>
+            <li><strong>Khung Hình:</strong> Chuyển đổi khung hình 16:9 điện ảnh sắc nét hoặc chế độ toàn màn.</li>
+            <li><strong>Toàn Màn Hình:</strong> Phóng to toàn màn hình trình duyệt để ngắm trọn vẹn cảnh trà.</li>
+            <li><strong>Sao Lưu:</strong> Xuất file JSON để gửi ban tổ chức gộp lại hoặc nhập file lời chúc từ đồng đội.</li>
+            <li><strong>Tua Nhanh:</strong> Bỏ qua nhanh lời thoại của người dẫn chuyện khi muốn đi tiếp.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="pixel-btn secondary" id="btn-close-help-footer">
+          <svg class="zen-btn-icon"><use href="#zen-close"></use></svg>
+          <span>Khép Lại</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: THỬ THÁCH CÕI TRÀ (MINI-GAMES) -->
+  <div id="modal-minigame" class="custom-modal">
+    <div class="modal-backdrop"></div>
+    <div class="modal-card modal-minigame-card">
+      <div class="modal-header">
+        <div class="modal-icon-badge" id="minigame-icon-badge">🎮</div>
+        <div class="modal-title-group">
+          <h2 id="minigame-title">Thử Thách Cõi Trà</h2>
+          <p id="minigame-desc">Thử thách công nghệ đặc biệt mừng sinh nhật CTO</p>
+        </div>
+        <button class="modal-close" id="btn-close-minigame" title="Khép lại">
+          <svg class="zen-close-icon"><use href="#zen-close"></use></svg>
+        </button>
+      </div>
+
+      <div class="modal-body minigame-body">
+        <!-- Status Bar -->
+        <div class="minigame-status-bar" id="minigame-status-bar">
+          <!-- Dynamic stats -->
+        </div>
+
+        <!-- Canvas Game -->
+        <div class="minigame-canvas-wrapper">
+          <canvas id="minigameCanvas" width="620" height="380"></canvas>
+        </div>
+
+        <!-- Hướng dẫn điều khiển -->
+        <div class="minigame-instruction" id="minigame-instruction">
+          Hướng dẫn đang tải...
+        </div>
+      </div>
+
+      <div class="modal-footer minigame-footer">
+        <div id="minigame-gate-hint" class="minigame-gate-hint">
+          <span class="gate-lock-icon">🔒</span>
+          <span id="minigame-gate-msg">Vượt qua thử thách để mở cổng bước vào cõi trà!</span>
+        </div>
+        <div class="minigame-footer-actions">
+          <button type="button" class="pixel-btn secondary" id="btn-restart-minigame">
+            <span>Chơi Lại</span>
+          </button>
+          <button type="button" class="pixel-btn primary continue-realm-btn" id="btn-continue-realm" style="display: none;">
+            <span>✨ BƯỚC VÀO CÕI TRÀ ✨</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audio elements & Scripts -->
+  <script src="audio.js?v=1.2"></script>
+  <script src="data.js?v=1.2"></script>
+  <script src="sprites.js?v=1.2"></script>
+  <script src="minigames.js?v=1.2"></script>
+  <script src="game.js?v=1.2"></script>
+  <script src="ui.js?v=1.3"></script>
+</body>
+</html>

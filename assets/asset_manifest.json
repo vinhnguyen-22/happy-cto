@@ -1,0 +1,408 @@
+{
+  "project": "Tea Realms CTO Birthday Web Game",
+  "created": "2026-10-19",
+  "main_asset_count": 41,
+  "groups": {
+    "01_Characters": "Characters and Dialogue Portraits",
+    "02_Tea_Temple_Hub": "Tea Temple Hub, Tea Boxes, and Tea Ceremony Set",
+    "03_Six_Tea_Realms": "Six Realm Backgrounds",
+    "04_Interactive_Nodes": "Clickable Message Objects and Markers",
+    "05_Grand_Finale": "CTO Birthday Finale",
+    "markers": "Six 48x48 Pixel Realm Interactive Markers",
+    "particles": "Four 16x16 Pixel Atmospheric Particles",
+    "ui": "Custom Pixel Cursor and Wish Plaque"
+  },
+  "assets": [
+    {
+      "file": "01_Characters/portrait_tea_master.png",
+      "width": 256,
+      "height": 256,
+      "transparent": true,
+      "bytes": 147133,
+      "sha256": "2f195cc0f62d19e789d788723a0bf4dabd6a5b948bb0e2e9fc9ae232ab9c945c"
+    },
+    {
+      "file": "01_Characters/portrait_cto_pixel.png",
+      "width": 256,
+      "height": 256,
+      "transparent": false,
+      "bytes": 138161,
+      "note": "Pixel-stylized dialogue portrait based on the first CTO reference photo",
+      "sha256": "b20efd5b3853ba8944a2b6bbe928038e390f0b466cd8ba87e2d06a9c1e2db6d7"
+    },
+    {
+      "file": "01_Characters/player_spritesheet.png",
+      "width": 128,
+      "height": 192,
+      "transparent": true,
+      "bytes": 56312,
+      "note": "Updated CTO-inspired 4x4 sprite grid, frames 32x48: down, up, left, right",
+      "sha256": "f4ad96c07e0a3ba3fd8c396089fef24f3857b9141444b89ecc83985c26c8361d"
+    },
+    {
+      "file": "02_Tea_Temple_Hub/door_left.png",
+      "width": 960,
+      "height": 1080,
+      "transparent": true,
+      "bytes": 683172,
+      "sha256": "91402cb1f109680d02923f82569d651f2ca0d3f1742a7ad76910725a7069d630"
+    },
+    {
+      "file": "02_Tea_Temple_Hub/door_right.png",
+      "width": 960,
+      "height": 1080,
+      "transparent": true,
+      "bytes": 639160,
+      "sha256": "b6c23e77721ba528f5fa507d922377afc1ccc04094ba181de43fba5aeff6bf42"
+    },
+    {
+      "file": "02_Tea_Temple_Hub/bg_tea_temple.png",
+      "width": 1920,
+      "height": 1080,
+      "transparent": false,
+      "bytes": 2858823,
+      "sha256": "17ec13fcd3b9abd6f08a7816851ec71f921124f4e8e272f61191c78caff333d7"
+    },
+    {
+      "file": "02_Tea_Temple_Hub/bg_hub_tea_temple.mp4",
+      "type": "video/mp4",
+      "bytes": 6674021,
+      "note": "Animated background with steam rising from teapot inside ancient Tea Temple Hub"
+    },
+    {
+      "file": "02_Tea_Temple_Hub/table_ancient_tea.png",
+      "width": 400,
+      "height": 300,
+      "transparent": true,
+      "bytes": 126954,
+      "sha256": "1802c68c63cd0905f90dc5aa5515b9feb64e8b56ca498674ca035196c09bfefe"
+    },
+    {
+      "file": "02_Tea_Temple_Hub/box_tea_1.png",
+      "width": 128,
+      "height": 128,
+      "transparent": true,
+      "bytes": 28299,
+      "sha256": "9b98cb2699c3e13f625bb626a4237395d7042bc4b7018b0650c6d8133710ac77"
+    },
+    {
+      "file": "02_Tea_Temple_Hub/box_tea_2.png",
+      "width": 128,
+      "height": 128,
+      "transparent": true,
+      "bytes": 26312,
+      "sha256": "7ea1ee11374378ee9863cdadbb9122fc59a33029ac944d12ba208590e375c725"
+    },
+    {
+      "file": "02_Tea_Temple_Hub/box_tea_3.png",
+      "width": 128,
+      "height": 128,
+      "transparent": true,
+      "bytes": 28107,
+      "sha256": "ca803e6d8d401584ccfc4f00573ac1d43cb7496370a43ff63021cfd243d8ea05"
+    },
+    {
+      "file": "02_Tea_Temple_Hub/box_tea_4.png",
+      "width": 128,
+      "height": 128,
+      "transparent": true,
+      "bytes": 25206,
+      "sha256": "ed18485114ed5949d0f8d866b6dd8e9b37597bf9ad76d15c6118631b979bbadd"
+    },
+    {
+      "file": "02_Tea_Temple_Hub/box_tea_5.png",
+      "width": 128,
+      "height": 128,
+      "transparent": true,
+      "bytes": 31324,
+      "sha256": "47a3e6bf334a6ea0d15fdc39f64cb40f32bc10baf23b6cf563f4d7f6569fca27"
+    },
+    {
+      "file": "02_Tea_Temple_Hub/box_tea_6.png",
+      "width": 128,
+      "height": 128,
+      "transparent": true,
+      "bytes": 22929,
+      "sha256": "68c6278907b2f830de769b5c0606093e67a675a2b3ca4629abeec8104bfd1116"
+    },
+    {
+      "file": "03_Six_Tea_Realms/bg_realm1_pho_nhi.png",
+      "width": 1920,
+      "height": 1080,
+      "transparent": false,
+      "bytes": 640349,
+      "note": "Cropped and enhanced from earlier multi-scene concept sheet; validate detail for final production",
+      "sha256": "3261e5dabd3489c86d59e22f3a8a07364e5c146dc7e10ea1b40ea92686b457d3"
+    },
+    {
+      "file": "03_Six_Tea_Realms/bg_realm2_ngoc_lo.png",
+      "width": 1920,
+      "height": 1080,
+      "transparent": false,
+      "bytes": 617911,
+      "note": "Cropped and enhanced from earlier multi-scene concept sheet; validate detail for final production",
+      "sha256": "68dbc6de26d3bf8735bf31d7b763874926e700d0f9e8d27c2cd0553faf2ce556"
+    },
+    {
+      "file": "03_Six_Tea_Realms/bg_realm3_ban_tra.png",
+      "width": 1920,
+      "height": 1080,
+      "transparent": false,
+      "bytes": 615869,
+      "note": "Cropped and enhanced from earlier multi-scene concept sheet; validate detail for final production",
+      "sha256": "4f3f705378d7af11fdf8e8d62435a40727e02f979ccf84ee72aa6b770cf682c3"
+    },
+    {
+      "file": "03_Six_Tea_Realms/bg_realm4_quan_am.png",
+      "width": 1920,
+      "height": 1080,
+      "transparent": false,
+      "bytes": 608033,
+      "note": "Cropped and enhanced from earlier multi-scene concept sheet; validate detail for final production",
+      "sha256": "504ae7a713c4d215cc0b9b176bb45e991e2ab5c3917f8b3daa024a554879f4ca"
+    },
+    {
+      "file": "03_Six_Tea_Realms/bg_realm5_tien_tra.png",
+      "width": 1920,
+      "height": 1080,
+      "transparent": false,
+      "bytes": 592730,
+      "note": "Cropped and enhanced from earlier multi-scene concept sheet; validate detail for final production",
+      "sha256": "9a80e17e05b686311d7d662fb161913af3f2898a3d532e8792590b492c0e1b98"
+    },
+    {
+      "file": "03_Six_Tea_Realms/bg_realm6_mat_tra.png",
+      "width": 1920,
+      "height": 1080,
+      "transparent": false,
+      "bytes": 591101,
+      "note": "Cropped and enhanced from earlier multi-scene concept sheet; validate detail for final production",
+      "sha256": "a842e869c2d2134f9cf064b46149baeb41de26a09915abfdd81e89113cbac8f2"
+    },
+    {
+      "file": "03_Six_Tea_Realms/bg_realm1_pho_nhi.mp4",
+      "type": "video/mp4",
+      "bytes": 5148138,
+      "note": "Cybernetic ancient tree in underground cavern with glowing optical fiber roots"
+    },
+    {
+      "file": "03_Six_Tea_Realms/bg_realm2_ngoc_lo.mp4",
+      "type": "video/mp4",
+      "bytes": 6539678,
+      "note": "Pixel cyber city with glowing lines and ascending digital sprout"
+    },
+    {
+      "file": "03_Six_Tea_Realms/bg_realm3_ban_tra.mp4",
+      "type": "video/mp4",
+      "bytes": 6203858,
+      "note": "Amber river stream with smoothly rotating wooden waterwheel"
+    },
+    {
+      "file": "03_Six_Tea_Realms/bg_realm4_quan_am.mp4",
+      "type": "video/mp4",
+      "bytes": 6496903,
+      "note": "Deep blue temple with layered translucent cyber forcefield shields"
+    },
+    {
+      "file": "03_Six_Tea_Realms/bg_realm5_tien_tra.mp4",
+      "type": "video/mp4",
+      "bytes": 4724178,
+      "note": "Endless sea of clouds with floating origami cranes hovering above wooden bridge"
+    },
+    {
+      "file": "03_Six_Tea_Realms/bg_realm6_mat_tra.mp4",
+      "type": "video/mp4",
+      "bytes": 4003164,
+      "note": "Zen tea room circular window with gently falling snow and vibrant red maple tree"
+    },
+    {
+      "file": "04_Interactive_Nodes/item_leaf_infra.png",
+      "width": 64,
+      "height": 64,
+      "transparent": true,
+      "bytes": 7748,
+      "note": "64px inventory sprite for click target; source available in 04_Interactive_Nodes/highres_sources/",
+      "sha256": "51305179f4e8c9a189c843b930c50f9cf835723f44a1bf43423031d8cf35646b"
+    },
+    {
+      "file": "04_Interactive_Nodes/item_sprout_dev.png",
+      "width": 64,
+      "height": 64,
+      "transparent": true,
+      "bytes": 5965,
+      "note": "64px inventory sprite for click target; source available in 04_Interactive_Nodes/highres_sources/",
+      "sha256": "7cb7099b4920708ebc81d26c1e684320bf5e7b59e74f83ac063d435eba506407"
+    },
+    {
+      "file": "04_Interactive_Nodes/item_lotus_ops.png",
+      "width": 64,
+      "height": 64,
+      "transparent": true,
+      "bytes": 7787,
+      "note": "64px inventory sprite for click target; source available in 04_Interactive_Nodes/highres_sources/",
+      "sha256": "098f5000fed0a736080301b2c7f265f84a627ba728c9307771e94cb11d0f941f"
+    },
+    {
+      "file": "04_Interactive_Nodes/item_shield_sec.png",
+      "width": 64,
+      "height": 64,
+      "transparent": true,
+      "bytes": 8565,
+      "note": "64px inventory sprite for click target; source available in 04_Interactive_Nodes/highres_sources/",
+      "sha256": "a6116e5a73efa039fea091c7c92f8add83a5ee444d1324d6bdff09e5463e1013"
+    },
+    {
+      "file": "04_Interactive_Nodes/item_crane_deliv.png",
+      "width": 64,
+      "height": 64,
+      "transparent": true,
+      "bytes": 7253,
+      "note": "64px inventory sprite for click target; source available in 04_Interactive_Nodes/highres_sources/",
+      "sha256": "51c065471038ff22a5e01caeb3a16dae089951cf05ca1b757bd683750cc87f2b"
+    },
+    {
+      "file": "04_Interactive_Nodes/item_maple_data.png",
+      "width": 64,
+      "height": 64,
+      "transparent": true,
+      "bytes": 7032,
+      "note": "64px inventory sprite for click target; source available in 04_Interactive_Nodes/highres_sources/",
+      "sha256": "8ecf6327bc5dbb92b9d8090af7f0866083bfc46711320c0c410969afe22ffac0"
+    },
+    {
+      "file": "05_Grand_Finale/tree_grand_unified.png",
+      "width": 800,
+      "height": 1000,
+      "transparent": true,
+      "bytes": 1475184,
+      "sha256": "37114233fafcf32985065fa36f4f56252b42c4500167a0e28edfba00e1010363"
+    },
+    {
+      "file": "05_Grand_Finale/birthday_tea_cake.png",
+      "width": 256,
+      "height": 256,
+      "transparent": true,
+      "bytes": 104502,
+      "sha256": "d003c6b17cbc85772d7a2b12b1bb7d3e6d727a69ccfa4cf75eb708b122e2224d"
+    },
+    {
+      "file": "05_Grand_Finale/banner_happy_birthday.png",
+      "width": 800,
+      "height": 160,
+      "transparent": true,
+      "bytes": 178780,
+      "sha256": "02ac2a22f450b8cb05d394bdfa76ab5d59112daa98f82489ff845ff593812270"
+    },
+    {
+      "file": "02_Tea_Temple_Hub/tea_ceremony_set.png",
+      "width": 128,
+      "height": 128,
+      "transparent": true,
+      "bytes": 23890,
+      "note": "Ancient tea ceremony set (teapot and cups on wooden tray) centered on ancient table"
+    },
+    {
+      "file": "markers/marker_ancient_root_crystal.png",
+      "width": 48,
+      "height": 48,
+      "transparent": true,
+      "bytes": 4663,
+      "note": "Ancient root optical crystal marker for Realm 1 (Infra / Phổ Nhĩ)"
+    },
+    {
+      "file": "markers/marker_digital_sprout.png",
+      "width": 48,
+      "height": 48,
+      "transparent": true,
+      "bytes": 4098,
+      "note": "Digital neon sprout marker for Realm 2 (Software Dev / Ngọc Lộ)"
+    },
+    {
+      "file": "markers/marker_amber_lotus_wheel.png",
+      "width": 48,
+      "height": 48,
+      "transparent": true,
+      "bytes": 4999,
+      "note": "Amber lotus waterwheel marker for Realm 3 (Operations / Ban Trà)"
+    },
+    {
+      "file": "markers/marker_cyber_shield_rune.png",
+      "width": 48,
+      "height": 48,
+      "transparent": true,
+      "bytes": 4358,
+      "note": "Cyber forcefield shield rune marker for Realm 4 (InfoSec / Quan Âm)"
+    },
+    {
+      "file": "markers/marker_origami_crane_glow.png",
+      "width": 48,
+      "height": 48,
+      "transparent": true,
+      "bytes": 4817,
+      "note": "Glowing origami crane marker for Realm 5 (Data Deploy / Tiên Trà)"
+    },
+    {
+      "file": "markers/marker_zen_maple_cup.png",
+      "width": 48,
+      "height": 48,
+      "transparent": true,
+      "bytes": 4206,
+      "note": "Zen maple teacup marker for Realm 6 (Data Insight / Mạt Trà)"
+    },
+    {
+      "file": "particles/particle_tea_leaf.png",
+      "width": 16,
+      "height": 16,
+      "transparent": true,
+      "bytes": 671,
+      "note": "Floating green tea leaf atmospheric particle"
+    },
+    {
+      "file": "particles/particle_maple_leaf.png",
+      "width": 16,
+      "height": 16,
+      "transparent": true,
+      "bytes": 746,
+      "note": "Floating red-orange maple leaf atmospheric particle"
+    },
+    {
+      "file": "particles/particle_gold_sparkle.png",
+      "width": 16,
+      "height": 16,
+      "transparent": true,
+      "bytes": 746,
+      "note": "Floating golden sparkle dust particle"
+    },
+    {
+      "file": "particles/particle_data_bit.png",
+      "width": 16,
+      "height": 16,
+      "transparent": true,
+      "bytes": 661,
+      "note": "Floating cyan/emerald cyber data bit particle"
+    },
+    {
+      "file": "ui/cursor_tea_leaf.png",
+      "width": 32,
+      "height": 32,
+      "transparent": true,
+      "bytes": 2385,
+      "note": "Custom pixel tea leaf cursor with hotspot (0,0)"
+    },
+    {
+      "file": "ui/item_wish_tag_gold.png",
+      "width": 48,
+      "height": 48,
+      "transparent": true,
+      "bytes": 2349,
+      "note": "Asian wooden wish plaque (Ema) with red tassel and gold calligraphy"
+    }
+  ],
+  "asset_source_notes": {
+    "group_1": "Original portraits plus newly updated CTO-inspired player sprite, original sprite retained as old_traveler",
+    "group_2": "Previously generated 10 single-asset images, normalized to requested sizes",
+    "group_3": "Backgrounds were processed from six-realm concept, not independently redrawn in native resolution",
+    "group_4": "Individual transparent sources downsampled to clickable sprites (64x64), high-res original PNGs kept",
+    "group_5": "Previously extracted finale assets, with transparency and stylized Vietnamese text"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "luc-tra-canh-gioi-happy-cto",
+  "version": "1.0.0",
+  "description": "Web Game Chúc Mừng Sinh Nhật CTO phong cách Stardew Valley & Trà Đạo Tri Thức",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 3000",
+    "serve": "npx serve -l 3000 ."
+  },
+  "keywords": ["stardew-valley", "birthday-game", "cto", "luc-tra-canh-gioi", "pixel-art"],
+  "author": "Engineering & Data Teams",
+  "license": "MIT"
+}

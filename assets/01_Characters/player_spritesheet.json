@@ -1,0 +1,16 @@
+{
+  "image": "player_spritesheet.png",
+  "frameWidth": 32,
+  "frameHeight": 48,
+  "columns": 4,
+  "rows": 4,
+  "directions": [
+    "down",
+    "up",
+    "left",
+    "right"
+  ],
+  "framesPerDirection": 4,
+  "alpha": true,
+  "note": "Animation timing and frame parity are not yet production QA validated."
+}
