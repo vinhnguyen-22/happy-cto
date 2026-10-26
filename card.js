@@ -9,17 +9,15 @@ class CardCreatorApp {
     this.selectedTheme = 'zen';
     this.selectedBadge = '🎂';
     this.selectedImageData = null;
+    this.defaultCtoPortrait = 'assets/01_Characters/portrait_cto_pixel.png';
     this.init();
   }
 
   init() {
     this.initBgCanvas();
     this.initAudio();
-    this.bindThemeEvents();
     this.bindBadgeEvents();
-    this.bindTemplateChips();
     this.bindImageUpload();
-    this.initPresetAvatars();
     this.bindFormLiveSync();
     this.bindActions();
     this.bindWallEvents();
@@ -91,34 +89,67 @@ class CardCreatorApp {
     };
     document.addEventListener('click', startSoundOnFirstClick);
 
+    const sliderAudio = document.getElementById('bgm-volume-slider');
+    const volIconSvg = document.getElementById('card-vol-icon-svg');
+
+    const updateVolIcon = (vol, isMuted) => {
+      if (!volIconSvg) return;
+      if (isMuted || vol <= 0) {
+        volIconSvg.innerHTML = `
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          <line x1="23" y1="9" x2="17" y2="15"></line>
+          <line x1="17" y1="9" x2="23" y2="15"></line>
+        `;
+      } else if (vol <= 0.5) {
+        volIconSvg.innerHTML = `
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+        `;
+      } else {
+        volIconSvg.innerHTML = `
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+        `;
+      }
+    };
+
     btnAudio.addEventListener('click', (e) => {
       e.stopPropagation();
       if (!window.gameAudio.initialized) {
         window.gameAudio.init();
       }
-      const isPlaying = window.gameAudio.toggleMute();
-      btnAudio.innerHTML = isPlaying
-        ? '<span>🎵 Nhạc Nền: BẬT</span>'
-        : '<span>🔇 Nhạc Nền: TẮT</span>';
+      const isUnmuted = window.gameAudio.toggleMute();
+      if (sliderAudio) {
+        if (!isUnmuted) {
+          sliderAudio.dataset.prevVal = sliderAudio.value;
+          sliderAudio.value = 0;
+        } else {
+          const restored = Number(sliderAudio.dataset.prevVal || 55);
+          sliderAudio.value = restored > 0 ? restored : 55;
+          window.gameAudio.setBGMVolume(sliderAudio.value / 100);
+        }
+      }
+      updateVolIcon(window.gameAudio.bgmVolume, !isUnmuted);
     });
-  }
 
-  // --- 3. ĐỔI PHONG CÁCH THIỆP (MARIO / ZEN / CYBER) ---
-  bindThemeEvents() {
-    document.querySelectorAll('.theme-opt-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        if (window.gameAudio) window.gameAudio.playJump();
-        document.querySelectorAll('.theme-opt-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        this.selectedTheme = btn.dataset.theme;
-
-        const liveFrame = document.getElementById('live-card-frame');
-        liveFrame.className = `live-card-frame theme-${this.selectedTheme}`;
+    if (sliderAudio) {
+      sliderAudio.value = Math.round((window.gameAudio.bgmVolume || 0.55) * 100);
+      sliderAudio.addEventListener('input', (e) => {
+        const val = Number(e.target.value) / 100;
+        if (window.gameAudio.isMuted && val > 0) {
+          window.gameAudio.toggleMute();
+        }
+        window.gameAudio.setBGMVolume(val);
+        if (val === 0 && !window.gameAudio.isMuted) {
+          window.gameAudio.toggleMute();
+        }
+        updateVolIcon(val, val === 0 || window.gameAudio.isMuted);
       });
-    });
+    }
   }
 
-  // --- 4. CHỌN HUY HIỆU SINH NHẬT ---
+  // --- 3. CHỌN HUY HIỆU SINH NHẬT ---
   bindBadgeEvents() {
     document.querySelectorAll('.badge-btn').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -127,19 +158,6 @@ class CardCreatorApp {
         btn.classList.add('active');
         this.selectedBadge = btn.dataset.icon || '🎂';
         this.updateLiveCard();
-      });
-    });
-  }
-
-  // --- 5. GỢI Ý CÂU CHÚC NHANH (1-CLICK CHIPS) ---
-  bindTemplateChips() {
-    const msgInput = document.getElementById('card-message');
-    document.querySelectorAll('.chip-btn').forEach(chip => {
-      chip.addEventListener('click', () => {
-        if (window.gameAudio) window.gameAudio.playPowerup();
-        msgInput.value = chip.dataset.text || '';
-        this.updateLiveCard();
-        msgInput.focus();
       });
     });
   }
@@ -211,28 +229,11 @@ class CardCreatorApp {
     document.getElementById('upload-prompt').style.display = 'flex';
     document.getElementById('upload-preview-wrap').style.display = 'none';
     document.getElementById('photo-file-input').value = '';
-    document.querySelectorAll('.preset-avatar-btn').forEach(b => b.classList.remove('selected'));
     this.updateLiveCard();
   }
 
   initPresetAvatars() {
-    const container = document.getElementById('preset-avatars-bar');
-    if (!container || typeof PRESET_AVATARS === 'undefined') return;
-    container.innerHTML = "";
-    PRESET_AVATARS.forEach(p => {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'preset-avatar-btn';
-      btn.innerHTML = `<img src="${p.data}" alt="${p.name}"> <span>${p.name}</span>`;
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        if (window.gameAudio) window.gameAudio.playClick();
-        container.querySelectorAll('.preset-avatar-btn').forEach(b => b.classList.remove('selected'));
-        btn.classList.add('selected');
-        this.setSelectedImage(p.data);
-      });
-      container.appendChild(btn);
-    });
+    // Không cần chọn avatar nhanh nữa - tự động lấy ảnh Chân Dung CTO mặc định
   }
 
   // --- 7. ĐỒNG BỘ NỘI DUNG FORM TRỰC TIẾP LÊN THẺ BÀI ---
@@ -267,6 +268,8 @@ class CardCreatorApp {
     if (previewDept) previewDept.textContent = `${realmData.name} (${realmData.department})`;
     if (previewBadge) previewBadge.textContent = this.selectedBadge;
     if (previewRealm) previewRealm.textContent = realmData.name;
+    const previewDate = document.getElementById('live-date');
+    if (previewDate) previewDate.textContent = new Date().toLocaleDateString('vi-VN');
     if (previewMsg) {
       previewMsg.textContent = msgVal
         ? `"${msgVal}"`
@@ -274,8 +277,9 @@ class CardCreatorApp {
     }
 
     if (previewImgWrap && previewImg) {
-      if (this.selectedImageData) {
-        previewImg.src = this.selectedImageData;
+      const activeImg = this.selectedImageData || this.defaultCtoPortrait;
+      if (activeImg) {
+        previewImg.src = activeImg;
         previewImgWrap.style.display = 'block';
       } else {
         previewImgWrap.style.display = 'none';
@@ -334,7 +338,7 @@ class CardCreatorApp {
       department: realmData.department,
       badge: this.selectedBadge,
       message: msg,
-      image: this.selectedImageData || realmData.assetIcon || PRESET_AVATARS[0].data
+      image: this.selectedImageData || this.defaultCtoPortrait
     });
 
     // Mario SFX chúc mừng chiến thắng!
@@ -358,7 +362,7 @@ class CardCreatorApp {
     }
   }
 
-  // Xuất thiệp ra ảnh PNG Full HD 1200x800 để gửi qua Slack/Zalo/Email
+  // Xuất thiệp ra ảnh PNG Full HD (3:4 cho theme Zen lộng lẫy, 16:9 cho theme Mario/Cyber)
   exportCardImage() {
     if (window.gameAudio) window.gameAudio.playWishSaved();
 
@@ -366,15 +370,166 @@ class CardCreatorApp {
     const realmId = Number(document.getElementById('card-realm')?.value || 1);
     const msg = (document.getElementById('card-message')?.value || 'Chúc mừng sinh nhật CTO!').trim();
     const realmData = REALMS_DATA[realmId] || REALMS_DATA[1];
+    const badge = this.selectedBadge || '🎂';
 
+    // 1. THEME TRÀ ĐẠO ZEN: Sử dụng khung tranh hoàng kim bg_card_zen.webp tỉ lệ 3:4 độ phân giải cao 960x1280
+    if (this.selectedTheme === 'zen') {
+      const canvas = document.createElement('canvas');
+      canvas.width = 960;
+      canvas.height = 1280;
+      const ctx = canvas.getContext('2d');
+
+      const renderZenContent = (bgImg) => {
+        // Vẽ khung tranh gỗ hoa sen cổ phong
+        if (bgImg && bgImg.complete && bgImg.naturalWidth > 0) {
+          ctx.drawImage(bgImg, 0, 0, 960, 1280);
+        } else {
+          const zenGrad = ctx.createLinearGradient(0, 0, 960, 1280);
+          zenGrad.addColorStop(0, '#fce4b8');
+          zenGrad.addColorStop(0.5, '#f4d39c');
+          zenGrad.addColorStop(1, '#e6ba68');
+          ctx.fillStyle = zenGrad;
+          ctx.fillRect(0, 0, 960, 1280);
+          ctx.lineWidth = 14;
+          ctx.strokeStyle = '#784212';
+          ctx.strokeRect(10, 10, 940, 1260);
+        }
+
+        // Tiêu đề đầu thiệp
+        ctx.textAlign = 'center';
+        ctx.fillStyle = '#8c531b';
+        ctx.font = 'bold 22px "Cinzel", serif, sans-serif';
+        ctx.fillText('✦ LỤC TRÀ TRI THỨC • MỪNG SINH NHẬT CTO ✦', 480, 160);
+
+        // Huy hiệu sinh nhật
+        ctx.font = '54px sans-serif';
+        ctx.fillText(badge, 480, 225);
+
+        // Tên người gửi
+        ctx.font = 'bold 36px "Noto Serif TC", serif, sans-serif';
+        ctx.fillStyle = '#361907';
+        ctx.fillText(author, 480, 280);
+
+        // Cõi trà & Phòng ban
+        ctx.font = '600 20px "Noto Serif TC", serif, sans-serif';
+        ctx.fillStyle = '#7c4714';
+        ctx.fillText(`${realmData.name} • ${realmData.department}`, 480, 318);
+
+        // Đường gạch ngăn cách cổ phong
+        ctx.strokeStyle = 'rgba(120, 66, 18, 0.4)';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([8, 6]);
+        ctx.beginPath();
+        ctx.moveTo(180, 350);
+        ctx.lineTo(780, 350);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        ctx.fillStyle = '#b8860b';
+        ctx.font = '16px sans-serif';
+        ctx.fillText('◈', 480, 356);
+
+        // Lời chúc nhiều dòng (Word wrap)
+        ctx.font = 'italic 25px "Noto Serif TC", serif, sans-serif';
+        ctx.fillStyle = '#220f04';
+        ctx.textAlign = 'center';
+
+        const maxLineW = 660;
+        const words = `"${msg}"`.split(' ');
+        let line = '';
+        let currentY = 415;
+        const lineHeight = 42;
+
+        for (let n = 0; n < words.length; n++) {
+          const testLine = line + words[n] + ' ';
+          const metrics = ctx.measureText(testLine);
+          if (metrics.width > maxLineW && n > 0) {
+            ctx.fillText(line.trim(), 480, currentY);
+            line = words[n] + ' ';
+            currentY += lineHeight;
+          } else {
+            line = testLine;
+          }
+        }
+        ctx.fillText(line.trim(), 480, currentY);
+        currentY += lineHeight;
+
+        const downloadFinal = () => {
+          // Footer: Ngày gửi
+          ctx.textAlign = 'left';
+          ctx.font = '19px "Noto Serif TC", sans-serif';
+          ctx.fillStyle = '#6b3d11';
+          ctx.fillText(`Ngày gửi: ${new Date().toLocaleDateString('vi-VN')}`, 140, 1140);
+
+          // Footer: Tên Cõi Trà
+          ctx.font = 'bold 18px "Noto Serif TC", sans-serif';
+          ctx.fillStyle = '#4a2707';
+          ctx.fillText(`◈ ${realmData.name}`, 140, 1175);
+
+          // Footer: Con dấu mộc đỏ 'Chúc' (Vermilion Seal)
+          ctx.save();
+          ctx.strokeStyle = '#c0392b';
+          ctx.fillStyle = '#c0392b';
+          ctx.lineWidth = 4;
+          ctx.beginPath();
+          ctx.arc(810, 1145, 36, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.textAlign = 'center';
+          ctx.font = 'bold 34px "Noto Serif TC", serif';
+          ctx.fillText('祝', 810, 1157);
+          ctx.restore();
+
+          const link = document.createElement('a');
+          link.download = `Thiep_Zen_Mung_Sinh_Nhat_CTO_${author.replace(/[^a-zA-Z0-9]/g, '_')}.png`;
+          link.href = canvas.toDataURL('image/png');
+          link.click();
+        };
+
+        // Nếu có ảnh đính kèm hoặc dùng ảnh Chân Dung CTO mặc định
+        const photoToDraw = this.selectedImageData || this.defaultCtoPortrait;
+        if (photoToDraw) {
+          const attachedImg = new Image();
+          attachedImg.onload = () => {
+            const photoW = 420;
+            const photoH = Math.min(260, Math.floor((photoW / attachedImg.naturalWidth) * attachedImg.naturalHeight));
+            const photoX = (960 - photoW) / 2;
+            const photoY = Math.min(currentY + 20, 820);
+
+            ctx.save();
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.35)';
+            ctx.shadowBlur = 14;
+            ctx.shadowOffsetY = 6;
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(photoX - 4, photoY - 4, photoW + 8, photoH + 8);
+            ctx.drawImage(attachedImg, photoX, photoY, photoW, photoH);
+            ctx.strokeStyle = '#b8860b';
+            ctx.lineWidth = 3;
+            ctx.strokeRect(photoX - 4, photoY - 4, photoW + 8, photoH + 8);
+            ctx.restore();
+
+            downloadFinal();
+          };
+          attachedImg.onerror = () => downloadFinal();
+          attachedImg.src = photoToDraw;
+        } else {
+          downloadFinal();
+        }
+      };
+
+      const zenBg = new Image();
+      zenBg.onload = () => renderZenContent(zenBg);
+      zenBg.onerror = () => renderZenContent(null);
+      zenBg.src = 'assets/bg_card_zen.webp';
+      return;
+    }
+
+    // 2. THEME MARIO & CYBER: Khung ngang 1200x800
     const canvas = document.createElement('canvas');
     canvas.width = 1200;
     canvas.height = 800;
     const ctx = canvas.getContext('2d');
 
-    // 1. Vẽ nền theo theme
     if (this.selectedTheme === 'mario') {
-      // Sky blue
       const skyGrad = ctx.createLinearGradient(0, 0, 0, 800);
       skyGrad.addColorStop(0, '#5c94fc');
       skyGrad.addColorStop(0.65, '#8ab4f8');
@@ -383,14 +538,13 @@ class CardCreatorApp {
       ctx.fillStyle = skyGrad;
       ctx.fillRect(0, 0, 1200, 800);
 
-      // Pixel border
       ctx.lineWidth = 16;
       ctx.strokeStyle = '#000';
       ctx.strokeRect(8, 8, 1184, 784);
       ctx.lineWidth = 8;
       ctx.strokeStyle = '#ffd700';
       ctx.strokeRect(20, 20, 1160, 760);
-    } else if (this.selectedTheme === 'cyber') {
+    } else {
       const cybGrad = ctx.createLinearGradient(0, 0, 1200, 800);
       cybGrad.addColorStop(0, '#0b132b');
       cybGrad.addColorStop(0.5, '#1c2541');
@@ -404,50 +558,28 @@ class CardCreatorApp {
       ctx.lineWidth = 2;
       ctx.strokeStyle = '#ffd700';
       ctx.strokeRect(26, 26, 1148, 748);
-    } else {
-      // Zen Golden Wood
-      const zenGrad = ctx.createLinearGradient(0, 0, 1200, 800);
-      zenGrad.addColorStop(0, '#fce4b8');
-      zenGrad.addColorStop(0.5, '#f4d39c');
-      zenGrad.addColorStop(1, '#e6ba68');
-      ctx.fillStyle = zenGrad;
-      ctx.fillRect(0, 0, 1200, 800);
-
-      ctx.lineWidth = 14;
-      ctx.strokeStyle = '#784212';
-      ctx.strokeRect(10, 10, 1180, 780);
-      ctx.lineWidth = 3;
-      ctx.strokeStyle = '#ffd700';
-      ctx.strokeRect(24, 24, 1152, 752);
-
-      // Red hanging cord
-      ctx.fillStyle = '#c0392b';
-      ctx.fillRect(594, 24, 12, 40);
-      ctx.beginPath();
-      ctx.arc(600, 68, 14, 0, Math.PI * 2);
-      ctx.fill();
     }
 
-    // 2. Tiêu đề thiệp
-    ctx.fillStyle = (this.selectedTheme === 'zen') ? '#512e16' : '#ffd700';
+    // Tiêu đề thiệp
+    ctx.fillStyle = '#ffd700';
     ctx.font = 'bold 34px "Cinzel", serif, sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText('✦ ĐẠI LỄ MỪNG SINH NHẬT CTO 2026 ✦', 600, 120);
 
     // Huy hiệu & Tên người gửi
     ctx.font = '54px sans-serif';
-    ctx.fillText(this.selectedBadge, 600, 190);
+    ctx.fillText(badge, 600, 190);
 
     ctx.font = 'bold 36px "Noto Serif TC", serif, sans-serif';
-    ctx.fillStyle = (this.selectedTheme === 'zen') ? '#3d1a04' : '#ffffff';
+    ctx.fillStyle = '#ffffff';
     ctx.fillText(author, 600, 245);
 
     ctx.font = '22px "Noto Serif TC", serif, sans-serif';
-    ctx.fillStyle = (this.selectedTheme === 'zen') ? '#784212' : '#ffd700';
+    ctx.fillStyle = '#ffd700';
     ctx.fillText(`${realmData.name} • ${realmData.department}`, 600, 280);
 
     // Đường gạch ngang
-    ctx.strokeStyle = (this.selectedTheme === 'zen') ? 'rgba(120, 66, 18, 0.4)' : 'rgba(255, 215, 0, 0.4)';
+    ctx.strokeStyle = 'rgba(255, 215, 0, 0.4)';
     ctx.lineWidth = 2;
     ctx.setLineDash([8, 8]);
     ctx.beginPath();
@@ -456,9 +588,9 @@ class CardCreatorApp {
     ctx.stroke();
     ctx.setLineDash([]);
 
-    // 3. Lời chúc nhiều dòng (Word Wrap)
+    // Lời chúc nhiều dòng (Word Wrap)
     ctx.font = 'italic 28px "Noto Serif TC", serif, sans-serif';
-    ctx.fillStyle = (this.selectedTheme === 'zen') ? '#2b170c' : '#ffffff';
+    ctx.fillStyle = '#ffffff';
     ctx.textAlign = 'center';
 
     const maxLineW = 900;
@@ -478,13 +610,12 @@ class CardCreatorApp {
     }
     ctx.fillText(line, 600, startY);
 
-    // 4. Dấu mộc đỏ & Ngày tháng
+    // Dấu mộc đỏ & Ngày tháng
     ctx.textAlign = 'left';
     ctx.font = '20px "Noto Serif TC", sans-serif';
-    ctx.fillStyle = (this.selectedTheme === 'zen') ? '#784212' : '#ffd700';
+    ctx.fillStyle = '#ffd700';
     ctx.fillText(`Ngày gửi: ${new Date().toLocaleDateString('vi-VN')}`, 100, 740);
 
-    // Con dấu đỏ 'Chúc'
     ctx.strokeStyle = '#c0392b';
     ctx.fillStyle = '#c0392b';
     ctx.lineWidth = 4;
@@ -495,11 +626,34 @@ class CardCreatorApp {
     ctx.font = 'bold 34px "Noto Serif TC", serif';
     ctx.fillText('祝', 1100, 732);
 
-    // 5. Tải file về
-    const link = document.createElement('a');
-    link.download = `Thiep_Mung_Sinh_Nhat_CTO_${author.replace(/[^a-zA-Z0-9]/g, '_')}.png`;
-    link.href = canvas.toDataURL('image/png');
-    link.click();
+    const triggerDownload = () => {
+      const link = document.createElement('a');
+      link.download = `Thiep_Mung_Sinh_Nhat_CTO_${author.replace(/[^a-zA-Z0-9]/g, '_')}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    };
+
+    const photoToDraw = this.selectedImageData || this.defaultCtoPortrait;
+    if (photoToDraw) {
+      const img = new Image();
+      img.onload = () => {
+        const imgW = 200;
+        const imgH = 130;
+        const imgX = (1200 - imgW) / 2;
+        const imgY = Math.min(startY + 20, 580);
+        ctx.save();
+        ctx.strokeStyle = '#ffd700';
+        ctx.lineWidth = 4;
+        ctx.strokeRect(imgX, imgY, imgW, imgH);
+        ctx.drawImage(img, imgX, imgY, imgW, imgH);
+        ctx.restore();
+        triggerDownload();
+      };
+      img.onerror = () => triggerDownload();
+      img.src = photoToDraw;
+    } else {
+      triggerDownload();
+    }
   }
 
   // Hiệu ứng pháo hoa giấy Confetti rực rỡ
@@ -549,8 +703,44 @@ class CardCreatorApp {
     const btnClose = document.getElementById('view-close-btn');
     const backdrop = document.getElementById('view-backdrop');
 
-    if (btnClose) btnClose.addEventListener('click', () => modal.classList.remove('active'));
-    if (backdrop) backdrop.addEventListener('click', () => modal.classList.remove('active'));
+    const btnCloseVm = document.getElementById('btn-close-vm');
+    if (btnCloseVm) btnCloseVm.addEventListener('click', () => modal.classList.remove('active'));
+
+    const btnPrintWallCard = document.getElementById('btn-print-wall-card');
+    if (btnPrintWallCard) {
+      btnPrintWallCard.addEventListener('click', () => {
+        if (this.currentViewingWish) {
+          if (window.gameAudio) window.gameAudio.playClick();
+          this.printWishCard(this.currentViewingWish);
+        }
+      });
+    }
+
+    const btnDownloadWallCard = document.getElementById('btn-download-wall-card');
+    if (btnDownloadWallCard) {
+      btnDownloadWallCard.addEventListener('click', () => {
+        if (this.currentViewingWish) {
+          if (window.gameAudio) window.gameAudio.playClick();
+          this.downloadWishCard(this.currentViewingWish);
+        }
+      });
+    }
+
+    const btnDownloadPng = document.getElementById('btn-download-png');
+    if (btnDownloadPng) {
+      btnDownloadPng.addEventListener('click', () => {
+        if (window.gameAudio) window.gameAudio.playClick();
+        this.downloadCurrentFormCard();
+      });
+    }
+
+    const btnDownloadLiveCard = document.getElementById('btn-download-live-card');
+    if (btnDownloadLiveCard) {
+      btnDownloadLiveCard.addEventListener('click', () => {
+        if (window.gameAudio) window.gameAudio.playClick();
+        this.downloadCurrentFormCard();
+      });
+    }
   }
 
   renderWall(filterDept = 'all') {
@@ -588,6 +778,7 @@ class CardCreatorApp {
       const dept = wish.department || realmData.department;
       const date = wish.date || '20/10/2026';
       const msg = wish.message || '';
+      const cardImg = wish.image || 'assets/01_Characters/portrait_cto_pixel.png';
 
       card.innerHTML = `
         <div class="wall-card-rope"></div>
@@ -601,13 +792,27 @@ class CardCreatorApp {
             <span class="w-item-date">${date}</span>
           </div>
           <p class="w-item-msg">"${msg}"</p>
-          ${wish.image ? `<div class="w-item-thumb"><img src="${wish.image}" alt="Kỷ niệm"></div>` : ''}
+          <div class="w-item-thumb"><img src="${cardImg}" alt="Kỷ niệm"></div>
         </div>
         <div class="w-item-footer">
           <span class="w-item-pill" style="border-color:${realmData.color}">${realmData.name}</span>
-          <span class="w-item-hint">Xem chi tiết 🔍</span>
+          <div style="display: flex; gap: 6px; align-items: center;">
+            <button type="button" class="w-item-dl-btn" title="Tải thiệp này về máy" style="background: rgba(120,66,18,0.18); border: 1px solid rgba(120,66,18,0.45); border-radius: 4px; padding: 2px 7px; font-size: 11px; cursor: pointer; color: #4a2707; font-weight: 700; display: inline-flex; align-items: center; gap: 2px;">
+              <span>Tải Thiệp</span>
+            </button>
+            <span class="w-item-hint">Xem chi tiết ✦</span>
+          </div>
         </div>
       `;
+
+      const dlBtn = card.querySelector('.w-item-dl-btn');
+      if (dlBtn) {
+        dlBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (window.gameAudio) window.gameAudio.playClick();
+          this.downloadWishCard(wish);
+        });
+      }
 
       card.addEventListener('click', () => {
         if (window.gameAudio) window.gameAudio.playClick();
@@ -639,7 +844,297 @@ class CardCreatorApp {
       }
     }
 
+    this.currentViewingWish = wish;
     modal.classList.add('active');
+  }
+
+  // Vẽ thiệp chúc mừng lên Canvas 960x1280 với nền Hoàng Kim Zen bg_card_zen.webp
+  renderWishCardToCanvas(wish, callback) {
+    if (!wish) return;
+    const realmData = (typeof REALMS_DATA !== 'undefined' && REALMS_DATA[wish.realmId])
+      ? REALMS_DATA[wish.realmId]
+      : { name: 'Trà Điện Nhất Tâm', department: 'Ban Lãnh Đạo & Khối Bạn' };
+    const author = (wish.author || 'Đồng Đội Khối Công Nghệ').trim();
+    const dept = wish.department || realmData.department;
+    const msg = (wish.message || 'Chúc mừng sinh nhật CTO!').trim();
+    const badge = wish.badge || '🎂';
+    const date = wish.date || new Date().toLocaleDateString('vi-VN');
+    const photoToDraw = wish.image || this.defaultCtoPortrait;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = 960;
+    canvas.height = 1280;
+    const ctx = canvas.getContext('2d');
+
+    const renderZenCard = (bgImg) => {
+      if (bgImg && bgImg.complete && bgImg.naturalWidth > 0) {
+        ctx.drawImage(bgImg, 0, 0, 960, 1280);
+      } else {
+        const zenGrad = ctx.createLinearGradient(0, 0, 960, 1280);
+        zenGrad.addColorStop(0, '#fce4b8');
+        zenGrad.addColorStop(0.5, '#f4d39c');
+        zenGrad.addColorStop(1, '#e6ba68');
+        ctx.fillStyle = zenGrad;
+        ctx.fillRect(0, 0, 960, 1280);
+        ctx.lineWidth = 14;
+        ctx.strokeStyle = '#784212';
+        ctx.strokeRect(10, 10, 940, 1260);
+      }
+
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#8c531b';
+      ctx.font = 'bold 22px "Cinzel", serif, sans-serif';
+      ctx.fillText('✦ LỤC TRÀ TRI THỨC • MỪNG SINH NHẬT CTO ✦', 480, 160);
+
+      ctx.font = '54px sans-serif';
+      ctx.fillText(badge, 480, 225);
+
+      ctx.font = 'bold 36px "Noto Serif TC", serif, sans-serif';
+      ctx.fillStyle = '#361907';
+      ctx.fillText(author, 480, 280);
+
+      ctx.font = '600 20px "Noto Serif TC", serif, sans-serif';
+      ctx.fillStyle = '#7c4714';
+      ctx.fillText(`${realmData.name} • ${dept}`, 480, 318);
+
+      ctx.strokeStyle = 'rgba(120, 66, 18, 0.4)';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([8, 6]);
+      ctx.beginPath();
+      ctx.moveTo(180, 350);
+      ctx.lineTo(780, 350);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.fillStyle = '#b8860b';
+      ctx.font = '16px sans-serif';
+      ctx.fillText('◈', 480, 356);
+
+      ctx.font = 'italic 25px "Noto Serif TC", serif, sans-serif';
+      ctx.fillStyle = '#220f04';
+      ctx.textAlign = 'center';
+
+      const maxLineW = 660;
+      const words = `"${msg}"`.split(' ');
+      let line = '';
+      let currentY = 415;
+      const lineHeight = 42;
+
+      for (let n = 0; n < words.length; n++) {
+        const testLine = line + words[n] + ' ';
+        const metrics = ctx.measureText(testLine);
+        if (metrics.width > maxLineW && n > 0) {
+          ctx.fillText(line.trim(), 480, currentY);
+          line = words[n] + ' ';
+          currentY += lineHeight;
+        } else {
+          line = testLine;
+        }
+      }
+      ctx.fillText(line.trim(), 480, currentY);
+      currentY += lineHeight;
+
+      const finishDrawing = () => {
+        ctx.textAlign = 'left';
+        ctx.font = '19px "Noto Serif TC", sans-serif';
+        ctx.fillStyle = '#6b3d11';
+        ctx.fillText(`Ngày gửi: ${date}`, 140, 1140);
+
+        ctx.font = 'bold 18px "Noto Serif TC", sans-serif';
+        ctx.fillStyle = '#4a2707';
+        ctx.fillText(`◈ ${realmData.name}`, 140, 1175);
+
+        ctx.save();
+        ctx.strokeStyle = '#c0392b';
+        ctx.fillStyle = '#c0392b';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.arc(810, 1145, 36, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.textAlign = 'center';
+        ctx.font = 'bold 34px "Noto Serif TC", serif';
+        ctx.fillText('祝', 810, 1157);
+        ctx.restore();
+
+        if (callback) callback(canvas);
+      };
+
+      if (photoToDraw) {
+        const attachedImg = new Image();
+        attachedImg.onload = () => {
+          const nw = attachedImg.naturalWidth || 1;
+          const nh = attachedImg.naturalHeight || 1;
+          const imgRatio = nw / nh;
+
+          // Vùng hiển thị ảnh tối đa (không vượt quá lề hoa sen hai bên và khoảng cách footer)
+          const maxBoxW = 420;
+          const availTop = currentY + 24;
+          const availBottom = 1080;
+          const availH = Math.max(220, availBottom - availTop);
+          const maxBoxH = Math.min(440, availH);
+
+          let photoW = maxBoxW;
+          let photoH = Math.round(photoW / imgRatio);
+
+          if (photoH > maxBoxH) {
+            photoH = maxBoxH;
+            photoW = Math.round(photoH * imgRatio);
+          }
+
+          if (photoW > maxBoxW) {
+            photoW = maxBoxW;
+            photoH = Math.round(photoW / imgRatio);
+          }
+
+          const photoX = Math.round((960 - photoW) / 2);
+          const photoY = Math.round(availTop + (availH - photoH) / 2);
+
+          ctx.save();
+          ctx.shadowColor = 'rgba(0, 0, 0, 0.35)';
+          ctx.shadowBlur = 16;
+          ctx.shadowOffsetY = 8;
+          ctx.fillStyle = '#fff';
+          ctx.fillRect(photoX - 6, photoY - 6, photoW + 12, photoH + 12);
+          ctx.drawImage(attachedImg, photoX, photoY, photoW, photoH);
+          ctx.strokeStyle = '#b8860b';
+          ctx.lineWidth = 3.5;
+          ctx.strokeRect(photoX - 6, photoY - 6, photoW + 12, photoH + 12);
+
+          // Viền chỉ vàng mảnh trang trí bên trong
+          ctx.strokeStyle = 'rgba(255, 215, 0, 0.55)';
+          ctx.lineWidth = 1;
+          ctx.strokeRect(photoX - 2, photoY - 2, photoW + 4, photoH + 4);
+          ctx.restore();
+
+          finishDrawing();
+        };
+        attachedImg.onerror = () => finishDrawing();
+        attachedImg.src = photoToDraw;
+      } else {
+        finishDrawing();
+      }
+    };
+
+    const zenBg = new Image();
+    zenBg.onload = () => renderZenCard(zenBg);
+    zenBg.onerror = () => renderZenCard(null);
+    zenBg.src = 'assets/bg_card_zen.webp';
+  }
+
+  // Tải thiệp chúc mừng chất lượng cao về máy tính / điện thoại
+  downloadWishCard(wish) {
+    if (!wish) return;
+    if (window.gameAudio) window.gameAudio.playWishSaved();
+
+    const author = (wish.author || 'Đồng Đội Khối Công Nghệ').trim();
+    const safeAuthor = author.replace(/[^a-zA-Z0-9\u00C0-\u024F\u1EA0-\u1EF9]/g, '_');
+    const filename = `Thiep_Sinh_Nhat_CTO_${safeAuthor}.png`;
+
+    this.renderWishCardToCanvas(wish, (canvas) => {
+      try {
+        canvas.toBlob((blob) => {
+          if (blob) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(() => URL.revokeObjectURL(url), 4000);
+          } else {
+            const dataUrl = canvas.toDataURL('image/png');
+            const a = document.createElement('a');
+            a.href = dataUrl;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+          }
+        }, 'image/png');
+      } catch (e) {
+        const dataUrl = canvas.toDataURL('image/png');
+        const a = document.createElement('a');
+        a.href = dataUrl;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
+    });
+  }
+
+  // Tải thiệp đang soạn thảo trên Form / Live Preview
+  downloadCurrentFormCard() {
+    const author = (document.getElementById('card-author')?.value || 'Đồng Đội Khối Công Nghệ').trim();
+    const realmId = Number(document.getElementById('card-realm')?.value || 1);
+    const msg = (document.getElementById('card-message')?.value || 'Chúc mừng sinh nhật CTO!').trim();
+    const realmData = REALMS_DATA[realmId] || REALMS_DATA[1];
+    const badge = this.selectedBadge || '🎂';
+    const photoToDraw = this.attachedImageData || this.defaultCtoPortrait;
+
+    const tempWish = {
+      author,
+      department: realmData.department,
+      realmId,
+      message: msg,
+      badge,
+      image: photoToDraw,
+      date: new Date().toLocaleDateString('vi-VN')
+    };
+
+    this.downloadWishCard(tempWish);
+  }
+
+  // In thiệp chúc mừng chất lượng cao với nền bg_card_zen.webp
+  printWishCard(wish) {
+    if (!wish) return;
+    const author = (wish.author || 'Đồng Đội Khối Công Nghệ').trim();
+
+    this.renderWishCardToCanvas(wish, (canvas) => {
+      const dataUrl = canvas.toDataURL('image/png');
+      const safeAuthor = author.replace(/[^a-zA-Z0-9\u00C0-\u024F\u1EA0-\u1EF9]/g, '_');
+
+      const printWin = window.open('', '_blank');
+      if (printWin) {
+        printWin.document.write(`
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="utf-8">
+            <title>Thiệp Chúc Mừng Sinh Nhật CTO - ${author}</title>
+            <style>
+              @page { size: auto; margin: 8mm; }
+              body { margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; background: #1a0f07; font-family: sans-serif; }
+              .card-print-img { max-width: 90vw; max-height: 92vh; width: auto; height: auto; box-shadow: 0 8px 30px rgba(0,0,0,0.8); border-radius: 12px; }
+              .print-actions { margin-top: 14px; display: flex; gap: 12px; }
+              .btn { padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; border: none; font-size: 14px; }
+              .btn-print { background: #d4af37; color: #1e0d03; }
+              .btn-download { background: #3b2515; color: #ffd700; border: 1px solid #ffd700; }
+              @media print {
+                body { background: transparent; padding: 0; }
+                .card-print-img { max-width: 100%; max-height: 100%; box-shadow: none; border-radius: 0; }
+                .print-actions { display: none !important; }
+              }
+            </style>
+          </head>
+          <body>
+            <img src="${dataUrl}" class="card-print-img" alt="Thiệp Chúc Mừng Sinh Nhật CTO">
+            <div class="print-actions">
+              <button class="btn btn-print" onclick="window.print()">Bấm Để In Thiệp</button>
+              <a class="btn btn-download" href="${dataUrl}" download="Thiep_Sinh_Nhat_CTO_${safeAuthor}.png" style="text-decoration:none;">Tải Ảnh Thiệp (PNG)</a>
+            </div>
+            <script>
+              setTimeout(() => { window.print(); }, 400);
+            <\/script>
+          </body>
+          </html>
+        `);
+        printWin.document.close();
+      } else {
+        this.downloadWishCard(wish);
+      }
+    });
   }
 }
 

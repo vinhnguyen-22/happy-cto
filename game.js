@@ -125,12 +125,12 @@ class GameEngine {
     const radius = Math.min(this.frameRect.w, this.frameRect.h) * 0.25;
 
     this.teaBoxes = [
-      { id: 1, name: "Cổ Mạch Phổ Nhĩ", dept: "Hạ tầng & Network", color: "#e67e22", angle: -Math.PI / 2 },
-      { id: 2, name: "Thiên Công Ngọc Lộ", dept: "Phát triển phần mềm", color: "#2ecc71", angle: -Math.PI / 6 },
-      { id: 3, name: "Trường Lưu Ban Trà", dept: "Vận hành hệ thống", color: "#f39c12", angle: Math.PI / 6 },
-      { id: 4, name: "Huyền Giáp Quan Âm", dept: "An toàn thông tin", color: "#3498db", angle: Math.PI / 2 },
-      { id: 5, name: "Vân Hành Tiên Trà", dept: "Triển khai dữ liệu", color: "#9b59b6", angle: 5 * Math.PI / 6 },
-      { id: 6, name: "Tuyết Tâm Mạt Trà", dept: "Quản trị & Phân tích", color: "#e74c3c", angle: -5 * Math.PI / 6 }
+      { id: 1, name: "Cổ Mạch Phổ Nhĩ", dept: "Quản lý hạ tầng (IT.INF)", color: "#e67e22", angle: -Math.PI / 2 },
+      { id: 2, name: "Thiên Công Ngọc Lộ", dept: "Phát triển phần mềm (IT.DEV)", color: "#2ecc71", angle: -Math.PI / 6 },
+      { id: 3, name: "Trường Lưu Ban Trà", dept: "Vận hành nền tảng (IT.SDO)", color: "#f39c12", angle: Math.PI / 6 },
+      { id: 4, name: "Huyền Giáp Quan Âm", dept: "Quản lý hạ tầng & ATTT", color: "#3498db", angle: Math.PI / 2 },
+      { id: 5, name: "Vân Hành Tiên Trà", dept: "Giải pháp báo cáo (IT.DPI)", color: "#9b59b6", angle: 5 * Math.PI / 6 },
+      { id: 6, name: "Tuyết Tâm Mạt Trà", dept: "Quản trị & Phân tích DL", color: "#e74c3c", angle: -5 * Math.PI / 6 }
     ].map(box => ({
       ...box,
       x: cx + Math.cos(box.angle) * radius,
@@ -398,26 +398,31 @@ class GameEngine {
       }
     } else if (action.type === 'interactable') {
       window.gameAudio.playClick();
-      if (action.item.isChallengeAltar) {
+      if (action.item.isLeadNPC) {
+        if (action.item.leadInfo) {
+          if (window.uiManager && window.uiManager.showLeadDialogue) {
+            window.uiManager.showLeadDialogue(action.item.leadInfo);
+          } else if (window.uiManager) {
+            window.uiManager.showRealmDialogue(this.currentRealmId);
+          }
+        } else if (window.uiManager) {
+          window.uiManager.showRealmDialogue(this.currentRealmId);
+        }
+      } else if (action.item.isChallengeAltar) {
         if (window.miniGameManager) {
           window.miniGameManager.openGame(action.item.realmId);
         }
       } else if (action.item.isNextRealmDoor) {
-        if (action.item.isLocked) {
-          window.gameAudio.playClick();
-          alert(`🔒 Cửa qua cõi tiếp theo đang bị khóa phong ấn!\nHãy hoàn thành thử thách "${action.item.challengeTitle}" (nhấn vào [Đài Thử Thách] ở giữa cõi) để mở cửa qua màn nhé!`);
+        window.gameAudio.playDoorOpen();
+        window.gameAudio.playFanfare();
+        if (action.item.nextRealmId === 0) {
+          // Đã vượt qua cả 6 cõi trà -> Cửa dẫn về Trà Điện Nhất Tâm và khai mở Đại Cảnh Sinh Nhật
+          this.switchRealm(0);
+          setTimeout(() => {
+            if (window.uiManager) window.uiManager.openGrandFinaleModal();
+          }, 700);
         } else {
-          window.gameAudio.playDoorOpen();
-          window.gameAudio.playFanfare();
-          if (action.item.nextRealmId === 0) {
-            // Đã vượt qua cả 6 cõi trà -> Cửa dẫn về Trà Điện Nhất Tâm và khai mở Đại Cảnh Sinh Nhật
-            this.switchRealm(0);
-            setTimeout(() => {
-              if (window.uiManager) window.uiManager.openGrandFinaleModal();
-            }, 700);
-          } else {
-            this.switchRealm(action.item.nextRealmId, 'left');
-          }
+          this.switchRealm(action.item.nextRealmId, 'left');
         }
       } else if (action.item.isAddButton) {
         if (window.uiManager && window.uiManager.openWishStudio) {
@@ -431,23 +436,23 @@ class GameEngine {
     }
   }
 
-  // Kiểm tra nhân vật có đang đứng cạnh / chạm vào mục tiêu không (tính theo toàn bộ hình thể nhân vật 72x108 px)
+  // Kiểm tra nhân vật có đang đứng cạnh / chạm vào mục tiêu không (tính theo toàn bộ hình thể nhân vật 116x174 px - oai phong bằng NPC)
   isPlayerNearTarget(targetX, targetY, targetRadius = 46) {
     const pcx = this.player.x;
-    const pcy = this.player.y - 42; // Tâm thân người chơi
+    const pcy = this.player.y - 70; // Tâm thân người chơi
 
     const distCenter = Math.hypot(pcx - targetX, pcy - targetY);
     const distFeet = Math.hypot(this.player.x - targetX, this.player.y - targetY);
 
     // Khoảng cách từ mép bounding box sprite nhân vật đến tâm vật thể
-    const dx = Math.max(0, Math.abs(this.player.x - targetX) - 36);
-    const dy = (targetY < this.player.y - 96)
-      ? (this.player.y - 96 - targetY)
-      : (targetY > this.player.y + 12 ? targetY - (this.player.y + 12) : 0);
+    const dx = Math.max(0, Math.abs(this.player.x - targetX) - 58);
+    const dy = (targetY < this.player.y - 150)
+      ? (this.player.y - 150 - targetY)
+      : (targetY > this.player.y + 16 ? targetY - (this.player.y + 16) : 0);
     const distBox = Math.hypot(dx, dy);
 
-    // Tiếp xúc khi tâm thân trong 135px, chân trong 125px, hoặc mép sprite chạm mép vật thể
-    return (distCenter <= 135 || distFeet <= 125 || distBox <= (targetRadius + 45));
+    // Tiếp xúc khi tâm thân trong 155px, chân trong 145px, hoặc mép sprite chạm mép vật thể
+    return (distCenter <= 155 || distFeet <= 145 || distBox <= (targetRadius + 55));
   }
 
   // Tương tác bằng phím bấm (E / Enter / Space) khi đứng gần vật thể hoặc để đọc tiếp thoại
@@ -587,6 +592,56 @@ class GameEngine {
     const realmData = REALMS_DATA[this.currentRealmId];
     const items = [];
 
+    // Trưởng Phòng NPC của cõi hiện tại (Đứng trực tiếp trong màn chơi để chào đón người chơi)
+    if (this.currentRealmId >= 1 && this.currentRealmId <= 6 && realmData) {
+      if (realmData.leads && Array.isArray(realmData.leads)) {
+        // Cõi có nhiều Trưởng phòng cùng xuất hiện (Cõi 3: Anh Kiệt LPS & Anh Kiên Lê SCEX)
+        realmData.leads.forEach(ld => {
+          const lPos = ld.pos || { x: 0.22, y: 0.65 };
+          const npcX = this.frameRect.x + this.frameRect.w * lPos.x;
+          const npcY = this.frameRect.y + this.frameRect.h * lPos.y;
+          items.push({
+            id: `lead-npc-${ld.id || ld.shortName}`,
+            isLeadNPC: true,
+            realmId: this.currentRealmId,
+            leadInfo: ld,
+            leadName: ld.name,
+            leadShortName: ld.shortName,
+            leadRole: ld.role || "Trưởng Phòng",
+            leadSpriteKey: ld.spriteKey,
+            leadPortraitKey: ld.portraitKey,
+            screenX: npcX,
+            screenY: npcY,
+            radius: 68,
+            name: ld.shortName || ld.name,
+            color: realmData.color,
+            icon: "👤"
+          });
+        });
+      } else if (realmData.leadName) {
+        // Cõi có 1 Trưởng phòng đại diện (Cõi 1: Anh Bảo, Cõi 2: Anh Thạnh, Cõi 4: Anh Bảo, Cõi 5: Chị Hiền, Cõi 6: Anh Tuyên)
+        const lPos = realmData.leadPos || { x: 0.15, y: 0.74 };
+        const npcX = this.frameRect.x + this.frameRect.w * lPos.x;
+        const npcY = this.frameRect.y + this.frameRect.h * lPos.y;
+        items.push({
+          id: `lead-npc-${this.currentRealmId}`,
+          isLeadNPC: true,
+          realmId: this.currentRealmId,
+          leadName: realmData.leadName,
+          leadShortName: realmData.leadName.split('-')[0].trim(),
+          leadRole: realmData.leadRole || "Trưởng Phòng",
+          leadSpriteKey: (this.currentRealmId === 1 || this.currentRealmId === 4) ? 'lead_sprite_bao' : `lead_sprite_${this.currentRealmId}`,
+          leadPortraitKey: (this.currentRealmId === 1 || this.currentRealmId === 4) ? 'lead_portrait_bao' : `lead_portrait_${this.currentRealmId}`,
+          screenX: npcX,
+          screenY: npcY,
+          radius: 68,
+          name: realmData.leadName,
+          color: realmData.color,
+          icon: "👤"
+        });
+      }
+    }
+
     // Đài Thử Thách Mini-Game cho tất cả 6 cõi trà (1 -> 6)
     if (this.currentRealmId >= 1 && this.currentRealmId <= 6) {
       const isDone = window.miniGameManager ? window.miniGameManager.isCompleted(this.currentRealmId) : false;
@@ -622,17 +677,7 @@ class GameEngine {
       });
     });
 
-    // Nút "Treo Lời Chúc Mới"
-    items.push({
-      id: "btn-add-new-wish",
-      isAddButton: true,
-      screenX: this.frameRect.x + this.frameRect.w * 0.5,
-      screenY: this.frameRect.y + this.frameRect.h * 0.68,
-      radius: 46,
-      name: "Treo Lời Chúc Mới",
-      color: "#ffd700",
-      icon: "✨"
-    });
+
 
     // CỔNG CHUYỂN CÕI (CỬA QUA MÀN TIẾP THEO)
     // Sau khi làm xong nhiệm vụ cõi này, cửa mở để bước sang màn khác
@@ -646,17 +691,17 @@ class GameEngine {
     items.push({
       id: `door-next-realm-${this.currentRealmId}`,
       isNextRealmDoor: true,
-      isLocked: !isTaskDone,
+      isLocked: false,
       realmId: this.currentRealmId,
       nextRealmId: nextRealmId,
       nextRealmName: nextRealmData.name,
       challengeTitle: challengeCfg.title,
       screenX: this.frameRect.x + this.frameRect.w * 0.88,
       screenY: this.frameRect.y + this.frameRect.h * 0.56,
-      radius: 54,
-      name: isTaskDone ? `Cổng Qua Cõi: ${nextRealmData.name}` : `Cổng Khóa 🔒 (Làm Xong Nhiệm Vụ Để Mở)`,
-      color: isTaskDone ? "#ffd700" : "#7f8c8d",
-      icon: isTaskDone ? "🚪" : "🔒"
+      radius: 68,
+      name: `Cổng Qua Cõi: ${nextRealmData.name}`,
+      color: "#ffd700",
+      icon: "🚪"
     });
 
     this.currentInteractables = items;
@@ -666,7 +711,7 @@ class GameEngine {
     const door = this.currentInteractables.find(it => it.isNextRealmDoor);
     if (door) {
       this.player.targetX = door.screenX;
-      this.player.targetY = door.screenY + 20;
+      this.player.targetY = door.screenY + 45;
     }
   }
 
@@ -755,10 +800,10 @@ class GameEngine {
       }
     }
 
-    const minPX = this.frameRect.x + 25;
-    const maxPX = this.frameRect.x + this.frameRect.w - 25;
-    const minPY = this.frameRect.y + 70;
-    const maxPY = this.frameRect.y + this.frameRect.h - 70;
+    const minPX = this.frameRect.x + 40;
+    const maxPX = this.frameRect.x + this.frameRect.w - 40;
+    const minPY = this.frameRect.y + 110;
+    const maxPY = this.frameRect.y + this.frameRect.h - 55;
     this.player.x = Math.max(minPX, Math.min(maxPX, this.player.x));
     this.player.y = Math.max(minPY, Math.min(maxPY, this.player.y));
 
@@ -901,7 +946,7 @@ class GameEngine {
         } else if (this.nearbyInteractable.type === 'central_table') {
           label.textContent = "THƯỞNG TRÀ";
         } else if (this.nearbyInteractable.item && this.nearbyInteractable.item.isNextRealmDoor) {
-          label.textContent = this.nearbyInteractable.item.isLocked ? "CỬA KHÓA" : "BƯỚC QUA";
+          label.textContent = "BƯỚC QUA";
         } else if (this.nearbyInteractable.item && this.nearbyInteractable.item.isChallengeAltar) {
           label.textContent = "THỬ THÁCH";
         } else if (this.nearbyInteractable.item && this.nearbyInteractable.item.isAddButton) {
@@ -1041,7 +1086,11 @@ class GameEngine {
       const item = this.nearbyInteractable.item;
       px = item.screenX;
       py = item.screenY - 50;
-      if (item.isChallengeAltar) {
+      if (item.isLeadNPC) {
+        const shortName = item.leadShortName || (item.leadName || "").split('-')[0].trim();
+        label = `[E] Trò Chuyện (${shortName}) 💬`;
+        py = item.screenY - 178; // Đặt banner phía trên bảng tên của Trưởng Phòng (cao 175px)
+      } else if (item.isChallengeAltar) {
         label = item.isCompleted ? "[E] Thử Thách (Đã Đạt 🏆)" : "[E] Khai Mở Thử Thách Cõi Trà 🎮";
       } else {
         label = item.isAddButton ? "[E] Khắc Ghi Lời Chúc" : `[E] Lĩnh Hội Lời Chúc (${item.name})`;
@@ -1268,7 +1317,9 @@ class GameEngine {
 
   // Vẽ các điểm tương tác (dùng ảnh assets pixel 64x64)
   renderInteractables() {
+    // 1. Vẽ các vật phẩm môi trường, đài thử thách, cửa chuyển cõi, lời chúc TRƯỚC
     this.currentInteractables.forEach(item => {
+      if (item.isLeadNPC) return; // NPC sẽ được vẽ ở Lớp 2 phía trên để không bị che
       const isHovered = (this.hoveredInteractable && this.hoveredInteractable.id === item.id);
 
       if (item.isChallengeAltar) {
@@ -1373,6 +1424,15 @@ class GameEngine {
         window.gameSprites.drawInteractiveNode(this.ctx, item, isHovered, this.ambientTime);
       }
     });
+
+    // 2. Vẽ các Trưởng Phòng NPC (Lớp hiển thị phía trên để TUYỆT ĐỐI KHÔNG BỊ VẬT PHẨM CHE)
+    const npcs = this.currentInteractables.filter(it => it.isLeadNPC);
+    npcs.forEach(item => {
+      const isHovered = (this.hoveredInteractable && this.hoveredInteractable.id === item.id);
+      if (window.gameSprites && window.gameSprites.drawLeadNPCSprite) {
+        window.gameSprites.drawLeadNPCSprite(this.ctx, item, isHovered, this.ambientTime);
+      }
+    });
   }
 
   // Vẽ Đài Thử Thách Cõi Trà (Challenge Altar)
@@ -1450,91 +1510,88 @@ class GameEngine {
     this.ctx.restore();
   }
 
-  // Vẽ Cánh Cửa Chuyển Cõi (Next Realm Door)
+  // Vẽ Cánh Cửa Chuyển Cõi (Next Realm Door - Trà Môn Cổ Kính)
   renderNextRealmDoor(item, isHovered) {
     const cx = item.screenX;
     const cy = item.screenY;
     const isLocked = item.isLocked;
-    const pulse = Math.sin(this.ambientTime * 0.005) * 4;
 
     this.ctx.save();
 
-    // 1. Vầng hào quang dưới chân cổng
-    const portalR = isHovered ? 52 : 44;
-    const baseGrad = this.ctx.createRadialGradient(cx, cy + 22, 6, cx, cy + 22, portalR + 15);
+    // 1. Kích thước cổng phù hợp với nhân vật (72x108 px) và tỉ lệ khung hình
+    const baseW = Math.max(116, Math.min(152, Math.round(this.frameRect.w * 0.138)));
+    const gateW = isHovered ? Math.round(baseW * 1.06) : baseW;
+    const gateH = gateW; // Ảnh cổng vuông 1024x1024
+    const groundY = cy + gateH * 0.44;
+
+    // 2. Vầng hào quang dưới chân cổng và luồng sáng huyền ảo
+    const portalR = gateW * 0.46;
+    const baseGrad = this.ctx.createRadialGradient(cx, groundY, 8, cx, groundY, portalR + 25);
     if (isLocked) {
       baseGrad.addColorStop(0, "rgba(80, 50, 40, 0.6)");
       baseGrad.addColorStop(1, "transparent");
     } else {
-      baseGrad.addColorStop(0, "rgba(255, 215, 0, 0.75)");
-      baseGrad.addColorStop(0.5, "rgba(230, 126, 34, 0.35)");
+      baseGrad.addColorStop(0, "rgba(255, 215, 0, 0.72)");
+      baseGrad.addColorStop(0.5, "rgba(230, 126, 34, 0.32)");
       baseGrad.addColorStop(1, "transparent");
     }
     this.ctx.fillStyle = baseGrad;
     this.ctx.beginPath();
-    this.ctx.ellipse(cx, cy + 22, portalR + 8, 16, 0, 0, Math.PI * 2);
+    this.ctx.ellipse(cx, groundY, portalR + 20, 20, 0, 0, Math.PI * 2);
     this.ctx.fill();
 
-    // 2. Hai cột cổng gỗ vòm Torii
-    const gateW = isHovered ? 64 : 56;
-    const gateH = isHovered ? 84 : 76;
-    const postW = 8;
-    const topY = cy - gateH / 2;
+    // 3. Vẽ cổng pixel art chính thức
+    const gateImg = window.gameSprites ? window.gameSprites.images.gate_portal_zen : null;
+    if (gateImg && gateImg.complete && gateImg.naturalWidth > 0) {
+      this.ctx.imageSmoothingEnabled = false; // Giữ pixel art sắc nét
 
-    // Hai cột
-    this.ctx.fillStyle = isLocked ? "#4a3525" : "#783f12";
-    this.ctx.strokeStyle = isLocked ? "#2c1a0e" : "#ffd700";
-    this.ctx.lineWidth = 1.5;
+      // Hiệu ứng phát quang vàng kim ấm áp khi hover
+      if (isHovered) {
+        this.ctx.shadowColor = "rgba(255, 215, 0, 0.9)";
+        this.ctx.shadowBlur = 18;
+      } else {
+        this.ctx.shadowColor = "rgba(255, 180, 50, 0.45)";
+        this.ctx.shadowBlur = 10;
+      }
 
-    this.ctx.fillRect(cx - gateW / 2, topY + 8, postW, gateH);
-    this.ctx.strokeRect(cx - gateW / 2, topY + 8, postW, gateH);
-    this.ctx.fillRect(cx + gateW / 2 - postW, topY + 8, postW, gateH);
-    this.ctx.strokeRect(cx + gateW / 2 - postW, topY + 8, postW, gateH);
+      this.ctx.drawImage(
+        gateImg,
+        cx - gateW / 2,
+        cy - gateH / 2,
+        gateW,
+        gateH
+      );
+      this.ctx.shadowBlur = 0;
 
-    // Xà ngang nóc cổng cong nhẹ
-    this.ctx.fillStyle = isLocked ? "#3a2315" : "#964b18";
-    this.ctx.beginPath();
-    this.ctx.moveTo(cx - gateW / 2 - 12, topY + 4);
-    this.ctx.lineTo(cx + gateW / 2 + 12, topY + 4);
-    this.ctx.lineTo(cx + gateW / 2 + 8, topY + 14);
-    this.ctx.lineTo(cx - gateW / 2 - 8, topY + 14);
-    this.ctx.closePath();
-    this.ctx.fill();
-    this.ctx.stroke();
-
-    // 3. Bên trong cổng (Vortex nếu mở, Runic seal nếu khóa)
-    const inW = gateW - postW * 2;
-    const inH = gateH - 8;
-    const inX = cx - inW / 2;
-    const inY = topY + 14;
-
-    if (isLocked) {
-      this.ctx.fillStyle = "rgba(30, 15, 10, 0.75)";
-      this.ctx.fillRect(inX, inY, inW, inH);
-      this.ctx.strokeStyle = "rgba(231, 76, 60, 0.5)";
-      this.ctx.strokeRect(inX, inY, inW, inH);
-
-      this.ctx.font = "26px sans-serif";
-      this.ctx.textAlign = "center";
-      this.ctx.fillText("🔒", cx, cy + 2 + pulse);
+      // Hạt tinh hoa trà / đốm sáng lấp lánh nhẹ nhàng quanh cổng
+      if (!isLocked) {
+        const sparkleCount = 4;
+        for (let i = 0; i < sparkleCount; i++) {
+          const angle = (this.ambientTime * 0.0025 + (i * Math.PI * 2) / sparkleCount);
+          const dist = (gateW * 0.18) + Math.sin(this.ambientTime * 0.004 + i) * 6;
+          const sx = cx + Math.cos(angle) * dist * 0.65;
+          const sy = cy + 4 + Math.sin(angle) * dist;
+          const spAlpha = 0.4 + Math.sin(this.ambientTime * 0.006 + i * 2) * 0.35;
+          this.ctx.fillStyle = `rgba(255, 240, 160, ${spAlpha})`;
+          this.ctx.beginPath();
+          this.ctx.arc(sx, sy, 2, 0, Math.PI * 2);
+          this.ctx.fill();
+        }
+      }
     } else {
-      const vortex = this.ctx.createLinearGradient(0, inY, 0, inY + inH);
-      vortex.addColorStop(0, "rgba(255, 215, 0, 0.85)");
-      vortex.addColorStop(0.5, "rgba(255, 235, 150, 0.95)");
-      vortex.addColorStop(1, "rgba(230, 126, 34, 0.85)");
-      this.ctx.fillStyle = vortex;
-      this.ctx.fillRect(inX, inY, inW, inH);
-
-      this.ctx.font = "28px sans-serif";
-      this.ctx.textAlign = "center";
-      this.ctx.fillText("✨", cx, cy + pulse);
+      // Fallback khi ảnh đang tải
+      const postW = 8;
+      const topY = cy - gateH / 2;
+      this.ctx.fillStyle = "#783f12";
+      this.ctx.fillRect(cx - gateW / 2, topY + 8, postW, gateH);
+      this.ctx.fillRect(cx + gateW / 2 - postW, topY + 8, postW, gateH);
     }
 
     // 4. Biển chỉ dẫn dưới chân cổng
     const labelText = isLocked ? "Cửa Khóa 🔒" : `Qua Cõi: ${item.nextRealmName} ➔`;
     this.ctx.font = "bold 11px 'Noto Serif TC', serif";
-    const tagW = this.ctx.measureText(labelText).width + 20;
-    const tagH = 24;
+    const tagW = this.ctx.measureText(labelText).width + 22;
+    const tagH = 26;
     const tagY = cy + gateH / 2 + 10;
 
     this.ctx.fillStyle = isHovered ? "rgba(40, 20, 10, 0.98)" : "rgba(20, 10, 5, 0.92)";
@@ -1542,7 +1599,7 @@ class GameEngine {
     this.ctx.lineWidth = isHovered ? 2 : 1.2;
     this.ctx.beginPath();
     if (this.ctx.roundRect) {
-      this.ctx.roundRect(cx - tagW / 2, tagY, tagW, tagH, 5);
+      this.ctx.roundRect(cx - tagW / 2, tagY, tagW, tagH, 6);
     } else {
       this.ctx.rect(cx - tagW / 2, tagY, tagW, tagH);
     }
@@ -1551,29 +1608,29 @@ class GameEngine {
 
     this.ctx.fillStyle = isLocked ? "#bdc3c7" : "#ffd700";
     this.ctx.textAlign = "center";
-    this.ctx.fillText(labelText, cx, tagY + 16);
+    this.ctx.fillText(labelText, cx, tagY + 17);
 
     this.ctx.restore();
   }
 
-  // Vẽ nhân vật người chơi phóng to (72x108 px - rõ ràng, oai phong)
+  // Vẽ nhân vật người chơi phóng to (116x174 px - oai phong, ngang tầm các Trưởng Phòng NPC)
   renderPlayer() {
     const frames = window.gameSprites.playerFrames[this.player.dir];
     if (frames && frames.length > 0) {
       const frameImg = frames[this.player.frame % frames.length];
       if (frameImg) {
-        const pW = 72;
-        const pH = 108;
+        const pW = 120;
+        const pH = 180;
 
-        // Bóng đổ chân thực dưới chân nhân vật
-        this.ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
+        // Bóng đổ chân thực dưới chân nhân vật (mở rộng theo vóc dáng to lớn của nhân vật)
+        this.ctx.fillStyle = "rgba(0, 0, 0, 0.42)";
         this.ctx.beginPath();
-        this.ctx.ellipse(this.player.x, this.player.y, 24, 10, 0, 0, Math.PI * 2);
+        this.ctx.ellipse(this.player.x, this.player.y, 36, 12, 0, 0, Math.PI * 2);
         this.ctx.fill();
 
         // Vẽ sprite pixel phóng to sắc nét không mờ
         this.ctx.imageSmoothingEnabled = false;
-        this.ctx.drawImage(frameImg, this.player.x - pW / 2, this.player.y - pH + 12, pW, pH);
+        this.ctx.drawImage(frameImg, this.player.x - pW / 2, this.player.y - pH + 14, pW, pH);
         this.ctx.imageSmoothingEnabled = true; // Khôi phục làm mịn cao cho khung cảnh/video
       }
     }

@@ -10,7 +10,7 @@ const MINIGAME_CONFIG = {
   1: {
     id: 1,
     title: "Mạch Ngầm Xuyên Đất",
-    dept: "Network & Hạ Tầng",
+    dept: "Quản Lý Hạ Tầng (IT.INF)",
     targetMetric: "Ping < 1ms • 0% Packet Loss",
     desc: "Xoay các đoạn cáp quang ngầm để luồng tín hiệu truyền thông suốt từ Data Center tới Trạm Cloud!",
     essenceName: "Tinh Hoa Cổ Mạch",
@@ -20,7 +20,7 @@ const MINIGAME_CONFIG = {
   2: {
     id: 2,
     title: "Vườn Ươm Mã Nguồn",
-    dept: "Phát Triển Phần Mềm",
+    dept: "Phát Triển Phần Mềm (IT.DEV)",
     targetMetric: "0 Bug • Build Success 100%",
     desc: "Di chuyển để hứng các module Frontend, Backend, Database. Nhấn SPACE hoặc CLICK vào con Bug để Hotfix!",
     essenceName: "Tinh Hoa Thiên Công",
@@ -30,7 +30,7 @@ const MINIGAME_CONFIG = {
   3: {
     id: 3,
     title: "Cân Bằng Áp Suất Guồng Nước",
-    dept: "Vận Hành Hệ Thống",
+    dept: "Vận Hành Nền Tảng (IT.SDO)",
     targetMetric: "99.999% Uptime • Zero Downtime",
     desc: "Click vào các Van (hoặc phím 1, 2, 3) để điều phối dòng tải, giữ cả 3 Node trong Vùng An Toàn (30%-75%)!",
     essenceName: "Tinh Hoa Trường Lưu",
@@ -40,7 +40,7 @@ const MINIGAME_CONFIG = {
   4: {
     id: 4,
     title: "Khiên Chắn Không Gian Số",
-    dept: "An Toàn Thông Tin",
+    dept: "Quản Lý Hạ Tầng & ATTT",
     targetMetric: "Zero-Day Blocked • 100% Secure",
     desc: "Click vào 4 tầng lá chắn (Firewall, WAF, IPS, IAM) để kích hoạt khiên bảo mật toàn diện cho doanh nghiệp!",
     essenceName: "Tinh Hoa Huyền Giáp",
@@ -50,7 +50,7 @@ const MINIGAME_CONFIG = {
   5: {
     id: 5,
     title: "Cầu Nối Tri Thức",
-    dept: "Triển Khai Dữ Liệu",
+    dept: "Giải Pháp Báo Cáo (IT.DPI)",
     targetMetric: "4 Khối Kết Nối • 100% Pipeline On-Time",
     desc: "Click vào các trạm đích (Đầu Tư, Vận Hành, Tài Chính, Rủi Ro) để điều phối cánh hạc dữ liệu cập bến an toàn!",
     essenceName: "Tinh Hoa Vân Hành",
@@ -60,7 +60,7 @@ const MINIGAME_CONFIG = {
   6: {
     id: 6,
     title: "Khai Mở Insight & Trí Tuệ",
-    dept: "Quản Trị & Phân Tích",
+    dept: "Quản Trị & Phân Tích DL (IT.DWH)",
     targetMetric: "4 Tầng Hợp Nhất • Insight 100%",
     desc: "Click kết nối chuỗi tri thức: Dữ Liệu ➔ Thông Tin ➔ Xu Hướng ➔ INSIGHT để hoàn thành sứ mệnh Lục Trà!",
     essenceName: "Tinh Hoa Tuyết Tâm",

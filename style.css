@@ -464,6 +464,96 @@ button, .pixel-btn, .hud-btn, .dialogue-btn, .modal-close, .tea-card-btn, .prese
   box-shadow: inset 0 1px 3px rgba(0,0,0,0.8), 0 1px 0 #110702;
 }
 
+.hud-btn.hud-icon-only {
+  padding: 5px 8px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  min-width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hud-btn.hud-icon-only:hover {
+  background: rgba(255, 215, 0, 0.15);
+  border-color: transparent;
+  transform: scale(1.08);
+  box-shadow: none;
+}
+
+.hud-btn.hud-icon-only:active {
+  transform: scale(0.92);
+}
+
+.hud-audio-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(180deg, #3c2111 0%, #1f0f06 100%);
+  border: 1.5px solid #8d5b2d;
+  border-radius: 5px;
+  padding: 2px 10px 2px 4px;
+  box-shadow: inset 0 1px 0 rgba(255, 225, 120, 0.25), 0 3px 0 #110702, 0 4px 8px rgba(0, 0, 0, 0.6);
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.hud-audio-group:hover {
+  border-color: #ffd700;
+  box-shadow: inset 0 1px 0 rgba(255, 225, 120, 0.4), 0 3px 0 #110702, 0 4px 12px rgba(212, 175, 55, 0.35);
+}
+
+/* Thanh kéo âm lượng cổ phong mạ vàng */
+.zen-vol-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 70px;
+  height: 6px;
+  background: #150802;
+  border: 1px solid #784212;
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  vertical-align: middle;
+}
+
+.zen-vol-slider:hover {
+  border-color: #ffd700;
+  background: #230e04;
+}
+
+.zen-vol-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ffd700 0%, #b8860b 100%);
+  border: 1.5px solid #fff5b8;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.8), 0 0 5px rgba(212, 175, 55, 0.6);
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.zen-vol-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.22);
+  background: #ffe066;
+  box-shadow: 0 0 8px #ffd700;
+}
+
+.zen-vol-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ffd700 0%, #b8860b 100%);
+  border: 1.5px solid #fff5b8;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.8), 0 0 5px rgba(212, 175, 55, 0.6);
+}
+
 .hud-btn.return-btn {
   background: linear-gradient(180deg, #9e2a1e 0%, #5c1109 100%);
   border-color: #f39c12;
@@ -616,15 +706,17 @@ button, .pixel-btn, .hud-btn, .dialogue-btn, .modal-close, .tea-card-btn, .prese
   left: 50%;
   transform: translateX(-50%);
   width: calc(100% - 40px);
-  max-width: 800px;
+  max-width: 820px;
+  min-height: 184px;
   background: linear-gradient(135deg, #fcf6eb 0%, #ede0c9 100%);
   border: 4px solid #3c200f;
   outline: 2px solid #b8860b;
-  border-radius: 8px;
+  border-radius: 10px;
   box-shadow: inset 0 0 0 2px #5c341b, inset 0 0 18px rgba(92, 51, 23, 0.22), 0 16px 40px rgba(0,0,0,0.85);
   display: flex;
-  padding: 12px 16px;
-  gap: 14px;
+  align-items: center;
+  padding: 14px 18px;
+  gap: 18px;
   z-index: 120;
   transition: all 0.25s ease;
 }
@@ -640,34 +732,63 @@ button, .pixel-btn, .hud-btn, .dialogue-btn, .modal-close, .tea-card-btn, .prese
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-width: 100px;
+  width: 142px;
+  min-width: 142px;
+  flex-shrink: 0;
 }
 
 .portrait-frame {
-  width: 96px;
-  height: 96px;
+  width: 130px;
+  height: 130px;
   background: #241308;
-  border: 3px solid #8d5b2d;
-  outline: 1.5px solid #d4af37;
-  border-radius: 6px;
+  border: 3.5px solid #8d5b2d;
+  outline: 2px solid #d4af37;
+  border-radius: 8px;
   overflow: hidden;
-  box-shadow: inset 0 0 12px rgba(0,0,0,0.9);
+  box-shadow: inset 0 0 14px rgba(0,0,0,0.9), 0 4px 10px rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 .portrait-frame canvas {
   width: 100%;
   height: 100%;
   image-rendering: pixelated;
+  display: block;
+}
+
+.narrator-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-top: 8px;
+  text-align: center;
 }
 
 .narrator-name {
   font-family: var(--font-display);
-  font-size: 11.5px;
-  font-weight: 700;
-  color: #4a2813;
-  margin-top: 6px;
-  text-align: center;
-  letter-spacing: 0.5px;
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #381a0b;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  line-height: 1.25;
+}
+
+.narrator-role {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  font-style: italic;
+  color: #7a4620;
+  margin-top: 2px;
+  line-height: 1.3;
+  letter-spacing: 0.2px;
+  max-width: 140px;
+  word-break: break-word;
 }
 
 .dialogue-body {
@@ -1255,47 +1376,287 @@ button, .pixel-btn, .hud-btn, .dialogue-btn, .modal-close, .tea-card-btn, .prese
 }
 
 /* =========================================================
-   7. MODAL XEM CHI TIẾT LỜI CHÚC
+   7. MODAL XEM CHI TIẾT LỜI CHÚC (Đổi thành BG Thiệp Hoàng Kim bg_card_zen.webp)
    ========================================================= */
-.view-card {
-  max-width: 520px;
+/* =========================================================
+   7. MODAL XEM CHI TIẾT THIỆP CHÚC MỪNG HOÀNG KIM (CỔ PHONG)
+   Tách bạch Tranh Thiệp Nghệ Thuật & Thanh Điều Khiển Nằm Ngoài
+   ========================================================= */
+.view-modal-overlay {
+  z-index: 10000 !important;
 }
 
-.view-body {
-  text-align: center;
-  padding: 24px;
+.view-wish-dialog-container {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-height: 96vh;
+  max-width: 95vw;
+  animation: modalScale 0.28s cubic-bezier(0.18, 0.89, 0.32, 1.28);
 }
 
-.view-date-tag {
-  display: inline-block;
-  font-size: 12px;
-  color: #8d5b2d;
-  border: 1px solid #bfae95;
-  padding: 2px 10px;
-  border-radius: 12px;
-  margin-bottom: 16px;
-}
-
-.view-quote-box {
-  background: #fffdf8;
-  border-left: 4px solid #d4af37;
-  padding: 16px 20px;
+/* Nút đóng nổi bên ngoài góc trên bên phải của khung thiệp */
+.view-zen-close-floating {
+  position: absolute;
+  top: -14px;
+  right: -14px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #361b0a;
+  color: #ffd700;
+  border: 2px solid #d4af37;
   font-size: 16px;
-  line-height: 1.7;
-  color: #2c1a0e;
-  font-style: italic;
-  text-align: left;
-  border-radius: 0 8px 8px 0;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  margin-bottom: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.85);
+  transition: all 0.2s ease;
 }
 
-.view-image-wrapper img {
-  max-width: 100%;
-  max-height: 240px;
-  border-radius: 8px;
-  border: 3px solid #8d5b2d;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+.view-zen-close-floating:hover {
+  background: #c0392b;
+  color: #fff;
+  border-color: #ff7675;
+  transform: scale(1.12);
+  box-shadow: 0 6px 18px rgba(192, 57, 43, 0.6);
+}
+
+/* KHUNG TRANH THIỆP HOÀNG KIM NGHỆ THUẬT */
+.zen-art-card {
+  position: relative;
+  width: min(440px, 88vw, calc(68vh * 0.75));
+  height: min(586px, calc(88vw / 0.75), 68vh);
+  aspect-ratio: 3 / 4;
+  background: url('assets/bg_card_zen.webp') no-repeat center center !important;
+  background-size: 100% 100% !important;
+  border-radius: 16px;
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.9), 0 0 40px rgba(212, 175, 55, 0.35);
+  padding: 10% 11% 9% 11%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Tiêu đề lạc khoản đầu thiệp */
+.zen-card-top-crest {
+  font-family: var(--font-serif);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: #8c531b;
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: 0.9;
+}
+
+/* Khối tác giả */
+.zen-card-author-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 2px;
+  width: 100%;
+}
+
+.zen-card-badge-symbol {
+  font-size: 26px;
+  line-height: 1;
+  margin-bottom: 2px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+
+.zen-badge-symbol-img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+
+.zen-card-author {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 800;
+  color: #381b08;
+  margin: 2px 0;
+  letter-spacing: 0.3px;
+  line-height: 1.25;
+}
+
+.zen-card-dept {
+  font-family: var(--font-serif);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #7c4714;
+  line-height: 1.2;
+}
+
+/* Chỉ hoa văn phân cách */
+.zen-card-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 75%;
+  margin: 2px auto 4px auto;
+  opacity: 0.75;
+}
+
+.zen-divider-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #b8860b, transparent);
+}
+
+.zen-divider-gem {
+  color: #b8860b;
+  font-size: 10px;
+  padding: 0 6px;
+}
+
+/* Lời chúc trực tiếp trên giấy điệp, KHÔNG CÓ KHỐI TRẮNG */
+.zen-card-quote-section {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 8px;
+  min-height: 48px;
+  width: 100%;
+}
+
+.zen-card-quote {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: #241105;
+  margin: 0;
+  text-align: center;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.4);
+}
+
+/* Khung ảnh kỷ niệm */
+.zen-card-img-wrapper {
+  display: flex;
+  justify-content: center;
+  margin: 4px 0 6px 0;
+  flex-shrink: 0;
+}
+
+.zen-card-img-wrapper img {
+  max-width: 155px;
+  max-height: 155px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 6px;
+  border: 2px solid #b8860b;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.22);
+  background: rgba(255, 248, 220, 0.5);
+  padding: 4px;
+  box-sizing: border-box;
+  display: block;
+}
+
+/* Chân thiệp bên trái, để hở triện mộc '祝' ở bên phải */
+.zen-card-bottom-info {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  padding-left: 4px;
+  margin-top: 2px;
+}
+
+.zen-card-date {
+  font-size: 10.5px;
+  color: #6b3d11;
+  font-weight: 600;
+  font-family: var(--font-serif);
+}
+
+.zen-card-seal-text {
+  font-size: 10.5px;
+  color: #8c531b;
+  font-weight: 700;
+  font-family: var(--font-serif);
+}
+
+/* THANH NÚT ĐIỀU KHIỂN NẰM BÊN DƯỚI THIỆP */
+.view-floating-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 14px;
+  flex-wrap: wrap;
+  max-width: 480px;
+}
+
+.zen-btn-action {
+  font-family: var(--font-serif);
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.3px;
+  text-decoration: none;
+}
+
+.zen-btn-action.primary {
+  background: linear-gradient(135deg, #d4af37 0%, #aa7c11 100%);
+  color: #1a0c02;
+  border: 1.5px solid #ffd700;
+  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.45);
+}
+
+.zen-btn-action.primary:hover {
+  background: linear-gradient(135deg, #ffd700 0%, #c9972c 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(212, 175, 55, 0.6);
+}
+
+.zen-btn-action.secondary {
+  background: linear-gradient(135deg, #3d2314 0%, #26140a 100%);
+  color: #ffd700;
+  border: 1.5px solid #8c531b;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.zen-btn-action.secondary:hover {
+  background: linear-gradient(135deg, #512e16 0%, #381c0c 100%);
+  border-color: #d4af37;
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.zen-btn-action.close {
+  background: linear-gradient(135deg, #781d1d 0%, #4c1111 100%);
+  color: #ffe4e4;
+  border: 1.5px solid #a83232;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.zen-btn-action.close:hover {
+  background: linear-gradient(135deg, #992323 0%, #681717 100%);
+  border-color: #e74c3c;
+  color: #fff;
+  transform: translateY(-2px);
 }
 
 /* =========================================================
@@ -1517,36 +1878,37 @@ button, .pixel-btn, .hud-btn, .dialogue-btn, .modal-close, .tea-card-btn, .prese
 
 .scrapbook-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 22px;
   padding-bottom: 24px;
 }
 
 .scrapbook-card {
-  background: linear-gradient(135deg, #fdf4e2 0%, #f7dfb2 45%, #e9c379 100%);
-  border: 2.5px solid #784212;
+  background: url('assets/bg_card_zen.webp') no-repeat center center;
+  background-size: 100% 100%;
+  border: none;
   border-radius: 12px;
-  padding: 16px 18px 14px;
+  padding: 30px 24px 22px 24px;
   color: #2b170c;
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.18, 0.89, 0.32, 1.28);
   display: flex;
   flex-direction: column;
   position: relative;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  min-height: 380px;
 }
 
 .scrapbook-card:hover {
-  transform: translateY(-5px) scale(1.02);
-  border-color: #b7791f;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28), 0 0 16px rgba(255, 215, 0, 0.55);
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6), 0 0 20px rgba(212, 175, 55, 0.45);
 }
 
 .sb-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1.5px dashed rgba(120, 66, 18, 0.35);
+  border-bottom: 1.5px dashed rgba(120, 66, 18, 0.4);
   padding-bottom: 8px;
   margin-bottom: 10px;
   gap: 8px;
@@ -1554,7 +1916,8 @@ button, .pixel-btn, .hud-btn, .dialogue-btn, .modal-close, .tea-card-btn, .prese
 
 .sb-author {
   font-weight: 800;
-  font-size: 16px;
+  font-size: 15.5px;
+  font-family: var(--font-serif);
   color: #4a240c;
   display: flex;
   align-items: center;
@@ -1569,37 +1932,44 @@ button, .pixel-btn, .hud-btn, .dialogue-btn, .modal-close, .tea-card-btn, .prese
 }
 
 .sb-dept {
-  font-size: 11.5px;
+  font-size: 11px;
   padding: 3px 8px;
-  border-radius: 6px;
-  background: rgba(120, 66, 18, 0.14);
+  border-radius: 4px;
+  background: rgba(120, 66, 18, 0.12);
+  border: 1px solid rgba(120, 66, 18, 0.25);
   color: #63330a;
   font-weight: 700;
 }
 
 .sb-text {
-  font-size: 14.5px;
-  line-height: 1.6;
-  color: #2b170c;
+  font-size: 14px;
+  line-height: 1.55;
+  color: #220f04;
   font-style: italic;
-  margin-bottom: 12px;
+  font-family: var(--font-serif);
+  margin-bottom: 10px;
   flex: 1;
   display: -webkit-box;
   -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  min-height: 56px;
+  min-height: 48px;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
 }
 
 .sb-thumb {
   width: 100%;
-  height: 165px;
-  object-fit: cover;
-  border-radius: 8px;
+  height: 160px;
+  object-fit: contain;
+  border-radius: 6px;
   margin-bottom: 10px;
-  border: 1.5px solid #8d5b2d;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.18);
+  border: 1.5px solid #b8860b;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.22);
   transition: transform 0.2s ease;
+  background: rgba(255, 248, 220, 0.45);
+  padding: 6px;
+  box-sizing: border-box;
+  display: block;
 }
 
 .scrapbook-card:hover .sb-thumb {
@@ -1612,23 +1982,28 @@ button, .pixel-btn, .hud-btn, .dialogue-btn, .modal-close, .tea-card-btn, .prese
   align-items: center;
   margin-top: auto;
   padding-top: 8px;
-  border-top: 1.5px dashed rgba(120, 66, 18, 0.25);
-  font-size: 12.5px;
+  border-top: 1.5px dashed rgba(120, 66, 18, 0.35);
+  font-size: 12px;
 }
 
 .sb-pill {
   font-weight: 800;
   color: #784212;
-  font-size: 12px;
+  font-size: 11.5px;
+  font-family: var(--font-serif);
 }
 
 .sb-view-btn {
-  color: #b3392b;
+  color: #c0392b;
   font-weight: 800;
-  font-size: 12.5px;
+  font-size: 12px;
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  background: rgba(255, 248, 220, 0.85);
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(192, 57, 43, 0.3);
 }
 
 /* Tab 2: Xưởng Tạo Thiệp Tích Hợp */
@@ -1783,35 +2158,122 @@ button, .pixel-btn, .hud-btn, .dialogue-btn, .modal-close, .tea-card-btn, .prese
   overflow: hidden;
 }
 
-/* THEME 1: TRÀ ĐẠO ZEN */
+/* THEME 1: TRÀ ĐẠO ZEN (Mặc định - Sử dụng khung thiệp hoàng kim bg_card_zen.webp) */
 .live-card-frame.theme-zen {
-  background: linear-gradient(135deg, #fce4b8 0%, #f4d39c 50%, #e6ba68 100%);
-  border: 4px solid #784212;
+  background: url('assets/bg_card_zen.webp') no-repeat center center;
+  background-size: 100% 100%;
+  border: none;
+  aspect-ratio: 3 / 4;
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+  padding: 50px 38px 44px 38px;
   color: #2b170c;
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.4), inset 0 0 20px rgba(120, 66, 18, 0.2);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 35px rgba(212, 175, 55, 0.28);
+  border-radius: 16px;
 }
 
-.live-card-frame.theme-zen .card-rope {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 5px;
-  height: 24px;
-  background: #c0392b;
-  border-radius: 2px;
-}
-
+.live-card-frame.theme-zen .card-rope,
 .live-card-frame.theme-zen .card-knot {
-  position: absolute;
-  top: 18px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 14px;
-  height: 14px;
-  background: #c0392b;
-  border: 2px solid #78281f;
+  display: none;
+}
+
+.card-zen-top-title {
+  display: none;
+}
+
+.live-card-frame.theme-zen .card-zen-top-title {
+  display: block;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  color: #8c531b;
+  letter-spacing: 1.5px;
+  margin-bottom: 3px;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.live-card-frame.theme-zen .card-header-banner {
+  border-bottom: 1.5px dashed rgba(120, 66, 18, 0.35);
+  margin-top: 2px;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+}
+
+.live-card-frame.theme-zen .card-sender-meta strong {
+  font-family: var(--font-serif);
+  font-size: 16.5px;
+  color: #381b08;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.live-card-frame.theme-zen .card-sender-meta small {
+  color: #7c4714;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.live-card-frame.theme-zen .card-date-badge {
+  background: rgba(218, 165, 32, 0.15);
+  border: 1px solid rgba(184, 134, 11, 0.35);
+  color: #6b3d11;
+  border-radius: 4px;
+  padding: 2px 7px;
+  font-size: 11px;
+}
+
+.live-card-frame.theme-zen .card-message-text {
+  font-family: var(--font-serif);
+  font-size: 14.5px;
+  line-height: 1.65;
+  font-style: italic;
+  color: #200f04;
+  margin: 8px 0;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+  min-height: 70px;
+}
+
+.live-card-frame.theme-zen .card-image-attachment {
+  border: 2px solid #b8860b;
+  border-radius: 6px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255, 248, 220, 0.4);
+  max-height: 200px;
+}
+
+.live-card-frame.theme-zen .card-footer-seal {
+  border-top: 1.5px dashed rgba(120, 66, 18, 0.35);
+  padding-top: 6px;
+  margin-top: auto;
+}
+
+.live-card-frame.theme-zen .card-realm-tag {
+  background: rgba(255, 248, 220, 0.9);
+  border: 1.5px solid #b8860b;
+  color: #4a2707;
+  font-weight: 700;
+  font-size: 11.5px;
+  border-radius: 12px;
+  padding: 2px 10px;
+  box-shadow: 0 2px 6px rgba(184, 134, 11, 0.2);
+}
+
+.live-card-frame.theme-zen .seal-stamp {
+  width: 34px;
+  height: 34px;
+  border: 2px solid #c0392b;
+  color: #c0392b;
+  background: rgba(192, 57, 43, 0.08);
+  box-shadow: 0 0 6px rgba(192, 57, 43, 0.2);
   border-radius: 50%;
+  font-size: 18px;
+  font-weight: 900;
 }
 
 /* THEME 2: SUPER MARIO 8-BIT RETRO */
@@ -1936,14 +2398,21 @@ button, .pixel-btn, .hud-btn, .dialogue-btn, .modal-close, .tea-card-btn, .prese
   border: 2px solid #784212;
   border-radius: 6px;
   overflow: hidden;
-  max-height: 130px;
+  max-height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255, 248, 220, 0.4);
 }
 
 .card-image-attachment img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  max-width: 100%;
+  max-height: 195px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
   display: block;
+  margin: 0 auto;
 }
 
 .card-footer-seal {
@@ -2533,6 +3002,9 @@ button, .pixel-btn, .hud-btn, .dialogue-btn, .modal-close, .tea-card-btn, .prese
   .sb-thumb {
     height: 140px;
   }
+  .zen-vol-slider {
+    width: 55px;
+  }
 }
 
 /* =========================================================
@@ -2889,13 +3361,20 @@ button, .pixel-btn, .hud-btn, .dialogue-btn, .modal-close, .tea-card-btn, .prese
   border: 2px solid #784212;
   border-radius: 6px;
   overflow: hidden;
-  max-height: 140px;
+  max-height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 248, 220, 0.45);
+  padding: 4px;
 }
 
 .ws-card-img-wrap img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  max-width: 100%;
+  max-height: 150px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
   display: block;
 }
 
@@ -2950,23 +3429,23 @@ button, .pixel-btn, .hud-btn, .dialogue-btn, .modal-close, .tea-card-btn, .prese
 }
 
 .ws-wall-card {
-  background: linear-gradient(135deg, #fbe8c7 0%, #f3d499 50%, #e6ba68 100%);
-  border: 2px solid #784212;
-  border-radius: 8px;
-  padding: 12px 14px 10px;
+  background: url('assets/bg_card_zen.webp') no-repeat center center;
+  background-size: 100% 100%;
+  border: none;
+  border-radius: 12px;
+  padding: 24px 18px 16px;
   color: #2b170c;
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.18, 0.89, 0.32, 1.28);
   display: flex;
   flex-direction: column;
   position: relative;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
 }
 
 .ws-wall-card:hover {
   transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.6), 0 0 14px rgba(255, 215, 0, 0.5);
-  border-color: #b7791f;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.65), 0 0 16px rgba(255, 215, 0, 0.45);
 }
 
 .ws-wall-card-rope {
@@ -3036,16 +3515,24 @@ button, .pixel-btn, .hud-btn, .dialogue-btn, .modal-close, .tea-card-btn, .prese
 
 .ws-wall-card-img {
   width: 100%;
-  height: 70px;
+  height: 95px;
   border-radius: 4px;
   overflow: hidden;
   border: 1px solid #8d5b2d;
+  background: rgba(255, 248, 220, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px;
+  box-sizing: border-box;
 }
 
 .ws-wall-card-img img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
   display: block;
 }
 

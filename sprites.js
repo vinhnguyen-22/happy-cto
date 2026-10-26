@@ -102,10 +102,38 @@ class SpriteManager {
   // Tải toàn bộ ảnh assets từ thư mục assets/
   loadAllAssets() {
     const assetList = {
-      // 01_Characters
+      // 01_Characters & Trưởng Phòng
       tea_master: 'assets/01_Characters/portrait_tea_master.png',
       cto_portrait: 'assets/01_Characters/portrait_cto_pixel.png',
       player_sheet: 'assets/01_Characters/player_spritesheet.png',
+
+      // Trưởng Phòng 6 Cõi Trà (Sprites Toàn Thân & Chân Dung Hộp Thoại)
+      lead_sprite_bao: 'assets/01_Characters/lead_bao_hatang_attt.png',
+      lead_portrait_bao: 'assets/01_Characters/portrait_lead_bao.png',
+      lead_sprite_thanh: 'assets/01_Characters/lead_thanh_ptpm.png',
+      lead_portrait_thanh: 'assets/01_Characters/portrait_lead_thanh.png',
+      lead_sprite_kiet: 'assets/01_Characters/lead_kiet_lps.png',
+      lead_portrait_kiet: 'assets/01_Characters/portrait_lead_kiet.png',
+      lead_sprite_kienle: 'assets/01_Characters/lead_kienle_scex.png',
+      lead_portrait_kienle: 'assets/01_Characters/portrait_lead_kienle.png',
+      lead_sprite_hien: 'assets/01_Characters/lead_hien_trienkhai.png',
+      lead_portrait_hien: 'assets/01_Characters/portrait_lead_hien.png',
+      lead_sprite_tuyen: 'assets/01_Characters/lead_tuyen_quantri.png',
+      lead_portrait_tuyen: 'assets/01_Characters/portrait_lead_tuyen.png',
+
+      // Aliases theo số cõi
+      lead_sprite_1: 'assets/01_Characters/lead_bao_hatang_attt.png',
+      lead_portrait_1: 'assets/01_Characters/portrait_lead_bao.png',
+      lead_sprite_2: 'assets/01_Characters/lead_thanh_ptpm.png',
+      lead_portrait_2: 'assets/01_Characters/portrait_lead_thanh.png',
+      lead_sprite_3: 'assets/01_Characters/lead_kiet_lps.png',
+      lead_portrait_3: 'assets/01_Characters/portrait_lead_kiet.png',
+      lead_sprite_4: 'assets/01_Characters/lead_bao_hatang_attt.png',
+      lead_portrait_4: 'assets/01_Characters/portrait_lead_bao.png',
+      lead_sprite_5: 'assets/01_Characters/lead_hien_trienkhai.png',
+      lead_portrait_5: 'assets/01_Characters/portrait_lead_hien.png',
+      lead_sprite_6: 'assets/01_Characters/lead_tuyen_quantri.png',
+      lead_portrait_6: 'assets/01_Characters/portrait_lead_tuyen.png',
 
       // 02_Tea_Temple_Hub
       door_left: 'assets/02_Tea_Temple_Hub/door_left.png',
@@ -146,6 +174,7 @@ class SpriteManager {
       tea_ceremony_set: 'assets/02_Tea_Temple_Hub/tea_ceremony_set.png',
       wish_tag_gold: 'assets/ui/item_wish_tag_gold.png',
       cursor_tea_leaf: 'assets/ui/cursor_tea_leaf.png',
+      gate_portal_zen: 'assets/ui/gate_portal_zen.png',
 
       // Floating Particles
       particle_tea_leaf: 'assets/particles/particle_tea_leaf.png',
@@ -185,10 +214,10 @@ class SpriteManager {
     });
   }
 
-  // Cắt player_spritesheet.png (128x192, 4 cột x 4 hàng, 32x48 mỗi frame)
+  // Cắt player_spritesheet.png (4 cột x 4 hàng, tự động tính frameW x frameH theo độ phân giải ảnh)
   slicePlayerSpriteSheet(sheetImg) {
-    const frameW = 32;
-    const frameH = 48;
+    const frameW = sheetImg.naturalWidth ? (sheetImg.naturalWidth / 4) : (sheetImg.width / 4 || 256);
+    const frameH = sheetImg.naturalHeight ? (sheetImg.naturalHeight / 4) : (sheetImg.height / 4 || 384);
     const directions = ['down', 'up', 'left', 'right'];
 
     directions.forEach((dir, rowIndex) => {
@@ -263,8 +292,141 @@ class SpriteManager {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     ctx.imageSmoothingEnabled = false;
-    ctx.clearRect(0, 0, 96, 96);
-    ctx.drawImage(img, 0, 0, 96, 96);
+    const cw = canvas.width || 130;
+    const ch = canvas.height || 130;
+    ctx.clearRect(0, 0, cw, ch);
+    ctx.drawImage(img, 0, 0, cw, ch);
+  }
+
+  // Vẽ chân dung Trưởng phòng tương ứng từng cõi lên portraitCanvas
+  drawLeadPortrait(keyOrRealmId) {
+    const canvas = document.getElementById('portraitCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    ctx.imageSmoothingEnabled = false;
+    const cw = canvas.width || 130;
+    const ch = canvas.height || 130;
+    ctx.clearRect(0, 0, cw, ch);
+
+    let portraitImg = null;
+    if (typeof keyOrRealmId === 'string') {
+      portraitImg = this.images[keyOrRealmId] || this.images[`lead_portrait_${keyOrRealmId}`];
+    } else if (typeof keyOrRealmId === 'number') {
+      if (keyOrRealmId === 1 || keyOrRealmId === 4) {
+        portraitImg = this.images['lead_portrait_bao'];
+      } else if (keyOrRealmId === 2) {
+        portraitImg = this.images['lead_portrait_thanh'];
+      } else if (keyOrRealmId === 3) {
+        portraitImg = this.images['lead_portrait_kiet'];
+      } else if (keyOrRealmId === 5) {
+        portraitImg = this.images['lead_portrait_hien'];
+      } else if (keyOrRealmId === 6) {
+        portraitImg = this.images['lead_portrait_tuyen'];
+      } else {
+        portraitImg = this.images['tea_master'];
+      }
+    }
+
+    if (portraitImg && portraitImg.complete && portraitImg.naturalWidth > 0) {
+      ctx.drawImage(portraitImg, 0, 0, cw, ch);
+    } else {
+      let src = 'assets/01_Characters/portrait_tea_master.png';
+      if (typeof keyOrRealmId === 'string' && keyOrRealmId.includes('assets/')) {
+        src = keyOrRealmId;
+      } else if (typeof keyOrRealmId === 'number' && typeof REALMS_DATA !== 'undefined' && REALMS_DATA[keyOrRealmId]) {
+        src = REALMS_DATA[keyOrRealmId].leadPortrait || src;
+      }
+      const tmpImg = new Image();
+      tmpImg.src = src;
+      tmpImg.onload = () => {
+        ctx.clearRect(0, 0, cw, ch);
+        ctx.drawImage(tmpImg, 0, 0, cw, ch);
+      };
+    }
+  }
+
+  // Vẽ nhân vật Trưởng Phòng NPC đứng trong cõi trà (Full-body pixel art - KÍCH THƯỚC RÕ RÀNG & OAI PHONG)
+  drawLeadNPCSprite(ctx, item, isHovered, ambientTime) {
+    const spriteKey = item.leadSpriteKey || `lead_sprite_${item.realmId}`;
+    const img = this.images[spriteKey];
+
+    const cx = item.screenX;
+    const cy = item.screenY;
+
+    // Nhịp thở / cử động nhẹ (idle animation)
+    const floatBob = Math.sin(ambientTime * 0.0035 + (item.realmId || 1)) * 3;
+    const drawY = cy + floatBob;
+
+    ctx.save();
+
+    // 1. Bóng đổ dưới chân NPC (mở rộng tương xứng với kích thước nhân vật)
+    ctx.fillStyle = "rgba(10, 6, 4, 0.45)";
+    ctx.beginPath();
+    ctx.ellipse(cx, cy + 54, 38, 13, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 2. Vầng hào quang ánh vàng hoàng kim dưới chân khi hover hoặc đứng gần
+    if (isHovered) {
+      const ringGrad = ctx.createRadialGradient(cx, cy + 54, 6, cx, cy + 54, 56);
+      ringGrad.addColorStop(0, "rgba(255, 215, 0, 0.65)");
+      ringGrad.addColorStop(0.5, "rgba(230, 126, 34, 0.25)");
+      ringGrad.addColorStop(1, "rgba(255, 215, 0, 0)");
+      ctx.fillStyle = ringGrad;
+      ctx.beginPath();
+      ctx.ellipse(cx, cy + 54, 56, 20, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // 3. Vẽ Sprite toàn thân nhân vật (TĂNG KÍCH THƯỚC RÕ NÉT - 174px ~ 186px)
+    // Tỉ lệ gốc ảnh là 1024 x 1536 (2:3)
+    const targetH = isHovered ? 186 : 174;
+    const targetW = Math.round(targetH * (1024 / 1536)); // ~116-124px
+    const spriteTop = drawY - targetH + 54;
+
+    if (img && img.complete && img.naturalWidth > 0) {
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(img, cx - targetW / 2, spriteTop, targetW, targetH);
+      ctx.imageSmoothingEnabled = true;
+    } else {
+      // Fallback nếu ảnh đang tải
+      ctx.fillStyle = item.color || "#ffd700";
+      ctx.fillRect(cx - 22, drawY - 90, 44, 90);
+    }
+
+    // 4. Bảng tên & Chức vụ Trưởng Phòng trên đầu (Phong cách Zen Hoàng Kim)
+    const tagY = spriteTop - 28;
+    const leadShortName = item.leadShortName || (item.leadName || "").split('-')[0].trim();
+    const roleText = item.leadRole || "Trưởng Phòng";
+
+    ctx.font = "bold 13px 'Noto Serif TC', serif";
+    const textW = ctx.measureText(leadShortName).width;
+    const badgeW = Math.max(textW + 28, 96);
+    const badgeH = 26;
+
+    // Khung bảng tên
+    ctx.fillStyle = isHovered ? "rgba(42, 22, 10, 0.98)" : "rgba(20, 10, 5, 0.92)";
+    ctx.strokeStyle = isHovered ? "#ffd700" : (item.color || "#b8860b");
+    ctx.lineWidth = isHovered ? 2.2 : 1.5;
+    ctx.beginPath();
+    if (ctx.roundRect) {
+      ctx.roundRect(cx - badgeW / 2, tagY, badgeW, badgeH, 5);
+    } else {
+      ctx.rect(cx - badgeW / 2, tagY, badgeW, badgeH);
+    }
+    ctx.fill();
+    ctx.stroke();
+
+    // Chữ tên Trưởng Phòng
+    ctx.fillStyle = isHovered ? "#ffd700" : "#ffffff";
+    ctx.textAlign = "center";
+    ctx.fillText(leadShortName, cx, tagY + 18);
+
+    // Huy hiệu chức danh nhỏ phía trên
+    ctx.font = "italic 10.5px sans-serif";
+    ctx.fillStyle = isHovered ? "#ffe082" : "#d4af37";
+    ctx.fillText(`✦ ${roleText} ✦`, cx, tagY - 5);
+
+    ctx.restore();
   }
 
   initNarratorPortrait() {
@@ -273,7 +435,7 @@ class SpriteManager {
     const ctx = canvas.getContext('2d');
     ctx.imageSmoothingEnabled = false;
     ctx.fillStyle = "#3e2723";
-    ctx.fillRect(0, 0, 96, 96);
+    ctx.fillRect(0, 0, canvas.width || 130, canvas.height || 130);
   }
 
   // --- HÀM VẼ BACKGROUND CÁC CẢNH BẰNG VIDEO NỀN ĐỘNG / ẢNH ASSETS CHÍNH THỨC ---
