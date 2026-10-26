@@ -98,8 +98,8 @@ class CardCreatorApp {
       }
       const isPlaying = window.gameAudio.toggleMute();
       btnAudio.innerHTML = isPlaying
-        ? '<span>🎵 Nhạc Mario: BẬT</span>'
-        : '<span>🔇 Nhạc Mario: TẮT</span>';
+        ? '<span>🎵 Nhạc Nền: BẬT</span>'
+        : '<span>🔇 Nhạc Nền: TẮT</span>';
     });
   }
 

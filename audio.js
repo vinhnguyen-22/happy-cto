@@ -1,8 +1,7 @@
 /**
- * AUDIO ENGINE - SUPER MARIO STYLE 8-BIT CHIPTUNE SYNTHESIZER
- * Nhạc nền vui tươi, rộn ràng, giàu năng lượng mừng sinh nhật CTO mang phong cách Super Mario!
- * Tích hợp toàn bộ âm sắc Retro Chiptune NES (Square wave, Triangle bass, Noise drums)
- * Không cần file MP3 ngoài, chạy mượt mà ngay trên mọi trình duyệt qua Web Audio API!
+ * AUDIO ENGINE - BACKGROUND MUSIC & RETRO SOUND EFFECTS
+ * Nhạc nền chính thức từ file audio bg.mp3 kết hợp cùng hệ thống âm thanh hiệu ứng (SFX)
+ * Chạy mượt mà trên mọi trình duyệt, hỗ trợ loop mượt, toggle mute và điều chỉnh âm lượng.
  */
 
 class AudioManager {
@@ -10,13 +9,15 @@ class AudioManager {
     this.ctx = null;
     this.isMuted = false;
     this.bgmPlaying = false;
-    this.bgmInterval = null;
-    this.tempo = 152; // BPM vui nhộn rộn ràng
-    this.stepIndex = 0;
-    this.nextNoteTime = 0;
+    this.initialized = false;
     this.masterGain = null;
 
-    // Bảng tần số nốt nhạc Chiptune
+    // Nhạc nền chính thức từ file audio bg.mp3
+    this.bgmSrc = 'audio bg.mp3';
+    this.bgmAudio = null;
+    this.bgmVolume = 0.55; // Âm lượng nhạc nền êm dịu, hài hòa với SFX
+
+    // Bảng tần số nốt nhạc Chiptune cho SFX
     this.NOTES = {
       REST: 0,
       C3: 130.81, D3: 146.83, E3: 164.81, F3: 174.61, G3: 196.00, A3: 220.00, B3: 246.94,
@@ -24,126 +25,94 @@ class AudioManager {
       C5: 523.25, D5: 587.33, E5: 659.25, F5: 698.46, G5: 783.99, A5: 880.00, Bb5: 932.33, B5: 987.77,
       C6: 1046.50, D6: 1174.66, E6: 1318.51
     };
-
-    // Giai điệu Super Mario Overworld kết hợp Happy Birthday Remix vui tươi (theo bước nốt 16th)
-    this.melodyPattern = [
-      // Đoạn 1: Mario Intro kinh điển
-      { note: this.NOTES.E5, dur: 1 }, { note: this.NOTES.REST, dur: 0.5 }, { note: this.NOTES.E5, dur: 1 }, { note: this.NOTES.REST, dur: 1.5 },
-      { note: this.NOTES.E5, dur: 1 }, { note: this.NOTES.REST, dur: 1.5 }, { note: this.NOTES.C5, dur: 1 }, { note: this.NOTES.E5, dur: 1.5 },
-      { note: this.NOTES.G5, dur: 2 }, { note: this.NOTES.REST, dur: 2 }, { note: this.NOTES.G4, dur: 2 }, { note: this.NOTES.REST, dur: 2 },
-
-      // Đoạn 2: Mario Overworld Theme vui nhộn
-      { note: this.NOTES.C5, dur: 1.5 }, { note: this.NOTES.REST, dur: 1 }, { note: this.NOTES.G4, dur: 1.5 }, { note: this.NOTES.REST, dur: 1 },
-      { note: this.NOTES.E4, dur: 1.5 }, { note: this.NOTES.REST, dur: 1 }, { note: this.NOTES.A4, dur: 1.5 }, { note: this.NOTES.B4, dur: 1.5 },
-      { note: this.NOTES.Bb4, dur: 1 }, { note: this.NOTES.A4, dur: 1.5 }, { note: this.NOTES.G4, dur: 1.5 },
-      { note: this.NOTES.E5, dur: 1 }, { note: this.NOTES.G5, dur: 1 }, { note: this.NOTES.A5, dur: 1.5 }, { note: this.NOTES.F5, dur: 1 }, { note: this.NOTES.G5, dur: 1 },
-      { note: this.NOTES.E5, dur: 1.5 }, { note: this.NOTES.C5, dur: 1 }, { note: this.NOTES.D5, dur: 1 }, { note: this.NOTES.B4, dur: 2 },
-
-      // Đoạn 3: Happy Birthday CTO phong cách Mario 8-bit!
-      { note: this.NOTES.C5, dur: 1 }, { note: this.NOTES.C5, dur: 1 }, { note: this.NOTES.D5, dur: 2 }, { note: this.NOTES.C5, dur: 2 }, { note: this.NOTES.F5, dur: 2 }, { note: this.NOTES.E5, dur: 3.5 }, { note: this.NOTES.REST, dur: 0.5 },
-      { note: this.NOTES.C5, dur: 1 }, { note: this.NOTES.C5, dur: 1 }, { note: this.NOTES.D5, dur: 2 }, { note: this.NOTES.C5, dur: 2 }, { note: this.NOTES.G5, dur: 2 }, { note: this.NOTES.F5, dur: 3.5 }, { note: this.NOTES.REST, dur: 0.5 },
-      { note: this.NOTES.C5, dur: 1 }, { note: this.NOTES.C5, dur: 1 }, { note: this.NOTES.C6, dur: 2 }, { note: this.NOTES.A5, dur: 2 }, { note: this.NOTES.F5, dur: 2 }, { note: this.NOTES.E5, dur: 2 }, { note: this.NOTES.D5, dur: 2 },
-      { note: this.NOTES.Bb5, dur: 1 }, { note: this.NOTES.Bb5, dur: 1 }, { note: this.NOTES.A5, dur: 2 }, { note: this.NOTES.F5, dur: 2 }, { note: this.NOTES.G5, dur: 2 }, { note: this.NOTES.F5, dur: 4 }, { note: this.NOTES.REST, dur: 2 }
-    ];
-
-    // Bouncy Walking Bassline (Triangle wave trầm ấm)
-    this.bassPattern = [
-      this.NOTES.D3, this.NOTES.D3, this.NOTES.REST, this.NOTES.D3,
-      this.NOTES.REST, this.NOTES.D3, this.NOTES.D3, this.NOTES.G3,
-      this.NOTES.G3, this.NOTES.REST, this.NOTES.G3, this.NOTES.C3,
-      this.NOTES.C3, this.NOTES.E3, this.NOTES.G3, this.NOTES.C4,
-      this.NOTES.F3, this.NOTES.A3, this.NOTES.C4, this.NOTES.F4,
-      this.NOTES.C3, this.NOTES.E3, this.NOTES.G3, this.NOTES.C4,
-      this.NOTES.G3, this.NOTES.B3, this.NOTES.D4, this.NOTES.G3
-    ];
   }
 
   init() {
     if (!this.ctx) {
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      this.ctx = new AudioCtx();
-      this.masterGain = this.ctx.createGain();
-      this.masterGain.gain.setValueAtTime(0.7, this.ctx.currentTime);
-      this.masterGain.connect(this.ctx.destination);
+      if (AudioCtx) {
+        this.ctx = new AudioCtx();
+        this.masterGain = this.ctx.createGain();
+        this.masterGain.gain.setValueAtTime(this.isMuted ? 0 : 0.7, this.ctx.currentTime);
+        this.masterGain.connect(this.ctx.destination);
+      }
     }
     if (this.ctx && this.ctx.state === 'suspended') {
-      this.ctx.resume();
+      this.ctx.resume().catch(() => {});
     }
+
+    if (!this.bgmAudio) {
+      this.bgmAudio = document.getElementById('game-bgm');
+      if (!this.bgmAudio) {
+        this.bgmAudio = new Audio();
+        this.bgmAudio.id = 'game-bgm';
+        this.bgmAudio.src = encodeURI(this.bgmSrc);
+        this.bgmAudio.loop = true;
+        this.bgmAudio.preload = 'auto';
+      }
+      this.bgmAudio.volume = this.isMuted ? 0 : this.bgmVolume;
+      this.bgmAudio.muted = this.isMuted;
+    }
+
+    this.initialized = true;
   }
 
   toggleMute() {
     this.isMuted = !this.isMuted;
     if (this.isMuted) {
       this.stopBGM();
-      if (this.masterGain) this.masterGain.gain.setValueAtTime(0, this.ctx.currentTime);
+      if (this.bgmAudio) {
+        this.bgmAudio.volume = 0;
+        this.bgmAudio.muted = true;
+      }
+      if (this.masterGain && this.ctx) {
+        this.masterGain.gain.setValueAtTime(0, this.ctx.currentTime);
+      }
     } else {
       this.init();
-      if (this.masterGain) this.masterGain.gain.setValueAtTime(0.7, this.ctx.currentTime);
+      if (this.bgmAudio) {
+        this.bgmAudio.muted = false;
+        this.bgmAudio.volume = this.bgmVolume;
+      }
+      if (this.masterGain && this.ctx) {
+        this.masterGain.gain.setValueAtTime(0.7, this.ctx.currentTime);
+      }
       this.startBGM();
     }
     return !this.isMuted;
   }
 
-  // --- NHẠC NỀN BGM MARIO 8-BIT VUI TƯƠI ---
+  // --- PHÁT NHẠC NỀN AUDIO BG.MP3 ---
   startBGM() {
-    if (this.isMuted || this.bgmPlaying) return;
+    if (this.isMuted) return;
     this.init();
     this.bgmPlaying = true;
-    this.stepIndex = 0;
-    this.nextNoteTime = this.ctx.currentTime + 0.05;
 
-    // Bộ lập lịch Lookahead Web Audio (chính xác tuyệt đối, không lag)
-    const scheduleAheadTime = 0.2;
-    const lookahead = 40; // ms
-
-    const scheduler = () => {
-      if (!this.bgmPlaying || this.isMuted) return;
-
-      while (this.nextNoteTime < this.ctx.currentTime + scheduleAheadTime) {
-        this.scheduleStep(this.nextNoteTime);
+    if (this.bgmAudio) {
+      this.bgmAudio.muted = false;
+      this.bgmAudio.volume = this.bgmVolume;
+      const playPromise = this.bgmAudio.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(err => {
+          // Trình duyệt có thể cần tương tác người dùng (click) trước khi cho phép phát audio
+          console.log("Audio BGM chờ tương tác từ người dùng:", err);
+        });
       }
-      this.bgmInterval = setTimeout(scheduler, lookahead);
-    };
-
-    scheduler();
+    }
   }
 
   stopBGM() {
     this.bgmPlaying = false;
-    if (this.bgmInterval) {
-      clearTimeout(this.bgmInterval);
-      this.bgmInterval = null;
+    if (this.bgmAudio) {
+      this.bgmAudio.pause();
     }
   }
 
-  scheduleStep(time) {
-    const sixteenthSec = 60 / (this.tempo * 4); // Độ dài 1 nốt móc kép
-
-    const currentMelodyItem = this.melodyPattern[this.stepIndex % this.melodyPattern.length];
-    const durationSec = currentMelodyItem.dur * sixteenthSec;
-
-    // 1. Kênh Lead: Square Wave (Âm sắc Mario đặc trưng)
-    if (currentMelodyItem.note > 0) {
-      this.playSquareNote(currentMelodyItem.note, time, Math.max(0.06, durationSec * 0.85), 0.14);
+  setBGMVolume(val) {
+    this.bgmVolume = Math.max(0, Math.min(1, val));
+    if (this.bgmAudio && !this.isMuted) {
+      this.bgmAudio.volume = this.bgmVolume;
     }
-
-    // 2. Kênh Bass: Triangle Wave nảy nhịp vui tươi
-    const bassNote = this.bassPattern[this.stepIndex % this.bassPattern.length];
-    if (bassNote > 0) {
-      this.playTriangleNote(bassNote, time, sixteenthSec * 0.9, 0.22);
-    }
-
-    // 3. Kênh Trống: Hi-hat & Snare chiptune trên nhịp
-    if (this.stepIndex % 4 === 2) {
-      // Snare chiptune trên phách 2 và 4
-      this.playNoiseSnare(time);
-    } else if (this.stepIndex % 2 === 0) {
-      // Hi-hat nhẹ nhàng trên phách chính
-      this.playHiHat(time);
-    }
-
-    this.nextNoteTime += durationSec;
-    this.stepIndex++;
   }
 
   // Nốt Square Wave (Lead Mario Chiptune)

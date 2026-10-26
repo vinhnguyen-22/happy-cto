@@ -51,8 +51,8 @@ Sau đó truy cập: `http://localhost:3000`
    - Tại mỗi cảnh, người chơi có thể click vào các lá cây, đóa hoa, khiên giáp, cánh hạc để xem lời chúc của đồng đội.
    - Nhấn nút **`+`** để nhập tên, chọn phòng ban, viết lời chúc và **upload ảnh từ máy tính/điện thoại** hoặc chọn nhanh avatar kỷ niệm.
    - Tự động tối ưu dung lượng ảnh và lưu bền vững vào `localStorage`.
-4. **Âm Thanh Trà Đạo Zen Lo-Fi (Web Audio API Synthesizer):**
-   - Tạo giai điệu đàn tranh ngũ cung êm dịu, tiếng suối chảy, tiếng rót trà, tiếng chuông gió và tiếng pháo hoa chúc mừng mà không phụ thuộc file MP3 ngoài.
+4. **Âm Thanh & Nhạc Nền Chính Thức (`audio bg.mp3`):**
+   - Tích hợp file nhạc nền chính thức `audio bg.mp3` lặp mượt mà, cùng hệ thống âm thanh hiệu ứng (SFX) retro giòn giã (click, nhảy, thu thập, chuông khánh, pháo hoa mừng sinh nhật).
 5. **Đại Cảnh Cây Trà Tri Thức & Sổ Lưu Bút:**
    - Nhấn nút **"🌳 Cây Tri Thức & Lưu Bút"** trên thanh HUD để xem:
      + Sơ đồ tổng hợp Cây Trà 6 tầng ý nghĩa.

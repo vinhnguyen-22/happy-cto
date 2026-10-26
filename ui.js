@@ -168,8 +168,8 @@ class UIManager {
     btnAudio.addEventListener('click', () => {
       const isPlaying = window.gameAudio.toggleMute();
       btnAudio.innerHTML = isPlaying 
-        ? '<svg class="zen-btn-icon"><use href="#zen-bell-on"></use></svg> <span>Nhạc Mario: BẬT</span>' 
-        : '<svg class="zen-btn-icon"><use href="#zen-bell-off"></use></svg> <span>Nhạc Mario: TẮT</span>';
+        ? '<svg class="zen-btn-icon"><use href="#zen-bell-on"></use></svg> <span>Nhạc Nền: BẬT</span>' 
+        : '<svg class="zen-btn-icon"><use href="#zen-bell-off"></use></svg> <span>Nhạc Nền: TẮT</span>';
     });
 
     if (btnViewTree) {
