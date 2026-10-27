@@ -13,7 +13,7 @@ class AudioManager {
     this.masterGain = null;
 
     // Nhạc nền chính thức từ file audio bg.mp3
-    this.bgmSrc = 'audio bg.mp3';
+    this.bgmSrc = 'assets/audio/audio_bg.mp3';
     this.bgmAudio = null;
     this.bgmVolume = 0.55; // Âm lượng nhạc nền êm dịu, hài hòa với SFX
 

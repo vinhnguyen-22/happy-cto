@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Noto+Serif+TC:wght@400;600;700&family=VT323&display=swap" rel="stylesheet">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link rel="stylesheet" href="style.css?v=3.0">
+  <link rel="stylesheet" href="css/style.css?v=4.0">
 </head>
 <body>
   <!-- KHO ICON SVG CỔ PHONG (ZEN TEA SVG SPRITES) -->
@@ -201,7 +201,7 @@
       <video id="vid_realm5" src="assets/03_Six_Tea_Realms/bg_realm5_tien_tra.mp4" loop muted playsinline webkit-playsinline preload="auto"></video>
       <video id="vid_realm6" src="assets/03_Six_Tea_Realms/bg_realm6_mat_tra.mp4" loop muted playsinline webkit-playsinline preload="auto"></video>
       <!-- Nhạc nền chính thức của Game -->
-      <audio id="game-bgm" src="audio%20bg.mp3" loop preload="auto"></audio>
+      <audio id="game-bgm" src="assets/audio/audio_bg.mp3" loop preload="auto"></audio>
     </div>
 
     <!-- Canvas chính vẽ thế giới Pixel Art & Hiệu ứng -->
@@ -245,6 +245,10 @@
           <svg class="zen-btn-icon"><use href="#zen-tree-guestbook"></use></svg>
           <span>Xem Lưu Bút</span>
         </button>
+        <a href="card.html" class="hud-btn" title="Mở Xưởng Tạo Thiệp Sinh Nhật Riêng (Dedicated Card Studio)" style="text-decoration: none;">
+          <svg class="zen-btn-icon"><use href="#zen-copy"></use></svg>
+          <span>Xưởng Thiệp</span>
+        </a>
         <!-- Cụm điều chỉnh âm thanh nhạc nền: Chỉ icon + thanh kéo âm lượng (Volume Slider) -->
         <div class="hud-audio-group" title="Âm lượng nhạc nền">
           <button id="btn-audio-toggle" class="hud-btn hud-icon-only" title="Bật / Tắt âm thanh" aria-label="Bật / Tắt âm thanh">
@@ -1002,11 +1006,11 @@
   </div>
 
   <!-- Audio elements & Scripts -->
-  <script src="audio.js?v=4.0"></script>
-  <script src="data.js?v=4.0"></script>
-  <script src="sprites.js?v=4.0"></script>
-  <script src="minigames.js?v=4.0"></script>
-  <script src="game.js?v=4.0"></script>
-  <script src="ui.js?v=4.0"></script>
+  <script src="js/audio.js?v=4.0"></script>
+  <script src="js/data.js?v=4.0"></script>
+  <script src="js/sprites.js?v=4.0"></script>
+  <script src="js/minigames.js?v=4.0"></script>
+  <script src="js/game.js?v=4.0"></script>
+  <script src="js/ui.js?v=4.0"></script>
 </body>
 </html>

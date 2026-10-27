@@ -5,9 +5,16 @@
   "main": "index.html",
   "scripts": {
     "start": "python -m http.server 3000",
-    "serve": "npx serve -l 3000 ."
+    "serve": "npx serve -l 3000 .",
+    "check": "node -c js/audio.js js/data.js js/sprites.js js/minigames.js js/game.js js/ui.js js/card.js"
   },
-  "keywords": ["stardew-valley", "birthday-game", "cto", "luc-tra-canh-gioi", "pixel-art"],
+  "keywords": [
+    "stardew-valley",
+    "birthday-game",
+    "cto",
+    "luc-tra-canh-gioi",
+    "pixel-art"
+  ],
   "author": "Engineering & Data Teams",
   "license": "MIT"
 }

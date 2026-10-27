@@ -38,11 +38,11 @@ html, body {
   color: #3e2723;
   font-family: var(--font-serif);
   position: relative;
-  cursor: url('assets/ui/cursor_tea_leaf.png') 0 0, auto;
+  cursor: url('../assets/ui/cursor_tea_leaf.png') 0 0, auto;
 }
 
 button, .pixel-btn, .hud-btn, .dialogue-btn, .modal-close, .tea-card-btn, .preset-chip, .wish-tag, .close-btn, a, input, select, textarea {
-  cursor: url('assets/ui/cursor_tea_leaf.png') 0 0, pointer;
+  cursor: url('../assets/ui/cursor_tea_leaf.png') 0 0, pointer;
 }
 
 /* =========================================================
@@ -89,10 +89,10 @@ button, .pixel-btn, .hud-btn, .dialogue-btn, .modal-close, .tea-card-btn, .prese
 }
 
 .door-left {
-  background: url('assets/02_Tea_Temple_Hub/door_left.png') no-repeat center center / cover;
+  background: url('../assets/02_Tea_Temple_Hub/door_left.png') no-repeat center center / cover;
 }
 .door-right {
-  background: url('assets/02_Tea_Temple_Hub/door_right.png') no-repeat center center / cover;
+  background: url('../assets/02_Tea_Temple_Hub/door_right.png') no-repeat center center / cover;
 }
 
 .intro-overlay.open .door-left {
@@ -362,7 +362,7 @@ button, .pixel-btn, .hud-btn, .dialogue-btn, .modal-close, .tea-card-btn, .prese
   height: 100%;
   display: block;
   image-rendering: auto; /* Hiển thị video và khung cảnh 1080p sắc nét mượt mà, không vỡ hạt */
-  cursor: url('assets/ui/cursor_tea_leaf.png') 0 0, crosshair;
+  cursor: url('../assets/ui/cursor_tea_leaf.png') 0 0, crosshair;
 }
 
 /* =========================================================
@@ -1433,7 +1433,7 @@ button, .pixel-btn, .hud-btn, .dialogue-btn, .modal-close, .tea-card-btn, .prese
   width: min(440px, 88vw, calc(68vh * 0.75));
   height: min(586px, calc(88vw / 0.75), 68vh);
   aspect-ratio: 3 / 4;
-  background: url('assets/bg_card_zen.webp') no-repeat center center !important;
+  background: url('../assets/bg_card_zen.webp') no-repeat center center !important;
   background-size: 100% 100% !important;
   border-radius: 16px;
   box-shadow: 0 25px 70px rgba(0, 0, 0, 0.9), 0 0 40px rgba(212, 175, 55, 0.35);
@@ -1884,7 +1884,7 @@ button, .pixel-btn, .hud-btn, .dialogue-btn, .modal-close, .tea-card-btn, .prese
 }
 
 .scrapbook-card {
-  background: url('assets/bg_card_zen.webp') no-repeat center center;
+  background: url('../assets/bg_card_zen.webp') no-repeat center center;
   background-size: 100% 100%;
   border: none;
   border-radius: 12px;
@@ -2160,7 +2160,7 @@ button, .pixel-btn, .hud-btn, .dialogue-btn, .modal-close, .tea-card-btn, .prese
 
 /* THEME 1: TRÀ ĐẠO ZEN (Mặc định - Sử dụng khung thiệp hoàng kim bg_card_zen.webp) */
 .live-card-frame.theme-zen {
-  background: url('assets/bg_card_zen.webp') no-repeat center center;
+  background: url('../assets/bg_card_zen.webp') no-repeat center center;
   background-size: 100% 100%;
   border: none;
   aspect-ratio: 3 / 4;
@@ -3429,7 +3429,7 @@ button, .pixel-btn, .hud-btn, .dialogue-btn, .modal-close, .tea-card-btn, .prese
 }
 
 .ws-wall-card {
-  background: url('assets/bg_card_zen.webp') no-repeat center center;
+  background: url('../assets/bg_card_zen.webp') no-repeat center center;
   background-size: 100% 100%;
   border: none;
   border-radius: 12px;
